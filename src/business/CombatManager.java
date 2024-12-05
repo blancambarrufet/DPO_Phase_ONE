@@ -1,4 +1,4 @@
-package layerTwo;
+package business;
 
 public class CombatManager {
 }

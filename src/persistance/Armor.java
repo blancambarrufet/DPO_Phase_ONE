@@ -1,4 +1,4 @@
-package layerThree;
+package persistance;
 
 public class Armor extends Item {
     private Armor(String name, int id, int power, int durability, String type) {

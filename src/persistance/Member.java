@@ -1,4 +1,4 @@
-package layerThree;
+package persistance;
 
 public class Member {
     private Character caracter;
