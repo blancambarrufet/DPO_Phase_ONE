@@ -1,0 +1,120 @@
+package presentation;
+
+import java.util.Scanner;
+
+public class UI {
+
+    Scanner scanner = new Scanner(System.in);
+
+    public void displayPersistanceManagement() {
+        // TODO implement here
+
+        System.out.println("  ___                      _    ___     ___         _ ");
+        System.out.println(" / __|_  _ _ __  ___ _ _  | |  / __|   | _ )_ _ ___| |");
+        System.out.println(" \\__ \\ || | '_ \\/ -_) '_| | |__\\__ \\_  | _ \\ '_/ _ \\_|");
+        System.out.println(" |___/\\_,_| .__/\\___|_|   |____|___( ) |___/_| \\___(_)");
+        System.out.println("          |_|                      |/                 ");
+        System.out.println();
+
+        System.out.println("Welcome to Super LS, Bro! Simulator.");
+        System.out.println("Verifying local files...");
+
+        //if files exists:
+        System.out.println("Files OK.");
+        System.out.println("Starting program... ");
+
+        //else if doesnt exists:
+        System.out.println("Error: The characters.json file can’t be accessed.");
+        System.out.println("Shutting down...");
+    }
+
+
+    public MainMenu printMainMenu() {
+        // TODO implement here
+        int option = 0 ;
+        do {
+            System.out.println("\t1) List Characters");
+            System.out.println("\t2) Manage Teams");
+            System.out.println("\t3) List Items");
+            System.out.println("\t4) Simulate Combat");
+            System.out.println();
+            System.out.println("\t5) Exit");
+
+
+            String select;
+            select = scanner.nextLine();
+            option = Integer.parseInt(select);
+
+            switch (option) {
+                case 1:
+                    return MainMenu.LIST_CHARACTERS;
+                case 2:
+                    return MainMenu.MANAGE_TEAMS;
+                case 3:
+                    return MainMenu.LIST_ITEMS;
+                case 4:
+                    return MainMenu.SIMULATE_COMBAT;
+                case 5:
+                    return MainMenu.EXIT;
+                default:
+                    System.out.println("(ERROR) The option is not a valid.");
+            }
+
+        } while (option != 5);
+
+        return null;
+    }
+
+
+
+    public void executeMenuSelection() {
+        // TODO implement here
+
+    }
+
+
+    public String requestTeamInfo() {
+        // TODO implement here
+        return "";
+    }
+
+
+    public TeamManagementMenu printTeamMenu() {
+        // TODO implement here
+        return null;
+    }
+
+
+    public String requestCharacterInfo() {
+        // TODO implement here
+        return "";
+    }
+
+
+    public String requestItemInfo() {
+        // TODO implement here
+        return "";
+    }
+
+
+    public String requestCombatTeam() {
+        // TODO implement here
+        return "";
+    }
+
+    public void displayCombat() {
+        // TODO implement here
+
+    }
+
+    public void printCombatResult() {
+        // TODO implement here
+
+    }
+
+    public void displayStats() {
+        // TODO implement here
+
+    }
+
+}
