@@ -23,6 +23,7 @@ public class Controller {
                 case LIST_CHARACTERS:
                     name = ui.requestCharacterInfo();
 
+
                     break;
                 case MANAGE_TEAMS:
 
@@ -32,7 +33,8 @@ public class Controller {
                 case SIMULATE_COMBAT:
                     break;
                 case EXIT:
-                    break;
+                    System.out.println("We hope to see you again!");
+                    System.exit(0);
             }
 
         }
