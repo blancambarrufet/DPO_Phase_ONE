@@ -1,5 +1,8 @@
 package presentation;
 
+import persistance.Item;
+
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class UI {
@@ -66,7 +69,6 @@ public class UI {
     }
 
 
-
     public void executeMenuSelection() {
         // TODO implement here
 
@@ -96,7 +98,17 @@ public class UI {
         return "";
     }
 
-
+    public void displayItemInfo(ArrayList<Item> items) {
+        // TODO implement here
+        for (Item item : items) {
+            System.out.println("ID:        " + item.getId());
+            System.out.println("NAME:      " + item.getName());
+            System.out.println("CLASS:     " + item.getType());  // Using 'type' as the class
+            System.out.println("POWER:     " + item.getPower());
+            System.out.println("DURABILITY:" + item.getDurability());
+            System.out.println();  // Adding a blank line between items
+        }
+    }
     public String requestCombatTeam() {
         // TODO implement here
         return "";

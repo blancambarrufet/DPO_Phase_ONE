@@ -2,9 +2,11 @@ package business;
 
 import java.io.*;
 import java.util.*;
+import persistance.Character;
+
 
 public class CharacterManager {
-
+    ArrayList<Character> characters;
 /*
     private void loadCharacters() {
         // TODO implement here
@@ -33,16 +35,43 @@ public class CharacterManager {
 */
 
     public void printCharacter(String characterName) {
+        //read and save the contents of the jonson file
+        //store them in the ArrayList
+
+        boolean found=false;
+
+        do{
+            Character actualCharacter = characters.removeFirst();
+
+
+            if(characterName.equals(actualCharacter.getName())){
+                System.out.println("Id: " + actualCharacter.getId());
+                System.out.println("Name: " + actualCharacter.getName());
+                System.out.println("Weight: " + actualCharacter.getWeight());
+
+                found=true;
+            }else found=false;
+
+        }while(!found ||!characters.isEmpty());
+
+        if (!found) System.out.println("Character not found");
+
 
     }
 
     private void characterList(){
-        // TODO implement here
+        //read and save the contents of the jonson file
+        //store them in the ArrayList
+
+        int i=0;
+        do{
+            Character actualCharacter = characters.removeFirst();
+            System.out.println("\t"+i+") " + actualCharacter.getName());
+            i++;
+        }while(!characters.isEmpty());
     }
 
-    public void showCharactersInTeams(String teamName){
-        // TODO implement here
-    }
+//    Function changed to Team Manager: +showCharactersInTeams
 
     public void displayCharacterInfo(String characterName){
         // TODO implement here
