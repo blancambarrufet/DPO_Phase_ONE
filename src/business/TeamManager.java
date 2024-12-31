@@ -1,11 +1,11 @@
 package business;
+import persistance.Member;
 import persistance.Team;
 
 import java.util.ArrayList;
 
 public class TeamManager {
     ArrayList<Team> teams;
-
     public void addTeam(Team team) {
 
     }
