@@ -1,4 +1,6 @@
+import business.CharacterManager;
 import business.CombatManager;
+import business.ItemManager;
 import presentation.Controller;
 import presentation.UI;
 

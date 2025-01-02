@@ -3,8 +3,6 @@ package business;
 import business.entities.Item;
 import persistance.ItemDAO;
 import persistance.exceptions.PersistanceException;
-
-import java.util.ArrayList;
 import java.util.List;
 
 public class ItemManager {
@@ -32,36 +30,26 @@ public class ItemManager {
         itemDAO.saveItems(items);
     }
 
-    ArrayList<Item> items;
-
-
-    public void addItem(Item item) {
-        items.add(item);
-    }
-
-    public void printItem(String name) {
-        // TODO implement here
-        for (Item item: items) {
-            if (item.getName().equals(name)) {
-                System.out.println("\tID: "+ item.getId());
-                System.out.println("\tName: "+ item.getName());
-                System.out.println("\tClass: "+ item.getClass());
-                System.out.println("\tPower: "+ item.getPower());
-                System.out.println("\tDurability: "+ item.getDurability());
-                break;
+    // Print details of an item
+    public void printItem(String name) throws PersistanceException {
+        List<Item> items = getAllItems();
+        for (Item item : items) {
+            if (item.getName().equalsIgnoreCase(name)) {
+                System.out.println("ID: " + item.getId());
+                System.out.println("Name: " + item.getName());
+                System.out.println("Power: " + item.getPower());
+                System.out.println("Durability: " + item.getDurability());
+                return;
             }
         }
+        System.out.println("Item not found.");
+    }
 
+    // List all items
+    public void listItems() throws PersistanceException {
+        List<Item> items = getAllItems();
+        items.forEach(item -> System.out.println("- " + item.getName()));
     }
 
 
-    private void loadItem() {
-        // TODO implement here
-    }
-
-
-    private Set<Item> listItem() {
-        // TODO implement here
-        return null;
-    }
 }

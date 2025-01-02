@@ -4,8 +4,16 @@ public class Statistics {
     private String name;
     private int gamesPlayed;
     private int gamesWon;
-    private int koMades;
+    private int koMade;
     private int koReceived;
+
+    public Statistics(String name) {
+        this.name = name;
+        this.gamesPlayed = 0;
+        this.gamesWon = 0;
+        this.koMade = 0;
+        this.koReceived = 0;
+    }
 
     public String getName() {
         return name;
@@ -31,12 +39,12 @@ public class Statistics {
         this.gamesWon = gamesWon;
     }
 
-    public int getKoMades() {
-        return koMades;
+    public int getKoMade() {
+        return koMade;
     }
 
-    public void setKoMades(int koMades) {
-        this.koMades = koMades;
+    public void setKoMade(int koMade) {
+        this.koMade = koMade;
     }
 
     public int getKoReceived() {
@@ -47,11 +55,14 @@ public class Statistics {
         this.koReceived = koReceived;
     }
 
-    public void statics(String name, int gamesPlayed, int gamesWon, int koMades, int koReceived) {
-        this.name = name;
-        this.gamesPlayed = gamesPlayed;
-        this.gamesWon = gamesWon;
-        this.koMades = koMades;
-        this.koReceived = koReceived;
+    public void incrementGamesPlayed() { gamesPlayed++; }
+    public void incrementGamesWon() { gamesWon++; }
+    public void incrementKOMade() { koMade++; }
+    public void incrementKOReceived() { koReceived++; }
+
+    public String getSummary() {
+        return name + " - Played: " + gamesPlayed + ", Won: " + gamesWon +
+                ", KO Made: " + koMade + ", KO Received: " + koReceived;
     }
+
 }

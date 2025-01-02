@@ -1,28 +1,24 @@
 package business.entities;
 
 public class Member {
-    private Character caracter;
+    private int characterID;
     private String strategy; //Not sure if this should be a string o...?
 
-    public Character getCaracter() {
-        return caracter;
+
+    public enum Strategy { //THIS SHOULD BE IN A CLASS ENUM
+        BALANCED, AGGRESSIVE, DEFENSIVE
     }
 
-    public void setCaracter(Character caracter) {
-        this.caracter = caracter;
-    }
-
-    public String getStrategy() {
-        return strategy;
-    }
-
-    public void setStrategy(String strategy) {
+    public Member(int characterID, String strategy) {
+        this.characterID = characterID;
         this.strategy = strategy;
     }
 
-    public Member(Character caracter, String strategy) {
-        this.caracter = caracter;
-        this.strategy = strategy;
+    // Getters and Setters
+    public int getCharacterId() { return characterID; }
+    public void setCharacterId(int characterId) { this.characterID = characterId; }
 
-    }
+    public String getStrategy() { return strategy; }
+    public void setStrategy(String strategy) { this.strategy = strategy; }
+
 }
