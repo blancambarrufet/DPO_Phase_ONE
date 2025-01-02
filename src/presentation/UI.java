@@ -1,10 +1,13 @@
 package presentation;
 
+import persistance.Item;
+
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class UI {
 
-    private Scanner scanner;
+    Scanner scanner = new Scanner(System.in);
 
     public void displayPersistanceManagement() {
         // TODO implement here
@@ -22,6 +25,7 @@ public class UI {
         //if files exists:
         System.out.println("Files OK.");
         System.out.println("Starting program... ");
+
         //else if doesnt exists:
         System.out.println("Error: The characters.json file can’t be accessed.");
         System.out.println("Shutting down...");
@@ -30,7 +34,7 @@ public class UI {
 
     public MainMenu printMainMenu() {
         // TODO implement here
-        int option = 0;
+        int option = 0 ;
         do {
             System.out.println("\t1) List Characters");
             System.out.println("\t2) Manage Teams");
@@ -39,20 +43,26 @@ public class UI {
             System.out.println();
             System.out.println("\t5) Exit");
 
-            try {
-                option = Integer.parseInt(scanner.nextLine());
 
-                switch (option) {
-                    case 1: return MainMenu.LIST_CHARACTERS;
-                    case 2: return MainMenu.MANAGE_TEAMS;
-                    case 3: return MainMenu.LIST_ITEMS;
-                    case 4: return MainMenu.SIMULATE_COMBAT;
-                    case 5: return MainMenu.EXIT;
-                }
+            String select;
+            select = scanner.nextLine();
+            option = Integer.parseInt(select);
 
-            } catch (NumberFormatException e) {
-                System.out.println("(ERROR) The option is not a valid.");
+            switch (option) {
+                case 1:
+                    return MainMenu.LIST_CHARACTERS;
+                case 2:
+                    return MainMenu.MANAGE_TEAMS;
+                case 3:
+                    return MainMenu.LIST_ITEMS;
+                case 4:
+                    return MainMenu.SIMULATE_COMBAT;
+                case 5:
+                    return MainMenu.EXIT;
+                default:
+                    System.out.println("(ERROR) The option is not a valid.");
             }
+
         } while (option != 5);
 
         return null;
@@ -88,7 +98,17 @@ public class UI {
         return "";
     }
 
-
+    public void displayItemInfo(ArrayList<Item> items) {
+        // TODO implement here
+        for (Item item : items) {
+            System.out.println("ID:        " + item.getId());
+            System.out.println("NAME:      " + item.getName());
+            System.out.println("CLASS:     " + item.getType());  // Using 'type' as the class
+            System.out.println("POWER:     " + item.getPower());
+            System.out.println("DURABILITY:" + item.getDurability());
+            System.out.println();  // Adding a blank line between items
+        }
+    }
     public String requestCombatTeam() {
         // TODO implement here
         return "";

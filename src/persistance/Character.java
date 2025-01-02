@@ -21,7 +21,7 @@ public class Character {
         this.weight = weight;
     }
 
-    public String getName() {
+    public  String getName() {
         return name;
     }
 

@@ -7,6 +7,14 @@ public class Item  {
     private int durability;
     private String type;
 
+    public Item(String name, int id, int power, int durability, String type) {
+        this.name = name;
+        this.id = id;
+        this.power = power;
+        this.durability = durability;
+        this.type = type;
+    }
+
     public String getName() {
         return name;
     }
@@ -47,12 +55,6 @@ public class Item  {
         this.power = power;
     }
 
-    public Item(String name, int id, int power, int durability, String type) {
-        this.name = name;
-        this.id = id;
-        this.power = power;
-        this.durability = durability;
-        this.type = type;
-    }
+
 
 }
