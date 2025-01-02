@@ -1,6 +1,6 @@
-package persistance;
+package business.entities;
 
-public class Statics {
+public class Statistics {
     private String name;
     private int gamesPlayed;
     private int gamesWon;

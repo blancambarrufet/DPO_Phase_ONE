@@ -1,4 +1,4 @@
-package persistance;
+package business.entities;
 
 public class Weapon extends Item {
     private Weapon(String name, int id, int power, int durability, String type) {

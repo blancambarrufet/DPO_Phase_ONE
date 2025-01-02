@@ -1,6 +1,7 @@
 package business;
-import persistance.Member;
-import persistance.Team;
+
+import business.entities.Member;
+import business.entities.Team;
 
 import java.util.ArrayList;
 

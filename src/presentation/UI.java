@@ -1,6 +1,6 @@
 package presentation;
 
-import persistance.Item;
+import business.entities.Item;
 
 import java.util.ArrayList;
 import java.util.Scanner;

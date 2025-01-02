@@ -9,16 +9,16 @@ public class Controller {
     private CombatManager combatManager;
     private ItemManager itemManager;
     private TeamManager teamManager;
-    private StaticsManager staticsManager;
+    private StatisticsManager statisticsManager;
     private CharacterManager characterManager;
 
-    public Controller(UI ui, CombatManager combatManager, ItemManager itemManager, TeamManager teamManager, CharacterManager characterManager, StaticsManager staticsManager) {
+    public Controller(UI ui, CombatManager combatManager, ItemManager itemManager, TeamManager teamManager, CharacterManager characterManager, StatisticsManager statisticsManager) {
         this.ui = ui;
         this.combatManager = combatManager;
         this.itemManager = itemManager;
         this.teamManager = teamManager;
         this.characterManager = characterManager;
-        this.staticsManager = staticsManager;
+        this.statisticsManager = statisticsManager;
     }
 
     public void runMain() {
@@ -31,7 +31,6 @@ public class Controller {
             switch (ui.printMainMenu()) {
                 case LIST_CHARACTERS:
                     name = ui.requestCharacterInfo();
-
 
                     break;
                 case MANAGE_TEAMS:

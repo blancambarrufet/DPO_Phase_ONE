@@ -1,12 +1,38 @@
 package business;
 
-import java.io.*;
+import business.entities.Character;
+import persistance.CharacterDAO;
+import persistance.exceptions.PersistanceException;
+
 import java.util.*;
-import persistance.Character;
 
 
 public class CharacterManager {
-    ArrayList<Character> characters;
+    private final CharacterDAO characterDAO;
+
+    public CharacterManager(CharacterDAO characterDAO) {
+        this.characterDAO = characterDAO;
+    }
+
+    // Validate the persistence source through the DAO
+    public void validatePersistenceSource() throws PersistanceException {
+        if (!characterDAO.isFileOk()) {
+            throw new PersistanceException("The characters.json file can't be accessed.");
+        }
+    }
+
+    // Retrieve all characters
+    public List<business.entities.Character> getAllCharacters() throws PersistanceException {
+        return characterDAO.loadAllCharacters();
+    }
+
+    // Save characters
+    public void saveCharacters(List<business.entities.Character> characters) throws PersistanceException {
+        characterDAO.saveCharacters(characters);
+    }
+
+
+    ArrayList<business.entities.Character> characters;
 /*
     private void loadCharacters() {
         // TODO implement here
@@ -41,7 +67,7 @@ public class CharacterManager {
         boolean found=false;
 
         do{
-            Character actualCharacter = characters.removeFirst();
+            business.entities.Character actualCharacter = characters.removeFirst();
 
 
             if(characterName.equals(actualCharacter.getName())){
