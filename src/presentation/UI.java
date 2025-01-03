@@ -27,7 +27,7 @@ public class UI {
 
         if (isFileOk) {
             System.out.println("Files OK.");
-            System.out.println("Starting program... ");
+            System.out.println("Starting program... \n");
             return true;
         } else {
             System.out.println("Error: The persistence source can't be accessed.");
@@ -80,13 +80,12 @@ public class UI {
     public TeamManagementMenu printTeamMenu() {
         int option = 0;
         do {
-            System.out.println("\nTeam Management Menu:");
-            System.out.println("\t1) Create Team");
+            System.out.println("\nTeam management.");
+            System.out.println("\t1) Create a Team");
             System.out.println("\t2) List Teams");
-            System.out.println("\t3) Delete Team");
+            System.out.println("\t3) Delete a Team\n");
             System.out.println("\t4) Back");
             System.out.print("\nChoose an option: ");
-            System.out.println();
 
             String select = scanner.nextLine();
             option = Integer.parseInt(select);
@@ -113,7 +112,7 @@ public class UI {
 
     public String requestTeamInfo() {
         // TODO implement here
-        System.out.print("\nEnter Team Name: ");
+        System.out.print("\nPlease enter the team's name: ");
         return scanner.nextLine().trim();
     }
 

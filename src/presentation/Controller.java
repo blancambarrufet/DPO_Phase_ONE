@@ -117,7 +117,7 @@ public class Controller {
             String teamName = ui.requestTeamInfo();
 
             if (teamManager.teamExists(teamName)) {
-                System.out.println("A team with this name already exists!");
+                System.out.println("We are sorry " + teamName + " is taken.");
                 return;
             }
 
