@@ -111,6 +111,7 @@ public class TeamManager {
         return teams.stream().anyMatch(team -> team.getName().equalsIgnoreCase(name));
     }
 
+    /*
     // Display information about a specific team
     public void displayTeamInfo(String teamName) {
         for (Team team : teams) {
@@ -135,4 +136,6 @@ public class TeamManager {
         }
         System.out.println("Team not found.");
     }
+
+     */
 }

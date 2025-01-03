@@ -1,7 +1,10 @@
 package presentation;
 
 import business.entities.Item;
+import business.entities.Character;
+import business.entities.Team;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -9,7 +12,7 @@ public class UI {
 
     Scanner scanner = new Scanner(System.in);
 
-    public void displayPersistanceManagement() {
+    public boolean validatePersistence(boolean isFileOk) {
         // TODO implement here
 
         System.out.println("  ___                      _    ___     ___         _ ");
@@ -22,18 +25,19 @@ public class UI {
         System.out.println("Welcome to Super LS, Bro! Simulator.");
         System.out.println("Verifying local files...");
 
-        //if files exists:
-        System.out.println("Files OK.");
-        System.out.println("Starting program... ");
-
-        //else if doesnt exists:
-        System.out.println("Error: The characters.json file can’t be accessed.");
-        System.out.println("Shutting down...");
+        if (isFileOk) {
+            System.out.println("Files OK.");
+            System.out.println("Starting program... ");
+            return true;
+        } else {
+            System.out.println("Error: The persistence source can't be accessed.");
+            System.out.println("Shutting down...");
+            return false;
+        }
     }
 
 
     public MainMenu printMainMenu() {
-        // TODO implement here
         int option = 0 ;
         do {
             System.out.println("\t1) List Characters");
@@ -42,25 +46,30 @@ public class UI {
             System.out.println("\t4) Simulate Combat");
             System.out.println();
             System.out.println("\t5) Exit");
+            System.out.print("\nChoose an option: ");
 
 
             String select;
             select = scanner.nextLine();
             option = Integer.parseInt(select);
 
-            switch (option) {
-                case 1:
-                    return MainMenu.LIST_CHARACTERS;
-                case 2:
-                    return MainMenu.MANAGE_TEAMS;
-                case 3:
-                    return MainMenu.LIST_ITEMS;
-                case 4:
-                    return MainMenu.SIMULATE_COMBAT;
-                case 5:
-                    return MainMenu.EXIT;
-                default:
-                    System.out.println("(ERROR) The option is not a valid.");
+            try {
+                switch (option) {
+                    case 1:
+                        return MainMenu.LIST_CHARACTERS;
+                    case 2:
+                        return MainMenu.MANAGE_TEAMS;
+                    case 3:
+                        return MainMenu.LIST_ITEMS;
+                    case 4:
+                        return MainMenu.SIMULATE_COMBAT;
+                    case 5:
+                        return MainMenu.EXIT;
+                    default:
+                        System.out.println("(ERROR) The option is not a valid.");
+                }
+            } catch (NumberFormatException e) {
+                System.out.println("(ERROR) Invalid input. Please enter a number.");
             }
 
         } while (option != 5);
@@ -71,84 +80,111 @@ public class UI {
     public TeamManagementMenu printTeamMenu() {
         int option = 0;
         do {
+            System.out.println("\nTeam Management Menu:");
             System.out.println("\t1) Create Team");
             System.out.println("\t2) List Teams");
             System.out.println("\t3) Delete Team");
             System.out.println("\t4) Back");
+            System.out.print("\nChoose an option: ");
             System.out.println();
 
             String select = scanner.nextLine();
             option = Integer.parseInt(select);
 
-            switch (option) {
-                case 1:
-                    return TeamManagementMenu.CREATE_TEAM;
-                case 2:
-                    return TeamManagementMenu.LIST_TEAM;
-                case 3:
-                    return TeamManagementMenu.DELETE_TEAM;
-                case 4:
-                    return TeamManagementMenu.BACK;
-                default:
-                    System.out.println("(ERROR) Invalid option.");
+            try {
+                switch (option) {
+                    case 1:
+                        return TeamManagementMenu.CREATE_TEAM;
+                    case 2:
+                        return TeamManagementMenu.LIST_TEAM;
+                    case 3:
+                        return TeamManagementMenu.DELETE_TEAM;
+                    case 4:
+                        return TeamManagementMenu.BACK;
+                    default:
+                        System.out.println("(ERROR) Invalid option.");
+                }
+            } catch (NumberFormatException e) {
+                System.out.println("(ERROR) Invalid input. Please enter a number.");
             }
         } while (option != 4);
         return null;
     }
 
-    public void executeMenuSelection() {
-        // TODO implement here
-
-    }
-
-
     public String requestTeamInfo() {
         // TODO implement here
-        return "";
+        System.out.print("\nEnter Team Name: ");
+        return scanner.nextLine().trim();
     }
 
     public String requestCharacterInfo() {
         // TODO implement here
-        return "";
+        System.out.print("\nEnter Character Name: ");
+        return scanner.nextLine().trim();
     }
 
 
     public String requestItemInfo() {
         // TODO implement here
-        return "";
+        System.out.print("\nEnter Item Name: ");
+        return scanner.nextLine().trim();
     }
 
-    public void displayItemInfo(ArrayList<Item> items) {
-        // TODO implement here
-        for (Item item : items) {
-            System.out.println("ID:        " + item.getId());
-            System.out.println("NAME:      " + item.getName());
-            System.out.println("CLASS:     " + item.getType());  // Using 'type' as the class
-            System.out.println("POWER:     " + item.getPower());
-            System.out.println("DURABILITY:" + item.getDurability());
-            System.out.println();  // Adding a blank line between items
+    public void displayItems(ArrayList<Item> items) {
+        if (items.isEmpty()) {
+            System.out.println("No items available.");
+        } else {
+            System.out.println("\nItems:");
+            for (Item item : items) {
+                System.out.println("ID:        " + item.getId());
+                System.out.println("NAME:      " + item.getName());
+                System.out.println("POWER:     " + item.getPower());
+                System.out.println("DURABILITY:" + item.getDurability());
+                System.out.println();
+            }
         }
     }
+
+    // Display Teams Information
+    public void displayTeams(ArrayList<Team> teams) {
+        if (teams.isEmpty()) {
+            System.out.println("No teams available.");
+        } else {
+            System.out.println("\nTeams:");
+            for (Team team : teams) {
+                System.out.println("Team: " + team.getName());
+                System.out.println("Members:");
+                team.getMembers().forEach(member ->
+                        System.out.println("\tCharacter ID: " + member.getCharacterId() +
+                                ", Strategy: " + member.getStrategy()));
+            }
+        }
+    }
+
+    // Display Character Information
+    public void displayCharacters(ArrayList<Character> characters) {
+        if (characters.isEmpty()) {
+            System.out.println("No characters available.");
+        } else {
+            System.out.println("\nCharacters:");
+            for (Character character : characters) {
+                character.displayInfo();
+            }
+        }
+    }
+
     public String requestCombatTeam() {
         // TODO implement here
-        return "";
+        System.out.print("\nEnter Team Name for Combat: ");
+        return scanner.nextLine().trim();
     }
 
-    public void displayCombat() {
-        // TODO implement here
-
+    public void displayStatistics(String statistics) {
+        System.out.println("\nStatistics: ");
+        System.out.println(statistics);
     }
 
-    public void printCombatResult() {
-        // TODO implement here
-
-    }
-
-    public void displayStats() {
-        // TODO implement here
-
-    }
-
+    /*
     public boolean validatePersistence() {
         File file = new File("data/characters.json");
         if (file.exists() && file.canRead()) {
@@ -161,6 +197,8 @@ public class UI {
             return false;
         }
     }
+
+     */
 
 
 }
