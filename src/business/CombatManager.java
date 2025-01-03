@@ -1,49 +1,80 @@
 package business;
 
 import business.entities.Character;
+import business.entities.Team;
 
 public class CombatManager {
 
-    // Attack action
-    public void executeAttack(Character attacker, Character defender) {
-        // Calculate attack damage
-        double attackDamage = attacker.calculateAttack();
+    // Execute a combat turn between two teams
+    public void executeCombat(Team teamOne, Team teamTwo) {
+        System.out.println("Combat Start: " + teamOne.getName() + " vs " + teamTwo.getName());
 
-        // Calculate final damage for defender
-        double finalDamage = defender.calculateFinalDamage(attackDamage);
-
-        // Apply damage to defender
-        defender.takeDamage(finalDamage);
-
-        // Handle degradation of equipment
-        degradeEquipment(attacker, defender);
+        // Perform attacks until one team is defeated
+        while (!isTeamDefeated(teamOne) && !isTeamDefeated(teamTwo)) {
+            executeTurn(teamOne, teamTwo);
+            executeTurn(teamTwo, teamOne); // Both teams attack in turns
+        }
 
         // Display results
+        displayCombatResult(teamOne, teamTwo);
+    }
+
+    // Simulate a single turn
+    private void executeTurn(Team attackers, Team defenders) {
+        for (Character attacker : attackers.getMembers()) {
+            if (!attacker.isKO()) { // Only active characters can attack
+                for (Character defender : defenders.getMembers()) {
+                    if (!defender.isKO()) {
+                        attack(attacker, defender);
+                        break; // Attack one defender at a time
+                    }
+                }
+            }
+        }
+    }
+
+    // Attack logic between two characters
+    private void attack(Character attacker, Character defender) {
+        double attackDamage = attacker.calculateAttack();
+        double finalDamage = defender.calculateFinalDamage(attackDamage);
+
+        defender.takeDamage(finalDamage);
+
+        // Display attack details
         System.out.println(attacker.getName() + " attacks " + defender.getName() +
-                " for " + finalDamage + " damage.");
+                " for " + finalDamage + " damage!");
+
         if (defender.isKO()) {
             System.out.println(defender.getName() + " is KO!");
         }
     }
 
-    // Degrade weapon and armor durability
-    private void degradeEquipment(Character attacker, Character defender) {
-        // Reduce attacker’s weapon durability
-        if (attacker.getWeapon() != null) {
-            attacker.getWeapon().reduceDurability();
-            if (attacker.getWeapon().isBroken()) {
-                attacker.equipWeapon(null); // Remove broken weapon
-                System.out.println(attacker.getName() + "'s weapon is broken!");
-            }
-        }
+    // Check if a team is defeated
+    public boolean isTeamDefeated(Team team) {
+        return team.getMembers().stream().allMatch(Character::isKO);
+    }
 
-        // Reduce defender’s armor durability
-        if (defender.getArmor() != null) {
-            defender.getArmor().reduceDurability();
-            if (defender.getArmor().isBroken()) {
-                defender.equipArmor(null); // Remove broken armor
-                System.out.println(defender.getName() + "'s armor is broken!");
-            }
+    // Display combat result
+    public void displayCombatResult(Team teamOne, Team teamTwo) {
+        System.out.println("Combat Result:");
+        displayTeamStatus(teamOne);
+        displayTeamStatus(teamTwo);
+
+        if (isTeamDefeated(teamOne) && isTeamDefeated(teamTwo)) {
+            System.out.println("It's a tie! Both teams are KO.");
+        } else if (isTeamDefeated(teamOne)) {
+            System.out.println(teamTwo.getName() + " wins!");
+        } else {
+            System.out.println(teamOne.getName() + " wins!");
         }
+    }
+
+    // Display team status
+    private void displayTeamStatus(Team team) {
+        System.out.println("Team: " + team.getName());
+        team.getMembers().forEach(member -> {
+            System.out.print(member.getName() + " - ");
+            System.out.println(member.isKO() ? "KO" : "Active");
+        });
     }
 }

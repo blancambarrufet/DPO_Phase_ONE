@@ -4,6 +4,7 @@ import business.entities.Member;
 import business.entities.Team;
 import persistance.TeamDAO;
 import persistance.exceptions.PersistanceException;
+import persistance.json.TeamJsonDAO;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,28 +14,79 @@ public class TeamManager {
     private final TeamDAO teamDAO;
     private List<Team> teams;
 
-    // Constructor with dependency injection
-    public TeamManager(TeamDAO teamDAO) {
-        this.teamDAO = teamDAO;
-        this.teams = new ArrayList<>();
+    public TeamManager() throws PersistanceException {
+        this.teamDAO = new TeamJsonDAO(); // Default path
+        loadTeams(); // Load teams when initialized
     }
 
-    // Validate persistence source
-    public void validatePersistenceSource() throws PersistanceException {
-        if (!teamDAO.isFileOk()) {
-            throw new PersistanceException("The teams.json file can't be accessed.");
+    // Constructor with dependency injection
+    public TeamManager(TeamDAO teamDAO) throws PersistanceException {
+        this.teamDAO = teamDAO;
+        loadTeams(); // Load teams when initialized
+    }
+
+    // Get all teams
+    public List<Team> getTeams() {
+        return teams;
+    }
+
+    // Create a new team
+    public void createTeam(Team newTeam) throws PersistanceException {
+        // Check if team name is unique
+        for (Team team : teams) {
+            if (team.getName().equalsIgnoreCase(newTeam.getName())) {
+                System.out.println("Team name already exists!");
+                return;
+            }
+        }
+
+        // Add team and save to file
+        teams.add(newTeam);
+        saveTeams();
+        System.out.println("Team " + newTeam.getName() + " created successfully.");
+    }
+
+    // Delete a team by name
+    public void deleteTeam(String teamName) throws PersistanceException {
+        boolean removed = teams.removeIf(team -> team.getName().equalsIgnoreCase(teamName));
+
+        if (removed) {
+            saveTeams();
+            System.out.println("Team " + teamName + " deleted successfully.");
+        } else {
+            System.out.println("Team not found.");
         }
     }
 
-    // Load teams from DAO
-    public void loadTeams() throws PersistanceException {
-        this.teams = teamDAO.loadTeams(); // Fetch teams from JSON file
+    // Display all teams
+    public void displayTeams() {
+        if (teams.isEmpty()) {
+            System.out.println("No teams available.");
+        } else {
+            for (Team team : teams) {
+                System.out.println("Team: " + team.getName());
+                System.out.println("Members: ");
+                team.getMembers().forEach(member ->
+                        System.out.println("\tCharacter ID: " + member.getCharacterId() +
+                                ", Strategy: " + member.getStrategy()));
+            }
+        }
     }
 
-    // Save teams to DAO
-    public void saveTeams() throws PersistanceException {
-        teamDAO.saveTeams(teams); // Save the current list of teams to JSON
+    // Check if a team exists by name
+    public boolean teamExists(String teamName) {
+        return teams.stream().anyMatch(team -> team.getName().equalsIgnoreCase(teamName));
     }
+
+    // Save all teams to the persistence source
+    private void saveTeams() throws PersistanceException {
+        teamDAO.saveTeams(teams);
+    }
+
+    private void loadTeams() throws PersistanceException {
+        teams = teamDAO.loadTeams();
+    }
+
 
     // Add a new team
     public void addTeam(Team team) throws PersistanceException {

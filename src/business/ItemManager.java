@@ -3,11 +3,18 @@ package business;
 import business.entities.Item;
 import persistance.ItemDAO;
 import persistance.exceptions.PersistanceException;
+import persistance.json.ItemJsonDAO;
+
 import java.util.List;
 
 public class ItemManager {
 
     private final ItemDAO itemDAO;
+
+    public ItemManager() throws PersistanceException {
+        this.itemDAO = new ItemJsonDAO();
+    }
+
 
     public ItemManager(ItemDAO itemDAO) {
         this.itemDAO = itemDAO;

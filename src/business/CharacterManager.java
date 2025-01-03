@@ -3,12 +3,17 @@ package business;
 import business.entities.Character;
 import persistance.CharacterDAO;
 import persistance.exceptions.PersistanceException;
-
+import persistance.json.CharacterJsonDAO;
 import java.util.*;
 
 
 public class CharacterManager {
     private final CharacterDAO characterDAO;
+
+    // Default Constructor - Creates DAO internally
+    public CharacterManager() throws PersistanceException {
+        this.characterDAO = new CharacterJsonDAO(); // Default path
+    }
 
     public CharacterManager(CharacterDAO characterDAO) {
         this.characterDAO = characterDAO;

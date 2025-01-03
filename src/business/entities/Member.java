@@ -2,7 +2,7 @@ package business.entities;
 
 public class Member {
     private int characterID;
-    private String strategy; //Not sure if this should be a string o...?
+    private String strategy;
 
 
     public enum Strategy { //THIS SHOULD BE IN A CLASS ENUM
@@ -20,5 +20,11 @@ public class Member {
 
     public String getStrategy() { return strategy; }
     public void setStrategy(String strategy) { this.strategy = strategy; }
+    // Display Member Info
+    public void displayInfo() {
+        System.out.println("Character ID: " + characterID + ", Strategy: " + strategy);
+    }
+
+
 
 }

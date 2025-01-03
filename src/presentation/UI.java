@@ -68,6 +68,33 @@ public class UI {
         return null;
     }
 
+    public TeamManagementMenu printTeamMenu() {
+        int option = 0;
+        do {
+            System.out.println("\t1) Create Team");
+            System.out.println("\t2) List Teams");
+            System.out.println("\t3) Delete Team");
+            System.out.println("\t4) Back");
+            System.out.println();
+
+            String select = scanner.nextLine();
+            option = Integer.parseInt(select);
+
+            switch (option) {
+                case 1:
+                    return TeamManagementMenu.CREATE_TEAM;
+                case 2:
+                    return TeamManagementMenu.LIST_TEAM;
+                case 3:
+                    return TeamManagementMenu.DELETE_TEAM;
+                case 4:
+                    return TeamManagementMenu.BACK;
+                default:
+                    System.out.println("(ERROR) Invalid option.");
+            }
+        } while (option != 4);
+        return null;
+    }
 
     public void executeMenuSelection() {
         // TODO implement here
@@ -79,13 +106,6 @@ public class UI {
         // TODO implement here
         return "";
     }
-
-
-    public TeamManagementMenu printTeamMenu() {
-        // TODO implement here
-        return null;
-    }
-
 
     public String requestCharacterInfo() {
         // TODO implement here
@@ -128,5 +148,19 @@ public class UI {
         // TODO implement here
 
     }
+
+    public boolean validatePersistence() {
+        File file = new File("data/characters.json");
+        if (file.exists() && file.canRead()) {
+            System.out.println("Files OK.");
+            System.out.println("Starting program... ");
+            return true;
+        } else {
+            System.out.println("Error: The characters.json file can’t be accessed.");
+            System.out.println("Shutting down...");
+            return false;
+        }
+    }
+
 
 }
