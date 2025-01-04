@@ -3,8 +3,6 @@ package presentation;
 import business.entities.Item;
 import business.entities.Character;
 import business.entities.Team;
-
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -12,9 +10,7 @@ public class UI {
 
     Scanner scanner = new Scanner(System.in);
 
-    public boolean validatePersistence(boolean isFileOk) {
-        // TODO implement here
-
+    public boolean validatePersistence(boolean charactersOk, boolean itemsOk) {
         System.out.println("  ___                      _    ___     ___         _ ");
         System.out.println(" / __|_  _ _ __  ___ _ _  | |  / __|   | _ )_ _ ___| |");
         System.out.println(" \\__ \\ || | '_ \\/ -_) '_| | |__\\__ \\_  | _ \\ '_/ _ \\_|");
@@ -25,15 +21,21 @@ public class UI {
         System.out.println("Welcome to Super LS, Bro! Simulator.");
         System.out.println("Verifying local files...");
 
-        if (isFileOk) {
+        // Check errors
+        if (!charactersOk && !itemsOk) {
+            System.out.println("Error: The characters.json and items.json files can’t be accessed.");
+        } else if (!charactersOk) {
+            System.out.println("Error: The characters.json file can’t be accessed.");
+        } else if (!itemsOk) {
+            System.out.println("Error: The items.json file can’t be accessed.");
+        } else {
             System.out.println("Files OK.");
             System.out.println("Starting program... \n");
-            return true;
-        } else {
-            System.out.println("Error: The persistence source can't be accessed.");
-            System.out.println("Shutting down...");
-            return false;
+            return true; // Continue if files are OK
         }
+
+        System.out.println("Shutting down...");
+        return false; // Stop if errors exist
     }
 
 

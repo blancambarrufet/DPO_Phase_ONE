@@ -20,10 +20,8 @@ public class CharacterManager {
     }
 
     // Validate the persistence source through the DAO
-    public void validatePersistenceSource() throws PersistanceException {
-        if (!characterDAO.isFileOk()) {
-            throw new PersistanceException("The characters.json file can't be accessed.");
-        }
+    public boolean validatePersistenceSource() {
+        return characterDAO.validateFile();
     }
 
     // Retrieve all characters

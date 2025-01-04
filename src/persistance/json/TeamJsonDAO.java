@@ -21,9 +21,22 @@ public class TeamJsonDAO implements TeamDAO {
 
     public TeamJsonDAO() {
         this.gson = new Gson();
+        initializeFile();
     }
 
-    // Check if file exists and is readable
+    // Initialize file with empty structure if missing
+    private void initializeFile() {
+        Path filePath = Path.of(PATH);
+        if (!Files.exists(filePath)) {
+            try (FileWriter writer = new FileWriter(PATH)) {
+                gson.toJson(List.of(), writer); // Empty JSON array
+            } catch (IOException e) {
+                throw new RuntimeException("Error initializing teams.json file.", e);
+            }
+        }
+    }
+
+    @Override
     public boolean isFileOk() {
         Path filePath = Path.of(PATH);
         return Files.exists(filePath) && Files.isReadable(filePath);

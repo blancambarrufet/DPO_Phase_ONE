@@ -3,7 +3,7 @@ package business.entities;
 import java.util.Random;
 
 public class Character {
-    private int id;
+    private long id;
     private String name;
     private int weight;
     private double damageTaken;
@@ -11,7 +11,7 @@ public class Character {
     private Armor armor;
     private boolean defending;
 
-    public Character(int id, String name, int weight) {
+    public Character(long id, String name, int weight) {
         this.id = id;
         this.name = name;
         this.weight = weight;
@@ -21,7 +21,7 @@ public class Character {
         this.defending = false;
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
     public  String getName() {

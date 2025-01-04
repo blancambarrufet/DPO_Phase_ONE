@@ -2,6 +2,7 @@ package persistance.json;
 
 import business.entities.Character;
 import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 import com.google.gson.stream.JsonReader;
 import persistance.CharacterDAO;
 import persistance.exceptions.PersistanceException;
@@ -25,11 +26,25 @@ public class CharacterJsonDAO implements CharacterDAO {
         this.gson = new Gson();
     }
 
-    // Check if the file exists
-    public boolean isFileOk() {
-        Path filePath = Path.of(PATH);
-        return Files.exists(filePath) && Files.isReadable(filePath);
+    @Override
+    public boolean validateFile() {
+        try {
+            // Check if the file exists
+            if (!Files.exists(Path.of(PATH))) {
+                return false; // File is missing
+            }
+
+            // Validate JSON structure
+            JsonReader reader = new JsonReader(new FileReader(PATH));
+            gson.fromJson(reader, Character[].class); // Attempt parsing
+            return true; // If no exception, file is valid
+
+        } catch (JsonSyntaxException | IOException e) {
+            return false; // File is invalid or unreadable
+        }
     }
+
+
 
     @Override
     public List<Character> loadAllCharacters() throws PersistanceException {

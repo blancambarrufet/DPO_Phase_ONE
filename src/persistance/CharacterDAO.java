@@ -9,5 +9,5 @@ public interface CharacterDAO {
 
     void saveCharacters(List<Character> characters);
 
-    boolean isFileOk();
+    boolean validateFile();
 }

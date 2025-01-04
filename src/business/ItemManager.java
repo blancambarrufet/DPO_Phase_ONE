@@ -20,11 +20,8 @@ public class ItemManager {
         this.itemDAO = itemDAO;
     }
 
-    // Validate persistence
-    public void validatePersistenceSource() throws PersistanceException {
-        if (!itemDAO.isFileOk()) {
-            throw new PersistanceException("The items.json file can't be accessed.");
-        }
+    public boolean validatePersistenceSource() {
+        return itemDAO.validateFile();
     }
 
     // Retrieve all items

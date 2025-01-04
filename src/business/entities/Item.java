@@ -2,12 +2,12 @@ package business.entities;
 
 public abstract class Item  {
     private String name;
-    private int id;
+    private long id;
     private int power;
     private int durability;
     private String type;
 
-    public Item(String name, int id, int power, int durability) {
+    public Item(String name, long id, int power, int durability) {
         this.name = name;
         this.id = id;
         this.power = power;
@@ -22,11 +22,11 @@ public abstract class Item  {
         this.name = name;
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 

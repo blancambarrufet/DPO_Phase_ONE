@@ -2,18 +2,15 @@ package business.entities;
 
 public class Armor extends Item {
 
-    private int defenseValue;
-
-    public Armor(String name, int id, int power, int durability, int defenseValue) {
+    public Armor(long id, String name, int power, int durability) {
         super(name, id, power, durability);
-        this.defenseValue = defenseValue;
     }
 
     public int getDefenseValue() {
-        return defenseValue;
+        return getPower();
     }
 
     public void setDefenseValue(int defenseValue) {
-        this.defenseValue = defenseValue;
+        setPower(defenseValue);;
     }
 }

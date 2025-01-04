@@ -61,16 +61,25 @@ public class Controller {
     }
 
 
-    // Validate Persistence Files
     private boolean validatePersistence() {
         try {
-            characterManager.validatePersistenceSource(); // Check characters.json
-            statisticsManager.displayStatistics(); // Verify stats loading
-            return ui.validatePersistence(true); // Display success message
-        } catch (PersistanceException e) {
-            return ui.validatePersistence(false); // Display error message
+            // Validate critical files
+            boolean charactersOk = characterManager.validatePersistenceSource(); // Characters.json
+            boolean itemsOk = itemManager.validatePersistenceSource();          // Items.json
+
+            // Initialize optional files (Teams & Stats)
+            teamManager.getTeams();                        // Teams
+            statisticsManager.displayStatistics();         // Stats
+
+            // Check and return based on UI validation
+            return ui.validatePersistence(charactersOk, itemsOk);
+        } catch (Exception e) {
+            e.printStackTrace(); // Log error for debugging
+            return ui.validatePersistence(false, false); // Graceful shutdown
         }
     }
+
+
 
     // List All Characters
     private void listCharacters() {
