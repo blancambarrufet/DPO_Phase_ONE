@@ -1,7 +1,7 @@
 package business.entities;
 
 public class Member {
-    private int characterID;
+    private long id;
     private String strategy;
 
 
@@ -9,22 +9,16 @@ public class Member {
         BALANCED, AGGRESSIVE, DEFENSIVE
     }
 
-    public Member(int characterID, String strategy) {
-        this.characterID = characterID;
+    public Member(long id, String strategy) {
+        this.id = id;
         this.strategy = strategy;
     }
 
     // Getters and Setters
-    public int getCharacterId() { return characterID; }
-    public void setCharacterId(int characterId) { this.characterID = characterId; }
+    public long getCharacterId() { return id; }
+    public void setCharacterId(long characterId) { this.id = characterId; }
 
     public String getStrategy() { return strategy; }
     public void setStrategy(String strategy) { this.strategy = strategy; }
-    // Display Member Info
-    public void displayInfo() {
-        System.out.println("Character ID: " + characterID + ", Strategy: " + strategy);
-    }
-
-
 
 }

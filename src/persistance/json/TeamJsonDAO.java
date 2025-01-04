@@ -2,6 +2,7 @@ package persistance.json;
 
 import business.entities.Team;
 import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 import com.google.gson.stream.JsonReader;
 import persistance.TeamDAO;
 import persistance.exceptions.PersistanceException;
@@ -44,11 +45,10 @@ public class TeamJsonDAO implements TeamDAO {
 
     @Override
     public List<Team> loadTeams() throws PersistanceException {
-        try {
-            JsonReader reader = new JsonReader(new FileReader(PATH));
+        try (JsonReader reader = new JsonReader(new FileReader(PATH))) {
             Team[] teamsArray = gson.fromJson(reader, Team[].class);
             return Arrays.asList(teamsArray);
-        } catch (IOException e) {
+        } catch (JsonSyntaxException | IOException e) {
             throw new PersistanceException("Couldn't read teams file: " + PATH, e);
         }
     }

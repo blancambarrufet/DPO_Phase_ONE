@@ -112,7 +112,6 @@ public class Controller {
         return associatedTeams;
     }
 
-
     // List All Items
     private void listItems() {
         try {

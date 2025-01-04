@@ -1,6 +1,5 @@
 package business;
 
-import business.entities.Member;
 import business.entities.Team;
 import persistance.TeamDAO;
 import persistance.exceptions.PersistanceException;
@@ -85,6 +84,17 @@ public class TeamManager {
 
     private void loadTeams() throws PersistanceException {
         teams = teamDAO.loadTeams();
+        if (teams == null || teams.isEmpty()) {
+            System.out.println("DEBUG: No teams loaded from JSON file.");
+        } else {
+            System.out.println("DEBUG: Teams loaded -> " + teams.size());
+            for (Team team : teams) {
+                System.out.println("DEBUG: Team - " + team.getName() + ", Members -> " + team.getMembers().size());
+            }
+        }
+        if (teams == null) { // If loading fails, initialize an empty list
+            teams = new ArrayList<>();
+        }
     }
 
 
