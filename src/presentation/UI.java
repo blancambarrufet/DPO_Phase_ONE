@@ -4,6 +4,7 @@ import business.entities.Item;
 import business.entities.Character;
 import business.entities.Team;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 public class UI {
@@ -118,10 +119,23 @@ public class UI {
         return scanner.nextLine().trim();
     }
 
-    public String requestCharacterInfo() {
-        // TODO implement here
-        System.out.print("\nEnter Character Name: ");
-        return scanner.nextLine().trim();
+    public int requestCharacterOption(int optionThreshold) {
+        int option;
+
+        do {
+            System.out.print("\nChoose an option: ");
+            option = Integer.parseInt(scanner.nextLine());
+
+            if (option >= 0 && option <= optionThreshold) {
+                return option;
+            }
+            else {
+                System.out.println("(ERROR) Invalid option. Please select a valid number.");
+            }
+
+        } while (option <= optionThreshold && option >= 0);
+
+        return 0;
     }
 
 
@@ -162,17 +176,42 @@ public class UI {
         }
     }
 
-    // Display Character Information
-    public void displayCharacters(ArrayList<Character> characters) {
+    public int displayCharactersList(ArrayList<Character> characters) {
         if (characters.isEmpty()) {
             System.out.println("No characters available.");
+            return 0; // Return 0 to go back
         } else {
-            System.out.println("\nCharacters:");
-            for (Character character : characters) {
-                character.displayInfo();
+            for (int i = 0; i < characters.size(); i++) {
+                System.out.println((i + 1) + ") " + characters.get(i).getName());
             }
+            System.out.println("\n0) Back");
+
+            // Ask the user to select an option
+            return requestCharacterOption(characters.size());
         }
     }
+
+    public void displayCharacterDetails(Character character, List<String> teams) {
+        System.out.println("\n\tID: " + "\t " + character.getId());
+        System.out.println("\tNAME:    " + character.getName());
+        System.out.println("\tWEIGHT:  " + character.getWeight() + " kg");
+
+        // Display teams
+        System.out.println("\tTEAMS:");
+        if (teams.isEmpty()) {
+            System.out.println("\t\t\tNo teams related.");
+        }
+        else {
+            for (String team : teams) {
+                System.out.println("\t\t\t- " + team);
+            }
+        }
+
+        System.out.print("\n<Press any key to continue...>");
+        scanner.nextLine();
+    }
+
+
 
     public String requestCombatTeam() {
         // TODO implement here

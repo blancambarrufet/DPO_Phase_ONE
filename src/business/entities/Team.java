@@ -32,20 +32,12 @@ public class Team {
         return members.size() == 4;
     }
 
-    public boolean hasMember(int characterId) {
+    public boolean hasMember(long characterId) {
         return members.stream().anyMatch(member -> member.getCharacterId() == characterId);
     }
 
     public void removeMember(Member member) {
         members.remove(member);
-    }
-
-    // Display team information
-    public void displayTeamInfo() {
-        System.out.println("Team: " + name);
-        for (Member member : members) {
-            System.out.println("\tMember ID: " + member.getCharacterId() + ", Strategy: " + member.getStrategy());
-        }
     }
 
 

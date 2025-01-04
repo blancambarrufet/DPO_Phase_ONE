@@ -6,6 +6,7 @@ import business.entities.Team;
 import persistance.exceptions.PersistanceException;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class Controller {
 
@@ -81,15 +82,36 @@ public class Controller {
 
 
 
-    // List All Characters
-    private void listCharacters() {
-        try {
-            ArrayList<Character> characters = new ArrayList<>(characterManager.getAllCharacters());
-            ui.displayCharacters(characters);
-        } catch (PersistanceException e) {
-            System.out.println("Error retrieving characters: " + e.getMessage());
+    public void listCharacters() {
+        // Fetch characters and teams from the business layer
+        ArrayList<Character> characters = new ArrayList<>(characterManager.getAllCharacters());
+        ArrayList<Team> teams = new ArrayList<>(teamManager.getTeams());
+
+        // Ask UI to display the characters and get the selected option
+        int selectedOption = ui.displayCharactersList(characters);
+
+        if (selectedOption == 0) {
+            return; // Go back to the main menu
         }
+
+        // Fetch selected character and associated teams
+        Character selectedCharacter = characters.get(selectedOption - 1);
+        List<String> associatedTeams = findTeamsForCharacter(selectedCharacter.getId(), teams);
+
+        // Display character details via the UI
+        ui.displayCharacterDetails(selectedCharacter, associatedTeams);
     }
+
+    private List<String> findTeamsForCharacter(long characterId, ArrayList<Team> teams) {
+        List<String> associatedTeams = new ArrayList<>();
+        for (Team team : teams) {
+            if (team.hasMember(characterId)) { // Business logic in the Team class
+                associatedTeams.add(team.getName());
+            }
+        }
+        return associatedTeams;
+    }
+
 
     // List All Items
     private void listItems() {

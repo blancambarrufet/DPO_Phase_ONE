@@ -126,10 +126,4 @@ public class Character {
         return knockOutThreshold < (damageTaken * 100);
     }
 
-    // Display Character Info
-    public void displayInfo() {
-        System.out.println("ID: " + id + ", Name: " + name + ", Weight: " + weight +
-                ", Damage: " + damageTaken + ", Status: " + (isKO() ? "KO" : "Active"));
-    }
-
 }
