@@ -114,7 +114,6 @@ public class UI {
     }
 
     public String requestTeamInfo() {
-        // TODO implement here
         System.out.print("\nPlease enter the team's name: ");
         return scanner.nextLine().trim();
     }
@@ -139,25 +138,49 @@ public class UI {
     }
 
 
-    public String requestItemInfo() {
-        // TODO implement here
-        System.out.print("\nEnter Item Name: ");
-        return scanner.nextLine().trim();
+    public int requestItemOption(int optionThreshold) {
+        int option;
+
+        do {
+            System.out.print("\nChoose an option: ");
+            option = Integer.parseInt(scanner.nextLine());
+
+            if (option >= 0 && option <= optionThreshold) {
+                return option;
+            }
+            else {
+                System.out.println("(ERROR) Invalid option. Please select a valid number.");
+            }
+
+        } while (option <= optionThreshold && option >= 0);
+
+        return 0;
     }
 
-    public void displayItems(ArrayList<Item> items) {
+    public int displayItemsList(ArrayList<Item> items) {
         if (items.isEmpty()) {
             System.out.println("No items available.");
+            return 0;
         } else {
-            System.out.println("\nItems:");
-            for (Item item : items) {
-                System.out.println("ID:        " + item.getId());
-                System.out.println("NAME:      " + item.getName());
-                System.out.println("POWER:     " + item.getPower());
-                System.out.println("DURABILITY:" + item.getDurability());
-                System.out.println();
+            for (int i = 0; i < items.size(); i++) {
+                System.out.println((i +1) + ") " + items.get(i).getName());
             }
+            System.out.println("\n0) Back");
+
+            return requestItemOption(items.size());
         }
+    }
+
+    public void displayItemDetails(Item item) {
+        System.out.println("\n\tID: " + "\t " + item.getId());
+        System.out.println("\tNAME:    " + item.getName());
+        System.out.println("\tCLASS:  " + item.getClass().getName());
+        System.out.println("\tPOWER:  " + item.getPower());
+        System.out.println("\tDURABILITY:  " + item.getDurability());
+
+
+        System.out.print("\n<Press any key to continue...>");
+        scanner.nextLine();
     }
 
     // Display Teams Information
@@ -223,22 +246,5 @@ public class UI {
         System.out.println("\nStatistics: ");
         System.out.println(statistics);
     }
-
-    /*
-    public boolean validatePersistence() {
-        File file = new File("data/characters.json");
-        if (file.exists() && file.canRead()) {
-            System.out.println("Files OK.");
-            System.out.println("Starting program... ");
-            return true;
-        } else {
-            System.out.println("Error: The characters.json file can’t be accessed.");
-            System.out.println("Shutting down...");
-            return false;
-        }
-    }
-
-     */
-
 
 }

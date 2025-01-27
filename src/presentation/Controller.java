@@ -2,6 +2,7 @@ package presentation;
 
 import business.*;
 import business.entities.Character;
+import business.entities.Item;
 import business.entities.Team;
 import persistance.exceptions.PersistanceException;
 
@@ -87,7 +88,7 @@ public class Controller {
         ArrayList<Character> characters = new ArrayList<>(characterManager.getAllCharacters());
         ArrayList<Team> teams = new ArrayList<>(teamManager.getTeams());
 
-        // Ask UI to display the characters and get the selected option
+        //Ask UI to display the characters and get the selected option
         int selectedOption = ui.displayCharactersList(characters);
 
         if (selectedOption == 0) {
@@ -115,8 +116,16 @@ public class Controller {
     // List All Items
     private void listItems() {
         try {
-            ArrayList<business.entities.Item> items = new ArrayList<>(itemManager.getAllItems());
-            ui.displayItems(items);
+            ArrayList<Item> items = new ArrayList<>(itemManager.getAllItems());
+            int selectedItemOption = ui.displayItemsList(items);
+
+            if (selectedItemOption == 0) {
+                return;
+            }
+
+            Item selectedItem = items.get(selectedItemOption - 1);
+
+            ui.displayItemDetails(selectedItem);
         } catch (PersistanceException e) {
             System.out.println("Error retrieving items: " + e.getMessage());
         }
@@ -147,7 +156,7 @@ public class Controller {
             String teamName = ui.requestTeamInfo();
 
             if (teamManager.teamExists(teamName)) {
-                System.out.println("We are sorry " + teamName + " is taken.");
+                System.out.println("\nWe are sorry '" + teamName + "' is taken.");
                 return;
             }
 
