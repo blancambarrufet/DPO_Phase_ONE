@@ -66,4 +66,28 @@ public class CharacterManager {
     }
 
 
+    public Character findCharacter(String input) {
+        try {
+            List<Character> characters = characterDAO.loadAllCharacters();
+
+            // First, check if the input matches any character ID
+            for (Character character : characters) {
+                if (String.valueOf(character.getId()).equals(input)) {
+                    return character;
+                }
+            }
+
+            // If not found by ID, check by name
+            for (Character character : characters) {
+                if (character.getName().equalsIgnoreCase(input)) {
+                    return character;
+                }
+            }
+
+        } catch (PersistanceException e) {
+            System.out.println("Error retrieving character: " + e.getMessage());
+        }
+
+        return null;
+    }
 }

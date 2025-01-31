@@ -4,7 +4,6 @@ public class Member {
     private long id;
     private String strategy;
 
-
     public enum Strategy { //THIS SHOULD BE IN A CLASS ENUM
         BALANCED, AGGRESSIVE, DEFENSIVE
     }

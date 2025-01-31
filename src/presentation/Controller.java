@@ -155,17 +155,63 @@ public class Controller {
             String teamName = ui.requestTeamInfo();
 
             if (teamManager.teamExists(teamName)) {
-                System.out.println("\nWe are sorry '" + teamName + "' is taken.");
+                ui.errorCreateTeam(teamName);
                 return;
             }
 
+
+            String Character1 = ui.requestCharacterName(1);
+            String strategy1 = ui.requestStrategy(1);
+
+            String Character2 = ui.requestCharacterName(2);
+            String strategy2 = ui.requestStrategy(2);
+
+            String Character3 = ui.requestCharacterName(3);
+            String strategy3 = ui.requestStrategy(3);
+
+            String Character4 = ui.requestCharacterName(4);
+            String strategy4 = ui.requestStrategy(4);
+
             Team newTeam = new Team(teamName);
-            teamManager.createTeam(newTeam);
+
+            Character character1 =  characterManager.findCharacter(Character1);
+            if (character1 == null) {
+                ui.errorCreateTeam(Character1);
+                return;
+            }
+            Member member1 = new Member(character1.getId(), strategy1);
+
+            Character character2 =  characterManager.findCharacter(Character2);
+            if (character2 == null) {
+                ui.errorCreateTeam(Character2);
+                return;
+            }
+            Member member2 =new Member(character2.getId(), strategy2);
+
+            Character character3 =  characterManager.findCharacter(Character3);
+            if (character3 == null) {
+                ui.errorCreateTeam(Character3);
+                return;
+            }
+            Member member3 = new Member(character3.getId(), strategy3);
+
+            Character character4 =  characterManager.findCharacter(Character4);
+            if (character4 == null) {
+                ui.errorCreateTeam(Character4);
+                return;
+            }
+            Member member4 = new Member(character4.getId(), strategy4);
+
+            newTeam.addMember(member1);
+            newTeam.addMember(member2);
+            newTeam.addMember(member3);
+            newTeam.addMember(member4);
+
+            teamManager.addTeam(newTeam);
         } catch (PersistanceException e) {
             System.out.println("Error creating team: " + e.getMessage());
         }
     }
-
     // List All Teams
     private void listTeams() {
         teamManager.displayTeams();
@@ -220,7 +266,6 @@ public class Controller {
             System.out.println("\nCombat ready!");
             System.out.println("<Press any key to continue...>");
             ui.scanner.nextLine(); // Esto se puede hacer?
-
 
         } catch (Exception e) {
             System.out.println("Error during combat simulation: " + e.getMessage());

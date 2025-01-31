@@ -114,10 +114,36 @@ public class UI {
         return null;
     }
 
+
+    //*************************************************
+    //********Functions for 2.1) Team Creation ********
+    //*************************************************
+
     public String requestTeamInfo() {
         System.out.print("\nPlease enter the team's name: ");
         return scanner.nextLine().trim();
     }
+
+
+    public String requestCharacterName(int index) {
+        System.out.print("\nPlease enter name or id for character #" + index +" : ");
+        return scanner.nextLine().trim();
+    }
+
+    public String requestStrategy(int index) {
+        System.out.println("Game strategy for character #" + index + "?");
+        System.out.print("\t1) Balanced");
+        System.out.println("\nChoose an option: ");
+        return scanner.nextLine();
+    }
+
+    public void errorCreateTeam(String name){
+        System.out.println("\nWe are sorry '" + name + "' is not in the system.");
+    }
+
+    //*************************************************
+    //********Functions for 1) List Characters ********
+    //*************************************************
 
     public int requestCharacterOption(int optionThreshold) {
         int option;

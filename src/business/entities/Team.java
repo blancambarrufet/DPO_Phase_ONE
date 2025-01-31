@@ -22,11 +22,20 @@ public class Team {
         if (members.size() < 4) {
             members.add(member);
         } else {
-
             //this probably add-in UI
             System.out.println("Team is full. Cannot add more members.");
         }
     }
+
+
+
+    public void addMember(String Id) {
+        //search in the DB for ID
+        //if ID not found look for name
+        //if name not found return error
+
+    }
+
 
     public boolean isFull() {
         return members.size() == 4;
