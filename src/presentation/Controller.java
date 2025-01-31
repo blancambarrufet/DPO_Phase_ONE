@@ -1,9 +1,8 @@
 package presentation;
 
 import business.*;
+import business.entities.*;
 import business.entities.Character;
-import business.entities.Item;
-import business.entities.Team;
 import persistance.exceptions.PersistanceException;
 
 import java.util.ArrayList;
@@ -185,38 +184,62 @@ public class Controller {
     // Simulate Combat
     private void simulateCombat() {
         try {
-            // Request team names
-            String teamOneName = ui.requestCombatTeam();
-            String teamTwoName = ui.requestCombatTeam();
+            System.out.println("\nStarting simulation...");
 
-            // Check if teams exist
-            if (!teamManager.teamExists(teamOneName) || !teamManager.teamExists(teamTwoName)) {
-                System.out.println("One or both teams do not exist!");
+            //Convert List<Team> to ArrayList<Team>
+            ArrayList<Team> availableTeams = new ArrayList<>(teamManager.getTeams());
+
+            ui.displayTeamList(availableTeams);
+
+            //checking the number of teams available
+            if (availableTeams.size() < 2) {
+                System.out.println("(ERROR) Not enough teams to start a combat.");
                 return;
             }
 
-            // Retrieve teams
-            Team teamOne = getTeamByName(teamOneName);
-            Team teamTwo = getTeamByName(teamTwoName);
+            int teamIndex1 = ui.requestCombatTeam(1, availableTeams.size()) - 1;
+            int teamIndex2 = ui.requestCombatTeam(2, availableTeams.size()) - 1;
 
-            // Simulate combat
-            combatManager.executeCombat(teamOne, teamTwo);
+            Team team1 = availableTeams.get(teamIndex1);
+            Team team2 = availableTeams.get(teamIndex2);
 
-            // Update statistics
-            updateStatistics(teamOne, teamTwo);
+            System.out.println("\nInitializing teams...");
+
+            List<Character> team1Characters = getCharactersInTeam(team1);
+            List<Character> team2Characters = getCharactersInTeam(team2);
+
+            List<Weapon> availableWeapons = itemManager.getAllWeapons();
+            List<Armor> availableArmor = itemManager.getAllArmor();
+
+            combatManager.initializeTeams(team1Characters, team2Characters, availableWeapons, availableArmor);
+
+            ui.displayTeamDetails(team1,1, team1Characters);
+            ui.displayTeamDetails(team2,2, team2Characters);
+
+
+            System.out.println("\nCombat ready!");
+            System.out.println("<Press any key to continue...>");
+            ui.scanner.nextLine(); // Esto se puede hacer?
+
+
         } catch (Exception e) {
             System.out.println("Error during combat simulation: " + e.getMessage());
         }
     }
 
-    // Get Team by Name (Helper Method)
-    private Team getTeamByName(String teamName) {
-        for (Team team : teamManager.getTeams()) {
-            if (team.getName().equalsIgnoreCase(teamName)) {
-                return team;
+
+    private List<Character> getCharactersInTeam(Team team) {
+        List<Character> characters = new ArrayList<>();
+
+        for (Member member : team.getMembers()) {
+            Character character = characterManager.getCharacterID(member.getCharacterId());
+
+            if (character != null) {
+                characters.add(character);
             }
         }
-        return null;
+
+        return characters;
     }
 
     // Update Statistics After Combat

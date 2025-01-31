@@ -1,5 +1,6 @@
 package business;
 
+import business.entities.Character;
 import business.entities.Team;
 import persistance.TeamDAO;
 import persistance.exceptions.PersistanceException;
@@ -120,6 +121,7 @@ public class TeamManager {
     private boolean checkName(String name) {
         return teams.stream().anyMatch(team -> team.getName().equalsIgnoreCase(name));
     }
+
 
     /*
     // Display information about a specific team

@@ -126,4 +126,8 @@ public class Character {
         return knockOutThreshold < (damageTaken * 100);
     }
 
+    public void resetDamage() {
+        this.damageTaken = 0;
+    }
+
 }

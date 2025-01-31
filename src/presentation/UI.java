@@ -2,6 +2,7 @@ package presentation;
 
 import business.entities.Item;
 import business.entities.Character;
+import business.entities.Member;
 import business.entities.Team;
 import java.util.ArrayList;
 import java.util.List;
@@ -236,15 +237,57 @@ public class UI {
 
 
 
-    public String requestCombatTeam() {
-        // TODO implement here
-        System.out.print("\nEnter Team Name for Combat: ");
-        return scanner.nextLine().trim();
+    public int requestCombatTeam(int teamNumber, int maxTeams) {
+        int option = -1;
+        boolean valid = false;
+
+        while (!valid) {
+            try {
+                System.out.print("Choose team #" + teamNumber + ": ");
+                option = Integer.parseInt(scanner.nextLine().trim());
+                if (option > 0 && option <= maxTeams) {
+                    valid = true;
+                }
+                else {
+                    System.out.println("(ERROR) Invalid number. Please choose between 1 and " + maxTeams + ".");
+                }
+            } catch (NumberFormatException e) {
+                System.out.println("(ERROR) Invalid option. Please enter a number.");
+            }
+        }
+
+        return option;
+    }
+
+    public void displayTeamList(ArrayList<Team> teams) {
+        System.out.println("Looking for available teams...\n");
+        if (teams.isEmpty()) {
+            System.out.println("\nNo teams available.\n");
+        }
+        else {
+            for (int i = 0; i < teams.size(); i++) {
+                System.out.println("\t" + (i + 1) + ") " + teams.get(i).getName());
+            }
+            System.out.println();
+        }
+    }
+
+
+    public void displayTeamDetails(Team team, int teamNumber, List<Character> characters) {
+        System.out.println("\n\tTeam #" + teamNumber + " - " + team.getName());
+
+        for (Character character : characters) {
+            System.out.println("\t- " + character.getName());
+            System.out.println("\t\t   Weapon: " + (character.getWeapon() != null ? character.getWeapon().getName() : "None"));
+            System.out.println("\t\t   Armor: " + (character.getArmor() != null ? character.getArmor().getName() : "None"));
+        }
     }
 
     public void displayStatistics(String statistics) {
         System.out.println("\nStatistics: ");
         System.out.println(statistics);
     }
+
+
 
 }

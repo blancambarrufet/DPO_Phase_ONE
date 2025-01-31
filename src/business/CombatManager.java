@@ -1,11 +1,43 @@
 package business;
 
+import business.entities.*;
 import business.entities.Character;
-import business.entities.Team;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class CombatManager {
+
+
+    public void initializeTeams (List<Character> team1Characters, List<Character> team2Characters, List<Weapon> weapons, List<Armor> armors) {
+        Random random = new Random();
+
+        for (Character character : team1Characters) {
+            equipItems(character, weapons,armors, random);
+            character.resetDamage();
+        }
+
+        for (Character character : team2Characters) {
+            equipItems(character, weapons,armors, random);
+            character.resetDamage();
+        }
+
+    }
+
+    private void equipItems(Character character, List<Weapon> weapons, List<Armor> armors, Random random) {
+
+        if (!weapons.isEmpty()) {
+            Weapon randomWeapon = weapons.get(random.nextInt(weapons.size()));
+            character.equipWeapon(randomWeapon);
+        }
+
+        if (!armors.isEmpty()) {
+            Armor randomArmor = armors.get(random.nextInt(armors.size()));
+            character.equipArmor(randomArmor);
+        }
+    }
+
 
     // Execute Combat between Two Teams
     public void executeCombat(Team teamOne, Team teamTwo) {

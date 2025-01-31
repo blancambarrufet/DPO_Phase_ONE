@@ -49,12 +49,20 @@ public class CharacterManager {
         System.out.println("Character not found.");
     }
 
-    // List all characters
-    public void listCharacters() throws PersistanceException {
-        List<Character> characters = getAllCharacters();
-        for (int i = 0; i < characters.size(); i++) {
-            System.out.println(i + ") " + characters.get(i).getName());
+    public Character getCharacterID (long characterID) {
+        try {
+            List<Character> characters = getAllCharacters();
+
+            for (Character character : characters) {
+                if (character.getId() == characterID) {
+                    return character;
+                }
+            }
+        } catch (PersistanceException e) {
+            System.out.println("Error retrieving character: " + e.getMessage());
         }
+
+        return null;
     }
 
 

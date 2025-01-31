@@ -1,10 +1,13 @@
 package business;
 
+import business.entities.Armor;
 import business.entities.Item;
+import business.entities.Weapon;
 import persistance.ItemDAO;
 import persistance.exceptions.PersistanceException;
 import persistance.json.ItemJsonDAO;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ItemManager {
@@ -27,6 +30,28 @@ public class ItemManager {
     // Retrieve all items
     public List<Item> getAllItems() throws PersistanceException {
         return itemDAO.loadItems();
+    }
+
+    public List<Weapon> getAllWeapons() throws PersistanceException {
+        List<Weapon> weapons = new ArrayList<>();
+        for (Item item : itemDAO.loadItems()) {
+            if (item instanceof Weapon) {
+                weapons.add((Weapon) item);
+            }
+        }
+        return weapons;
+    }
+
+    public List<Armor> getAllArmor() {
+        List<Armor> armors = new ArrayList<>();
+
+        for (Item item : itemDAO.loadItems()) {
+            if (item instanceof Armor) {
+                armors.add((Armor) item);
+            }
+        }
+
+        return armors;
     }
 
     // Save items
