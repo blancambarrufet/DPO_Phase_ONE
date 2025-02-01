@@ -9,44 +9,51 @@ import java.util.Random;
 
 public class CombatManager {
 
+    private CharacterManager characterManager;
 
-    public void initializeTeams (List<Character> team1Characters, List<Character> team2Characters, List<Weapon> weapons, List<Armor> armors) {
+    public CombatManager(CharacterManager characterManager) {
+        this.characterManager = characterManager;
+    }
+
+    public void initializeTeams (List<Member> team1Members, List<Member> team2Members, List<Weapon> weapons, List<Armor> armors) {
         Random random = new Random();
 
-        for (Character character : team1Characters) {
-            equipItems(character, weapons,armors, random);
-            character.resetDamage();
+        for (Member member : team1Members) {
+            equipItems(member, weapons,armors, random);
+            member.resetDamage();
         }
 
-        for (Character character : team2Characters) {
-            equipItems(character, weapons,armors, random);
-            character.resetDamage();
+        for (Member member : team2Members) {
+            equipItems(member, weapons,armors, random);
+            member.resetDamage();
         }
 
     }
 
-    private void equipItems(Character character, List<Weapon> weapons, List<Armor> armors, Random random) {
+    private void equipItems(Member member, List<Weapon> weapons, List<Armor> armors, Random random) {
 
         if (!weapons.isEmpty()) {
             Weapon randomWeapon = weapons.get(random.nextInt(weapons.size()));
-            character.equipWeapon(randomWeapon);
+            member.equipWeapon(randomWeapon);
         }
 
         if (!armors.isEmpty()) {
             Armor randomArmor = armors.get(random.nextInt(armors.size()));
-            character.equipArmor(randomArmor);
+            member.equipArmor(randomArmor);
         }
     }
 
 
-    // Execute Combat between Two Teams
+
+    //Execute Combat between Two Teams
     public void executeCombat(Team teamOne, Team teamTwo) {
-        System.out.println("Combat Start: " + teamOne.getName() + " vs " + teamTwo.getName());
+        int round = 1;
 
         // Perform rounds until one team is defeated
         while (!isTeamDefeated(teamOne) && !isTeamDefeated(teamTwo)) {
             executeTurn(teamOne, teamTwo);
             executeTurn(teamTwo, teamOne); // Both teams attack in turns
+            round++;
         }
 
         // Display combat results
@@ -55,23 +62,26 @@ public class CombatManager {
 
     // Execute a Turn for a Team
     private void executeTurn(Team attackers, Team defenders) {
-        /*
-        for (Character attacker : attackers.getMembers()) {
-            if (!attacker.isKO()) { // Only active characters can attack
+
+        Random random = new Random();
+
+        List<Member> atackMember = attackers.getMembers();
+        List<Member> defendMembers = defenders.getMembers();
+        for (Member attacker : atackMember) {
+            if (!attacker.isKO()) {
                 // Find a defender to attack
-                Character defender = selectTarget(defenders.getMembers());
+                Member defender = selectTarget(defendMembers);
                 if (defender != null) {
-                    performAttack(attacker, defender); // Perform the attack
+                    performAttack(attacker, defender); //Perform the attack
                 }
             }
         }
 
-         */
     }
 
     // Select a Target for Attack
-    private Character selectTarget(List<Character> defenders) {
-        for (Character defender : defenders) {
+    private Member selectTarget(List<Member> defenders) {
+        for (Member defender : defenders) {
             if (!defender.isKO()) { // Target first active defender
                 return defender;
             }
@@ -80,7 +90,8 @@ public class CombatManager {
     }
 
     // Perform an Attack Between Characters
-    private void performAttack(Character attacker, Character defender) {
+    private void performAttack(Member attacker, Member defender) {
+
         // Calculate attack and defense values
         double attackDamage = attacker.calculateAttack();
         double finalDamage = defender.calculateFinalDamage(attackDamage);
@@ -102,7 +113,7 @@ public class CombatManager {
     }
 
     // Degrade Equipment (Weapon and Armor)
-    private void degradeEquipment(Character attacker, Character defender) {
+    private void degradeEquipment(Member attacker, Member defender) {
         // Degrade attacker's weapon
         if (attacker.getWeapon() != null) {
             attacker.getWeapon().reduceDurability();

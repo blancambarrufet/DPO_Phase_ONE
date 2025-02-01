@@ -1,6 +1,7 @@
 package business;
 
 import business.entities.Character;
+import business.entities.Member;
 import persistance.CharacterDAO;
 import persistance.exceptions.PersistanceException;
 import persistance.json.CharacterJsonDAO;
@@ -49,7 +50,7 @@ public class CharacterManager {
         System.out.println("Character not found.");
     }
 
-    public Character getCharacterID (long characterID) {
+    public Character getCharacterByID(long characterID) {
         try {
             List<Character> characters = getAllCharacters();
 

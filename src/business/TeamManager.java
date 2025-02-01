@@ -1,6 +1,7 @@
 package business;
 
 import business.entities.Character;
+import business.entities.Member;
 import business.entities.Team;
 import persistance.TeamDAO;
 import persistance.exceptions.PersistanceException;
@@ -13,20 +14,39 @@ public class TeamManager {
 
     private final TeamDAO teamDAO;
     private List<Team> teams;
+    private CharacterManager characterManager;
 
-    public TeamManager() throws PersistanceException {
-        this.teamDAO = new TeamJsonDAO(); // Default path
-        loadTeams(); // Load teams when initialized
+    public TeamManager(CharacterManager characterManager) throws PersistanceException {
+        this.teamDAO = new TeamJsonDAO();
+        this.characterManager = characterManager; // Assign CharacterManager
+        loadTeams();
     }
 
-    // Constructor with dependency injection
-    public TeamManager(TeamDAO teamDAO) throws PersistanceException {
+    public TeamManager(TeamDAO teamDAO, CharacterManager characterManager) throws PersistanceException {
         this.teamDAO = teamDAO;
-        loadTeams(); // Load teams when initialized
+        this.characterManager = characterManager;
+        loadTeams();
     }
 
     // Get all teams
     public List<Team> getTeams() {
+        for (Team team : teams) {
+            List<Member> updatedMembers = new ArrayList<>();
+
+            for (Member member : team.getMembers()) {
+                Character character = characterManager.getCharacterByID(member.getCharacterId());
+
+                if (character != null) {
+                    updatedMembers.add(new Member(character, member.getStrategy()));
+                } else {
+                    System.out.println("(ERROR) Character with ID " + member.getCharacterId() + " not found.");
+                }
+            }
+
+            team.setMembers(updatedMembers);
+        }
+
+
         return teams;
     }
 
@@ -58,21 +78,6 @@ public class TeamManager {
         }
     }
 
-    // Display all teams
-    public void displayTeams() {
-        if (teams.isEmpty()) {
-            System.out.println("No teams available.");
-        } else {
-            for (Team team : teams) {
-                System.out.println("Team: " + team.getName());
-                System.out.println("Members: ");
-                team.getMembers().forEach(member ->
-                        System.out.println("\tCharacter ID: " + member.getCharacterId() +
-                                ", Strategy: " + member.getStrategy()));
-            }
-        }
-    }
-
     // Check if a team exists by name
     public boolean teamExists(String teamName) {
         return teams.stream().anyMatch(team -> team.getName().equalsIgnoreCase(teamName));
@@ -85,17 +90,31 @@ public class TeamManager {
 
     private void loadTeams() throws PersistanceException {
         teams = teamDAO.loadTeams();
+
         if (teams == null || teams.isEmpty()) {
             System.out.println("DEBUG: No teams loaded from JSON file.");
         } else {
             System.out.println("DEBUG: Teams loaded -> " + teams.size());
             for (Team team : teams) {
-                System.out.println("DEBUG: Team - " + team.getName() + ", Members -> " + team.getMembers().size());
+                List<Member> updateMembers = new ArrayList<>();
+
+                for (Member member : team.getMembers()) {
+                    Character character = characterManager.getCharacterByID(member.getCharacterId());
+                    if (character != null) {
+                        updateMembers.add(new Member(character, member.getStrategy()));
+                    }
+                    else {
+                        System.out.println("(ERROR) Character with ID " + member.getCharacterId() + " not found in CharacterManager.");
+                    }
+                }
+                team.setMembers(updateMembers);
             }
         }
         if (teams == null) { // If loading fails, initialize an empty list
             teams = new ArrayList<>();
         }
+
+
     }
 
 
@@ -133,32 +152,4 @@ public class TeamManager {
         return teams.stream().anyMatch(team -> team.getName().equalsIgnoreCase(name));
     }
 
-
-    /*
-    // Display information about a specific team
-    public void displayTeamInfo(String teamName) {
-        for (Team team : teams) {
-            if (team.getName().equalsIgnoreCase(teamName)) {
-                System.out.println("Team: " + team.getName());
-                System.out.println("Members:");
-                team.getMembers().forEach(member -> System.out.println("\t- " + member.getName()));
-                return;
-            }
-        }
-        System.out.println("Team not found.");
-    }
-
-    // Show characters in a specific team
-    public void showCharactersInTeams(String teamName) {
-        for (Team team : teams) {
-            if (team.getName().equalsIgnoreCase(teamName)) {
-                System.out.println("Team Members:");
-                team.getMembers().forEach(member -> System.out.println("\t" + member.getName()));
-                return;
-            }
-        }
-        System.out.println("Team not found.");
-    }
-
-     */
 }

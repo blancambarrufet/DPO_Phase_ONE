@@ -214,7 +214,8 @@ public class Controller {
     }
     // List All Teams
     private void listTeams() {
-        teamManager.displayTeams();
+        List<Team> teams =  teamManager.getTeams();
+        ui.displayTeamList(teams);
     }
 
     // Delete a Team
@@ -251,16 +252,16 @@ public class Controller {
 
             System.out.println("\nInitializing teams...");
 
-            List<Character> team1Characters = getCharactersInTeam(team1);
-            List<Character> team2Characters = getCharactersInTeam(team2);
+            List<Member> team1Members = team1.getMembers();
+            List<Member> team2Members = team2.getMembers();
 
             List<Weapon> availableWeapons = itemManager.getAllWeapons();
             List<Armor> availableArmor = itemManager.getAllArmor();
 
-            combatManager.initializeTeams(team1Characters, team2Characters, availableWeapons, availableArmor);
+            combatManager.initializeTeams(team1Members, team2Members, availableWeapons, availableArmor);
 
-            ui.displayTeamDetails(team1,1, team1Characters);
-            ui.displayTeamDetails(team2,2, team2Characters);
+            ui.displayTeamDetails(team1,1, team1Members);
+            ui.displayTeamDetails(team2,2, team2Members);
 
 
             System.out.println("\nCombat ready!");
@@ -273,19 +274,8 @@ public class Controller {
     }
 
 
-    private List<Character> getCharactersInTeam(Team team) {
-        List<Character> characters = new ArrayList<>();
 
-        for (Member member : team.getMembers()) {
-            Character character = characterManager.getCharacterID(member.getCharacterId());
 
-            if (character != null) {
-                characters.add(character);
-            }
-        }
-
-        return characters;
-    }
 
     // Update Statistics After Combat
     private void updateStatistics(Team teamOne, Team teamTwo) throws PersistanceException {
