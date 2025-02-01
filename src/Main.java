@@ -5,9 +5,9 @@ import presentation.UI;
 public class Main {
     public static void main(String[] args) {
         CharacterManager characterManager = new CharacterManager();
-        CombatManager combatManager = new CombatManager();
+        CombatManager combatManager = new CombatManager(characterManager);
         ItemManager itemManager = new ItemManager();
-        TeamManager teamManager = new TeamManager();
+        TeamManager teamManager = new TeamManager(characterManager);
         StatisticsManager statisticsManager = new StatisticsManager();
 
         UI ui = new UI();

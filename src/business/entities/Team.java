@@ -18,6 +18,8 @@ public class Team {
     public void setName(String name) { this.name = name; }
     public List<Member> getMembers() { return members; }
 
+    public void setMembers(List<Member> members) { this.members = members; }
+
     public void addMember(Member member) {
         if (members.size() < 4) {
             members.add(member);

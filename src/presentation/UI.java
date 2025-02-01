@@ -273,13 +273,13 @@ public class UI {
     }
 
 
-    public void displayTeamDetails(Team team, int teamNumber, List<Character> characters) {
+    public void displayTeamDetails(Team team, int teamNumber, List<Member> members) {
         System.out.println("\n\tTeam #" + teamNumber + " - " + team.getName());
 
-        for (Character character : characters) {
-            System.out.println("\t- " + character.getName());
-            System.out.println("\t\t   Weapon: " + (character.getWeapon() != null ? character.getWeapon().getName() : "None"));
-            System.out.println("\t\t   Armor: " + (character.getArmor() != null ? character.getArmor().getName() : "None"));
+        for (Member member : members) {
+            System.out.println("\t- " + member.getName());
+            System.out.println("\t\t   Weapon: " + (member.getWeapon() != null ? member.getWeapon().getName() : "None"));
+            System.out.println("\t\t   Armor: " + (member.getArmor() != null ? member.getArmor().getName() : "None"));
         }
     }
 
@@ -288,6 +288,20 @@ public class UI {
         System.out.println(statistics);
     }
 
+    public void displayCombatExecution(int index, int teamNumber, String teamName, List<Member> characters) {
+        System.out.println("--- ROUND " + index + " ---");
+        displayTeamStats(teamNumber, teamName, characters);
+
+
+    }
+
+    private void displayTeamStats(int teamNumber, String teamName, List<Member> members) {
+        System.out.println("\nTeam #" + teamNumber + " - " + teamName);
+
+        for (Member member : members) {
+            System.out.println("\t- " + member.getName() + "(" + member.getDamageTaken() + " %) " + member.getWeapon() + " - " + member.getArmor());
+        }
+    }
 
 
 }

@@ -49,7 +49,7 @@ public class CharacterManager {
         System.out.println("Character not found.");
     }
 
-    public Character getCharacterID (long characterID) {
+    public Character getCharacterByID(long characterID) {
         try {
             List<Character> characters = getAllCharacters();
 
