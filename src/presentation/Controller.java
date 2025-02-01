@@ -168,7 +168,8 @@ public class Controller {
 
     // List All Teams
     private void listTeams() {
-        teamManager.displayTeams();
+        List<Team> teams =  teamManager.getTeams();
+        ui.displayTeamList(teams);
     }
 
     // Delete a Team

@@ -259,7 +259,7 @@ public class UI {
         return option;
     }
 
-    public void displayTeamList(ArrayList<Team> teams) {
+    public void displayTeamList(List<Team> teams) {
         System.out.println("Looking for available teams...\n");
         if (teams.isEmpty()) {
             System.out.println("\nNo teams available.\n");

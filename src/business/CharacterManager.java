@@ -1,6 +1,7 @@
 package business;
 
 import business.entities.Character;
+import business.entities.Member;
 import persistance.CharacterDAO;
 import persistance.exceptions.PersistanceException;
 import persistance.json.CharacterJsonDAO;

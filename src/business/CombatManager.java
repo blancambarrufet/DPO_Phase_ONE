@@ -70,7 +70,7 @@ public class CombatManager {
         for (Member attacker : atackMember) {
             if (!attacker.isKO()) {
                 // Find a defender to attack
-                Character defender = selectTarget(defenders.getMembers());
+                Member defender = selectTarget(defendMembers);
                 if (defender != null) {
                     performAttack(attacker, defender); //Perform the attack
                 }
@@ -90,7 +90,8 @@ public class CombatManager {
     }
 
     // Perform an Attack Between Characters
-    private void performAttack(Character attacker, Character defender) {
+    private void performAttack(Member attacker, Member defender) {
+
         // Calculate attack and defense values
         double attackDamage = attacker.calculateAttack();
         double finalDamage = defender.calculateFinalDamage(attackDamage);
@@ -112,7 +113,7 @@ public class CombatManager {
     }
 
     // Degrade Equipment (Weapon and Armor)
-    private void degradeEquipment(Character attacker, Character defender) {
+    private void degradeEquipment(Member attacker, Member defender) {
         // Degrade attacker's weapon
         if (attacker.getWeapon() != null) {
             attacker.getWeapon().reduceDurability();
