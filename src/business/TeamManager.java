@@ -119,15 +119,26 @@ public class TeamManager {
 
 
     // Add a new team
-    public void addTeam(Team team) throws PersistanceException {
-        if (checkName(team.getName())) {
-            System.out.println("Team with this name already exists!");
-            return;
+    public void addTeam(Team newTeam) throws PersistanceException {
+        System.out.println("DEBUG: Attempting to create team: " + newTeam.getName());
+
+        // Check if team name is unique
+        for (Team team : teams) {
+            if (team.getName().equalsIgnoreCase(newTeam.getName())) {
+                System.out.println("DEBUG: Team name already exists!");
+                return;
+            }
         }
-        teams.add(team);
-        saveTeams(); // Save updated team list
-        System.out.println("Team added successfully.");
+
+
+        // Add team and save to file
+        teams.add(newTeam);
+        System.out.println("DEBUG: Team successfully added to memory, saving to JSON...");
+
+        saveTeams();
+        System.out.println("DEBUG: Team " + newTeam.getName() + " created successfully.");
     }
+
 
     // Remove a team by name
     public void removeTeam(String teamName) throws PersistanceException {

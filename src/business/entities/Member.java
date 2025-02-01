@@ -11,7 +11,6 @@ public class Member {
     private Armor armor;
     private boolean defending;
 
-
     public enum Strategy { //THIS SHOULD BE IN A CLASS ENUM
         BALANCED, AGGRESSIVE, DEFENSIVE
     }
