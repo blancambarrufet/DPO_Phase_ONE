@@ -131,28 +131,28 @@ public class Controller {
                 ui.errorCreateTeam(Character1);
                 return;
             }
-            Member member1 = new Member(character1, strategy1);
+            Member member1 = new Member(character1.getId(), character1, strategy1);
 
             Character character2 =  characterManager.findCharacter(Character2);
             if (character2 == null) {
                 ui.errorCreateTeam(Character2);
                 return;
             }
-            Member member2 =new Member(character2, strategy2);
+            Member member2 =new Member(character2.getId(), character2, strategy2);
 
             Character character3 =  characterManager.findCharacter(Character3);
             if (character3 == null) {
                 ui.errorCreateTeam(Character3);
                 return;
             }
-            Member member3 = new Member(character3, strategy3);
+            Member member3 = new Member(character3.getId(), character3, strategy3);
 
             Character character4 =  characterManager.findCharacter(Character4);
             if (character4 == null) {
                 ui.errorCreateTeam(Character4);
                 return;
             }
-            Member member4 = new Member(character4, strategy4);
+            Member member4 = new Member(character4.getId(),character4, strategy4);
 
             newTeam.addMember(member1);
             newTeam.addMember(member2);

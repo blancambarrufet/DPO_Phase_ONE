@@ -11,15 +11,14 @@ public class Member {
     private Armor armor;
     private boolean defending;
 
-    public void setCharacter(Character character) {
-        this.character = character;
-    }
+
 
     public enum Strategy { //THIS SHOULD BE IN A CLASS ENUM
         BALANCED, AGGRESSIVE, DEFENSIVE
     }
 
-    public Member(Character character, String strategy) {
+    public Member(long id, Character character, String strategy) {
+        this.id = id;
         this.character = character;
         this.strategy = strategy;
         this.damageTaken = 0;
@@ -30,6 +29,9 @@ public class Member {
 
     // Getters and Setters
     public Character getCharacter() {return character;}
+    public void setCharacter(Character character) {
+        this.character = character;
+    }
     public long getCharacterId() { return id; }
     public String getStrategy() { return strategy; }
     public void setStrategy(String strategy) { this.strategy = strategy; }

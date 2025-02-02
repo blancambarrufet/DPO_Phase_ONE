@@ -2,6 +2,7 @@ package persistance.json;
 
 import business.entities.Team;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.stream.JsonReader;
 import persistance.TeamDAO;
@@ -22,7 +23,7 @@ public class TeamJsonDAO implements TeamDAO {
     private final Gson gson;
 
     public TeamJsonDAO() {
-        this.gson = new Gson();
+        this.gson = new GsonBuilder().setPrettyPrinting().create();
         initializeFile();
     }
 
@@ -64,6 +65,7 @@ public class TeamJsonDAO implements TeamDAO {
     @Override
     public void saveTeams(List<Team> teams) throws PersistanceException {
         try (FileWriter writer = new FileWriter(PATH)) {
+            Gson gson = new GsonBuilder().setPrettyPrinting().create();
             gson.toJson(teams, writer);
         } catch (IOException e) {
             throw new PersistanceException("Couldn't write teams file: " + PATH, e);

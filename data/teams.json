@@ -1,1 +1,198 @@
-[{"name":"Salle Fest Bois","members":[{"id":0,"strategy":"balanced","damageTaken":0.0,"defending":false},{"id":0,"strategy":"balanced","damageTaken":0.0,"defending":false},{"id":0,"strategy":"balanced","damageTaken":0.0,"defending":false},{"id":0,"strategy":"balanced","damageTaken":0.0,"defending":false}]},{"name":"Technova","members":[{"id":0,"strategy":"balanced","damageTaken":0.0,"defending":false},{"id":0,"strategy":"balanced","damageTaken":0.0,"defending":false},{"id":0,"strategy":"balanced","damageTaken":0.0,"defending":false},{"id":0,"strategy":"balanced","damageTaken":0.0,"defending":false}]},{"name":"DPOO All-star","members":[{"id":0,"strategy":"balanced","damageTaken":0.0,"defending":false},{"id":0,"strategy":"balanced","damageTaken":0.0,"defending":false},{"id":0,"strategy":"balanced","damageTaken":0.0,"defending":false},{"id":0,"strategy":"balanced","damageTaken":0.0,"defending":false}]}]
+[
+  {
+    "name": "Salle Fest Bois",
+    "members": [
+      {
+        "id": 5431512,
+        "strategy": "balanced",
+        "character": {
+          "id": 5431512,
+          "name": "Social Club Member",
+          "weight": 94
+        },
+        "damageTaken": 0.0,
+        "defending": false
+      },
+      {
+        "id": 467416287,
+        "strategy": "offensive",
+        "character": {
+          "id": 467416287,
+          "name": "LS Panda",
+          "weight": 114
+        },
+        "damageTaken": 0.0,
+        "defending": false
+      },
+      {
+        "id": 4264041,
+        "strategy": "defensive",
+        "character": {
+          "id": 4264041,
+          "name": "DJ Tardeo",
+          "weight": 87
+        },
+        "damageTaken": 0.0,
+        "defending": false
+      },
+      {
+        "id": 748738,
+        "strategy": "sniper",
+        "character": {
+          "id": 748738,
+          "name": "Holy Campus Ministry",
+          "weight": 85
+        },
+        "damageTaken": 0.0,
+        "defending": false
+      }
+    ]
+  },
+  {
+    "name": "Technova",
+    "members": [
+      {
+        "id": 68053,
+        "strategy": "balanced",
+        "character": {
+          "id": 68053,
+          "name": "Technova Entrepreneur",
+          "weight": 110
+        },
+        "damageTaken": 0.0,
+        "defending": false
+      },
+      {
+        "id": 68053,
+        "strategy": "balanced",
+        "character": {
+          "id": 68053,
+          "name": "Technova Entrepreneur",
+          "weight": 110
+        },
+        "damageTaken": 0.0,
+        "defending": false
+      },
+      {
+        "id": 68053,
+        "strategy": "balanced",
+        "character": {
+          "id": 68053,
+          "name": "Technova Entrepreneur",
+          "weight": 110
+        },
+        "damageTaken": 0.0,
+        "defending": false
+      },
+      {
+        "id": 68053,
+        "strategy": "balanced",
+        "character": {
+          "id": 68053,
+          "name": "Technova Entrepreneur",
+          "weight": 110
+        },
+        "damageTaken": 0.0,
+        "defending": false
+      }
+    ]
+  },
+  {
+    "name": "DPOO All-star",
+    "members": [
+      {
+        "id": 467416287,
+        "strategy": "balanced",
+        "character": {
+          "id": 467416287,
+          "name": "LS Panda",
+          "weight": 114
+        },
+        "damageTaken": 0.0,
+        "defending": false
+      },
+      {
+        "id": 4115637091,
+        "strategy": "balanced",
+        "character": {
+          "id": 4115637091,
+          "name": "Jean-Baptiste de La Salle",
+          "weight": 109
+        },
+        "damageTaken": 0.0,
+        "defending": false
+      },
+      {
+        "id": 73237806,
+        "strategy": "balanced",
+        "character": {
+          "id": 73237806,
+          "name": "Ioti The Cat",
+          "weight": 98
+        },
+        "damageTaken": 0.0,
+        "defending": false
+      },
+      {
+        "id": 748738,
+        "strategy": "balanced",
+        "character": {
+          "id": 748738,
+          "name": "Holy Campus Ministry",
+          "weight": 85
+        },
+        "damageTaken": 0.0,
+        "defending": false
+      }
+    ]
+  },
+  {
+    "name": "CarlosTeam",
+    "members": [
+      {
+        "id": 7021,
+        "strategy": "1",
+        "character": {
+          "id": 7021,
+          "name": "Business Model Canvas",
+          "weight": 73
+        },
+        "damageTaken": 0.0,
+        "defending": false
+      },
+      {
+        "id": 7021,
+        "strategy": "1",
+        "character": {
+          "id": 7021,
+          "name": "Business Model Canvas",
+          "weight": 73
+        },
+        "damageTaken": 0.0,
+        "defending": false
+      },
+      {
+        "id": 7021,
+        "strategy": "1",
+        "character": {
+          "id": 7021,
+          "name": "Business Model Canvas",
+          "weight": 73
+        },
+        "damageTaken": 0.0,
+        "defending": false
+      },
+      {
+        "id": 7021,
+        "strategy": "1",
+        "character": {
+          "id": 7021,
+          "name": "Business Model Canvas",
+          "weight": 73
+        },
+        "damageTaken": 0.0,
+        "defending": false
+      }
+    ]
+  }
+]

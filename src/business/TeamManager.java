@@ -84,43 +84,28 @@ public class TeamManager {
 
         // Ensure each Member has its corresponding Character
         for (Team team : teams) {
-            //List<Member> updatedMembers = new ArrayList<>();
+
             for (Member member : team.getMembers()) {
+                if (member.getCharacterId() == 0) {
+                    System.out.println("WARNING: Member has an ID of 0. Skipping.");
+                    continue;
+                }
 
                 String id = String.valueOf(member.getCharacterId());
                 Character character = characterManager.findCharacter(id);
 
-                if (character == null && !id.equals("0")) {
+                //if (character == null && !id.equals("0")) {
+
+                if (character == null) {
                     System.out.println("ERROR: Character with ID " + id + " not found!");
                 } else {
                     member.setCharacter(character);
                 }
-
-
-
-//                String id = String.valueOf(member.getCharacterId());
-//                Character character= characterManager.findCharacter(id);
-//                // Retrieve the correct Character from CharacterManager
-//                //Character character = characterManager.getCharacterByID(member.getCharacterId());
-//
-//                if (character != null) {
-//                    updatedMembers.add(new Member(character, member.getStrategy())); //  Assign Character correctly
-//                } else {
-//                    continue; // Skip adding the Member if Character is missing
-//                }
             }
 
 
         }
     }
-
-    private Member returnMemberByID(String id) {
-        Character character= characterManager.findCharacter(id);
-        Member member = new Member(character, id);
-        return member;
-    }
-
-
 
     // Add a new team
     public void addTeam(Team newTeam) throws PersistanceException {
