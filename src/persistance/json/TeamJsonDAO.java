@@ -12,6 +12,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -44,14 +45,21 @@ public class TeamJsonDAO implements TeamDAO {
     }
 
     @Override
-    public List<Team> loadTeams() throws PersistanceException {
+    public ArrayList<Team> loadTeams() throws PersistanceException {
         try (JsonReader reader = new JsonReader(new FileReader(PATH))) {
             Team[] teamsArray = gson.fromJson(reader, Team[].class);
-            return Arrays.asList(teamsArray);
+
+            // Ensure the list is initialized correctly
+            if (teamsArray == null) {
+                return new ArrayList<>(); // Return an empty list if file is empty or improperly formatted
+            }
+
+            return new ArrayList<>(Arrays.asList(teamsArray)); // Convert array to ArrayList
         } catch (JsonSyntaxException | IOException e) {
             throw new PersistanceException("Couldn't read teams file: " + PATH, e);
         }
     }
+
 
     @Override
     public void saveTeams(List<Team> teams) throws PersistanceException {

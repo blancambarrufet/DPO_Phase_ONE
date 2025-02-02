@@ -17,7 +17,7 @@ public class Character {
     public long getId() {
         return id;
     }
-    public  String getName() {
+    public String getName() {
         return name;
     }
     public int getWeight() {

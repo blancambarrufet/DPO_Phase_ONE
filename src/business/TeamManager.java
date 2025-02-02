@@ -13,7 +13,7 @@ import java.util.List;
 public class TeamManager {
 
     private final TeamDAO teamDAO;
-    private List<Team> teams;
+    private ArrayList<Team> teams;
     private CharacterManager characterManager;
 
     public TeamManager(CharacterManager characterManager) throws PersistanceException {
@@ -29,25 +29,8 @@ public class TeamManager {
     }
 
     // Get all teams
-    public List<Team> getTeams() {
-        for (Team team : teams) {
-            List<Member> updatedMembers = new ArrayList<>();
-
-            for (Member member : team.getMembers()) {
-                Character character = characterManager.getCharacterByID(member.getCharacterId());
-
-                if (character != null) {
-                    updatedMembers.add(new Member(character, member.getStrategy()));
-                } else {
-                    System.out.println("(ERROR) Character with ID " + member.getCharacterId() + " not found.");
-                }
-            }
-
-            team.setMembers(updatedMembers);
-        }
-
-
-        return teams;
+    public ArrayList<Team> getTeams() {
+         return teams;
     }
 
     // Create a new team
@@ -88,34 +71,55 @@ public class TeamManager {
         teamDAO.saveTeams(teams);
     }
 
-    private void loadTeams() throws PersistanceException {
-        teams = teamDAO.loadTeams();
+    public void loadTeams() throws PersistanceException {
+        teams = teamDAO.loadTeams(); // Load teams from JSON
 
         if (teams == null || teams.isEmpty()) {
             System.out.println("DEBUG: No teams loaded from JSON file.");
-        } else {
-            System.out.println("DEBUG: Teams loaded -> " + teams.size());
-            for (Team team : teams) {
-                List<Member> updateMembers = new ArrayList<>();
-
-                for (Member member : team.getMembers()) {
-                    Character character = characterManager.getCharacterByID(member.getCharacterId());
-                    if (character != null) {
-                        updateMembers.add(new Member(character, member.getStrategy()));
-                    }
-                    else {
-                        System.out.println("(ERROR) Character with ID " + member.getCharacterId() + " not found in CharacterManager.");
-                    }
-                }
-                team.setMembers(updateMembers);
-            }
-        }
-        if (teams == null) { // If loading fails, initialize an empty list
             teams = new ArrayList<>();
+            return;
         }
 
+        System.out.println("DEBUG: Teams loaded -> " + teams.size());
 
+        // Ensure each Member has its corresponding Character
+        for (Team team : teams) {
+            //List<Member> updatedMembers = new ArrayList<>();
+            for (Member member : team.getMembers()) {
+
+                String id = String.valueOf(member.getCharacterId());
+                Character character = characterManager.findCharacter(id);
+
+                if (character == null && !id.equals("0")) {
+                    System.out.println("ERROR: Character with ID " + id + " not found!");
+                } else {
+                    member.setCharacter(character);
+                }
+
+
+
+//                String id = String.valueOf(member.getCharacterId());
+//                Character character= characterManager.findCharacter(id);
+//                // Retrieve the correct Character from CharacterManager
+//                //Character character = characterManager.getCharacterByID(member.getCharacterId());
+//
+//                if (character != null) {
+//                    updatedMembers.add(new Member(character, member.getStrategy())); //  Assign Character correctly
+//                } else {
+//                    continue; // Skip adding the Member if Character is missing
+//                }
+            }
+
+
+        }
     }
+
+    private Member returnMemberByID(String id) {
+        Character character= characterManager.findCharacter(id);
+        Member member = new Member(character, id);
+        return member;
+    }
+
 
 
     // Add a new team
@@ -131,7 +135,15 @@ public class TeamManager {
         }
 
 
+        loadTeams();
+        System.out.println("teams Loaded");
+        if (teams== null){
+            System.out.println("DEBUG: No teams loaded from JSON file.");
+            return;
+        }
         // Add team and save to file
+        if (newTeam == null) {  System.out.println("DEBUG: New tram null ");
+        return;}
         teams.add(newTeam);
         System.out.println("DEBUG: Team successfully added to memory, saving to JSON...");
 

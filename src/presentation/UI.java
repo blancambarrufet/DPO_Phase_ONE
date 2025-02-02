@@ -40,7 +40,6 @@ public class UI {
         return false; // Stop if errors exist
     }
 
-
     public MainMenu printMainMenu() {
         int option = 0 ;
         do {
@@ -124,7 +123,6 @@ public class UI {
         return scanner.nextLine().trim();
     }
 
-
     public String requestCharacterName(int index) {
         System.out.print("\nPlease enter name or id for character #" + index +" : ");
         return scanner.nextLine().trim();
@@ -199,11 +197,11 @@ public class UI {
     }
 
     public void displayItemDetails(Item item) {
-        System.out.println("\n\tID: " + "\t " + item.getId());
-        System.out.println("\tNAME:    " + item.getName());
-        System.out.println("\tCLASS:  " + item.getClass().getName());
-        System.out.println("\tPOWER:  " + item.getPower());
-        System.out.println("\tDURABILITY:  " + item.getDurability());
+        System.out.println("\n\tID :" + "\t\t" + item.getId());
+        System.out.println("\tNAME:\t\t" + item.getName());
+        System.out.println("\tCLASS\t\t" + item.getClass().getSimpleName());
+        System.out.println("\tPOWER:\t\t" + item.getPower());
+        System.out.println("\tDURABILITY: " + item.getDurability());
 
 
         System.out.print("\n<Press any key to continue...>");
@@ -241,21 +239,40 @@ public class UI {
         }
     }
 
-    public void displayCharacterDetails(Character character, List<String> teams) {
+    public void displayCharacterDetails(Character character, ArrayList<Team> teams) {
+
+        String characterName = character.getName();
         System.out.println("\n\tID: " + "\t " + character.getId());
-        System.out.println("\tNAME:    " + character.getName());
+        System.out.println("\tNAME:    " + characterName);
         System.out.println("\tWEIGHT:  " + character.getWeight() + " kg");
 
         // Display teams
         System.out.println("\tTEAMS:");
-        if (teams.isEmpty()) {
-            System.out.println("\t\t\tNo teams related.");
-        }
-        else {
-            for (String team : teams) {
-                System.out.println("\t\t\t- " + team);
+
+
+        int exist=0;
+        for (Team team : teams) {
+            for (Member member : team.getMembers()) {
+                if (member == null) {
+                    System.out.println("Null member detected in team: " + team.getName());
+                    break;
+                }
+                if (member != null) {
+                    String memberName = member.getName();
+                    if (characterName.equals(memberName)) {
+                        printTeamName(team);
+                        exist++;
+                        break;
+                    }
+                }
+
             }
         }
+
+
+
+        if (exist==0) System.out.println("\t\t\tNo teams related.");
+
 
         System.out.print("\n<Press any key to continue...>");
         scanner.nextLine();
@@ -321,12 +338,16 @@ public class UI {
 
     }
 
-    private void displayTeamStats(int teamNumber, String teamName, List<Member> members) {
+    public void displayTeamStats(int teamNumber, String teamName, List<Member> members) {
         System.out.println("\nTeam #" + teamNumber + " - " + teamName);
 
         for (Member member : members) {
             System.out.println("\t- " + member.getName() + "(" + member.getDamageTaken() + " %) " + member.getWeapon() + " - " + member.getArmor());
         }
+    }
+
+    public void printTeamName(Team team) {
+        System.out.println("\t\t   - " + team.getName());
     }
 
 

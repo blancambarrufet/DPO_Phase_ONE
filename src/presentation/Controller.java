@@ -20,10 +20,10 @@ public class Controller {
 
     public Controller(UI ui, CombatManager combatManager, ItemManager itemManager, TeamManager teamManager, CharacterManager characterManager, StatisticsManager statisticsManager) {
         this.ui = ui;
-        this.combatManager = combatManager;
+        this.characterManager = characterManager;
         this.itemManager = itemManager;
         this.teamManager = teamManager;
-        this.characterManager = characterManager;
+        this.combatManager = combatManager;
         this.statisticsManager = statisticsManager;
     }
 
@@ -61,7 +61,6 @@ public class Controller {
         }
     }
 
-
     private boolean validatePersistence() {
         try {
             // Validate critical files
@@ -69,7 +68,7 @@ public class Controller {
             boolean itemsOk = itemManager.validatePersistenceSource();          // Items.json
 
             // Initialize optional files (Teams & Stats)
-            teamManager.getTeams();                        // Teams
+            teamManager.loadTeams();                        // Teams
             statisticsManager.displayStatistics();         // Stats
 
             // Check and return based on UI validation
@@ -81,7 +80,7 @@ public class Controller {
     }
 
 
-
+    //List Characters
     public void listCharacters() {
         // Fetch characters and teams from the business layer
         ArrayList<Character> characters = new ArrayList<>(characterManager.getAllCharacters());
@@ -96,21 +95,92 @@ public class Controller {
 
         // Fetch selected character and associated teams
         Character selectedCharacter = characters.get(selectedOption - 1);
-        List<String> associatedTeams = findTeamsForCharacter(selectedCharacter.getId(), teams);
 
         // Display character details via the UI
-        ui.displayCharacterDetails(selectedCharacter, associatedTeams);
+        ui.displayCharacterDetails(selectedCharacter, teams);
     }
 
-    private List<String> findTeamsForCharacter(long characterId, ArrayList<Team> teams) {
-        List<String> associatedTeams = new ArrayList<>();
-        for (Team team : teams) {
-            if (team.hasMember(characterId)) { // Business logic in the Team class
-                associatedTeams.add(team.getName());
+
+    // Create a New Team
+    private void createTeam() {
+        try {
+            String teamName = ui.requestTeamInfo();
+
+            if (teamManager.teamExists(teamName)) {
+                ui.errorCreateTeam(teamName);
+                return;
             }
+
+
+            String Character1 = ui.requestCharacterName(1);
+            String strategy1 = ui.requestStrategy(1);
+
+            String Character2 = ui.requestCharacterName(2);
+            String strategy2 = ui.requestStrategy(2);
+
+            String Character3 = ui.requestCharacterName(3);
+            String strategy3 = ui.requestStrategy(3);
+
+            String Character4 = ui.requestCharacterName(4);
+            String strategy4 = ui.requestStrategy(4);
+
+            Team newTeam = new Team(teamName);
+
+            Character character1 =  characterManager.findCharacter(Character1);
+            if (character1 == null) {
+                ui.errorCreateTeam(Character1);
+                return;
+            }
+            Member member1 = new Member(character1, strategy1);
+
+            Character character2 =  characterManager.findCharacter(Character2);
+            if (character2 == null) {
+                ui.errorCreateTeam(Character2);
+                return;
+            }
+            Member member2 =new Member(character2, strategy2);
+
+            Character character3 =  characterManager.findCharacter(Character3);
+            if (character3 == null) {
+                ui.errorCreateTeam(Character3);
+                return;
+            }
+            Member member3 = new Member(character3, strategy3);
+
+            Character character4 =  characterManager.findCharacter(Character4);
+            if (character4 == null) {
+                ui.errorCreateTeam(Character4);
+                return;
+            }
+            Member member4 = new Member(character4, strategy4);
+
+            newTeam.addMember(member1);
+            newTeam.addMember(member2);
+            newTeam.addMember(member3);
+            newTeam.addMember(member4);
+
+            teamManager.addTeam(newTeam);
+        } catch (PersistanceException e) {
+            System.out.println("Error creating team: " + e.getMessage());
         }
-        return associatedTeams;
     }
+
+    // List All Teams
+    private void listTeams() {
+        List<Team> teams =  teamManager.getTeams();
+        ui.displayTeamList(teams);
+    }
+
+    // Delete a Team
+    private void deleteTeam() {
+        try {
+            String teamName = ui.requestTeamInfo();
+            teamManager.deleteTeam(teamName);
+        } catch (PersistanceException e) {
+            System.out.println("Error deleting team: " + e.getMessage());
+        }
+    }
+
 
     // List All Items
     private void listItems() {
@@ -149,84 +219,7 @@ public class Controller {
         }
     }
 
-    // Create a New Team
-    private void createTeam() {
-        try {
-            String teamName = ui.requestTeamInfo();
 
-            if (teamManager.teamExists(teamName)) {
-                ui.errorCreateTeam(teamName);
-                return;
-            }
-
-
-            String Character1 = ui.requestCharacterName(1);
-            String strategy1 = ui.requestStrategy(1);
-
-            String Character2 = ui.requestCharacterName(2);
-            String strategy2 = ui.requestStrategy(2);
-
-            String Character3 = ui.requestCharacterName(3);
-            String strategy3 = ui.requestStrategy(3);
-
-            String Character4 = ui.requestCharacterName(4);
-            String strategy4 = ui.requestStrategy(4);
-
-            Team newTeam = new Team(teamName);
-
-            Character character1 =  characterManager.findCharacter(Character1);
-            if (character1 == null) {
-                ui.errorCreateTeam(Character1);
-                return;
-            }
-            Member member1 = new Member(character1.getId(), strategy1);
-
-            Character character2 =  characterManager.findCharacter(Character2);
-            if (character2 == null) {
-                ui.errorCreateTeam(Character2);
-                return;
-            }
-            Member member2 =new Member(character2.getId(), strategy2);
-
-            Character character3 =  characterManager.findCharacter(Character3);
-            if (character3 == null) {
-                ui.errorCreateTeam(Character3);
-                return;
-            }
-            Member member3 = new Member(character3.getId(), strategy3);
-
-            Character character4 =  characterManager.findCharacter(Character4);
-            if (character4 == null) {
-                ui.errorCreateTeam(Character4);
-                return;
-            }
-            Member member4 = new Member(character4.getId(), strategy4);
-
-            newTeam.addMember(member1);
-            newTeam.addMember(member2);
-            newTeam.addMember(member3);
-            newTeam.addMember(member4);
-
-            teamManager.addTeam(newTeam);
-        } catch (PersistanceException e) {
-            System.out.println("Error creating team: " + e.getMessage());
-        }
-    }
-    // List All Teams
-    private void listTeams() {
-        List<Team> teams =  teamManager.getTeams();
-        ui.displayTeamList(teams);
-    }
-
-    // Delete a Team
-    private void deleteTeam() {
-        try {
-            String teamName = ui.requestTeamInfo();
-            teamManager.deleteTeam(teamName);
-        } catch (PersistanceException e) {
-            System.out.println("Error deleting team: " + e.getMessage());
-        }
-    }
 
     // Simulate Combat
     private void simulateCombat() {
