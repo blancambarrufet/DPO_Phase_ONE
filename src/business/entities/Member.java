@@ -10,8 +10,7 @@ public class Member {
     private Weapon weapon;
     private Armor armor;
     private boolean defending;
-
-
+    private boolean isKO;
 
     public enum Strategy { //THIS SHOULD BE IN A CLASS ENUM
         BALANCED, AGGRESSIVE, DEFENSIVE
@@ -25,6 +24,7 @@ public class Member {
         this.weapon = null;
         this.armor = null;
         this.defending = false;
+        this.isKO = false;
     }
 
     // Getters and Setters
@@ -69,6 +69,10 @@ public class Member {
         defending = true;
     }
 
+    public void resetDefending() {
+        defending = false;
+    }
+
     public void endTurn() {
         defending = false;
     }
@@ -77,14 +81,21 @@ public class Member {
     }
 
     // Check if character is KO
-    public boolean isKO() {
+    public boolean checkForKO() {
         Random random = new Random();
 
-        // Random value between 1-200
-        int knockOutThreshold = random.nextInt(200) + 1;
+        // Random value between 0-200
+        double knockOutValue = (random.nextInt(200) + 1) / 100.0;
 
-        // KO if threshold < accumulated damage
-        return knockOutThreshold < (damageTaken * 100);
+       if (knockOutValue > damageTaken) {
+            this.isKO = true;
+        }
+
+        return isKO;
+    }
+
+    public boolean IsKO() {
+        return isKO;
     }
 
     public double calculateAttack() {
@@ -129,7 +140,7 @@ public class Member {
             finalDamage -= damageReduction;
         }
 
-        return finalDamage;
-        // return Math.max(finalDamage, 0); // Ensure non-negative damage
+        //return finalDamage;
+        return Math.max(finalDamage, 0); //there will be no negative damage
     }
 }

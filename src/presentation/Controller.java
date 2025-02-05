@@ -228,7 +228,6 @@ public class Controller {
 
             //Convert List<Team> to ArrayList<Team>
             ArrayList<Team> availableTeams = new ArrayList<>(teamManager.getTeams());
-
             ui.displayTeamList(availableTeams);
 
             //checking the number of teams available
@@ -261,6 +260,17 @@ public class Controller {
             System.out.println("<Press any key to continue...>");
             ui.scanner.nextLine(); // Esto se puede hacer?
 
+            int round = 1;
+
+            while(!combatManager.isTeamDefeated(team1Members) && !combatManager.isTeamDefeated(team2Members)) {
+                System.out.println("\n--- ROUND " + round + "! ---");
+
+
+            }
+
+
+
+
         } catch (Exception e) {
             System.out.println("Error during combat simulation: " + e.getMessage());
         }
@@ -270,18 +280,18 @@ public class Controller {
 
 
 
-    // Update Statistics After Combat
-    private void updateStatistics(Team teamOne, Team teamTwo) throws PersistanceException {
-        if (combatManager.isTeamDefeated(teamOne) && combatManager.isTeamDefeated(teamTwo)) {
-            // Tie - no winner
-            statisticsManager.recordCombatResult("TIE", "TIE");
-        } else if (combatManager.isTeamDefeated(teamOne)) {
-            // Team Two wins
-            statisticsManager.recordCombatResult(teamTwo.getName(), teamOne.getName());
-        } else {
-            // Team One wins
-            statisticsManager.recordCombatResult(teamOne.getName(), teamTwo.getName());
-        }
-    }
+//    // Update Statistics After Combat
+//    private void updateStatistics(Team teamOne, Team teamTwo) throws PersistanceException {
+//        if (combatManager.isTeamDefeated(teamOne) && combatManager.isTeamDefeated(teamTwo)) {
+//            // Tie - no winner
+//            statisticsManager.recordCombatResult("TIE", "TIE");
+//        } else if (combatManager.isTeamDefeated(teamOne)) {
+//            // Team Two wins
+//            statisticsManager.recordCombatResult(teamTwo.getName(), teamOne.getName());
+//        } else {
+//            // Team One wins
+//            statisticsManager.recordCombatResult(teamOne.getName(), teamTwo.getName());
+//        }
+//    }
 
 }

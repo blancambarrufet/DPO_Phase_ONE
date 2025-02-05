@@ -145,54 +145,5 @@
         "defending": false
       }
     ]
-  },
-  {
-    "name": "CarlosTeam",
-    "members": [
-      {
-        "id": 7021,
-        "strategy": "1",
-        "character": {
-          "id": 7021,
-          "name": "Business Model Canvas",
-          "weight": 73
-        },
-        "damageTaken": 0.0,
-        "defending": false
-      },
-      {
-        "id": 7021,
-        "strategy": "1",
-        "character": {
-          "id": 7021,
-          "name": "Business Model Canvas",
-          "weight": 73
-        },
-        "damageTaken": 0.0,
-        "defending": false
-      },
-      {
-        "id": 7021,
-        "strategy": "1",
-        "character": {
-          "id": 7021,
-          "name": "Business Model Canvas",
-          "weight": 73
-        },
-        "damageTaken": 0.0,
-        "defending": false
-      },
-      {
-        "id": 7021,
-        "strategy": "1",
-        "character": {
-          "id": 7021,
-          "name": "Business Model Canvas",
-          "weight": 73
-        },
-        "damageTaken": 0.0,
-        "defending": false
-      }
-    ]
   }
 ]

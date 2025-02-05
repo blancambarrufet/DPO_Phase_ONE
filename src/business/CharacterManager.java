@@ -1,7 +1,6 @@
 package business;
 
 import business.entities.Character;
-import business.entities.Member;
 import persistance.CharacterDAO;
 import persistance.exceptions.PersistanceException;
 import persistance.json.CharacterJsonDAO;
@@ -52,8 +51,6 @@ public class CharacterManager {
         this.characters = characters;
     }
 
-
-
     public Character getCharacterByID(long characterID) {
         try {
             List<Character> characters = getAllCharacters();
@@ -69,7 +66,6 @@ public class CharacterManager {
 
         return null;
     }
-
 
     public Character findCharacter(String input) {
         try {

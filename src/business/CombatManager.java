@@ -1,7 +1,6 @@
 package business;
 
 import business.entities.*;
-import business.entities.Character;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,9 +9,11 @@ import java.util.Random;
 public class CombatManager {
 
     private CharacterManager characterManager;
+    private ItemManager itemManager;
 
-    public CombatManager(CharacterManager characterManager) {
+    public CombatManager(CharacterManager characterManager, ItemManager itemManager) {
         this.characterManager = characterManager;
+        this.itemManager = itemManager;
     }
 
     public void initializeTeams (List<Member> team1Members, List<Member> team2Members, List<Weapon> weapons, List<Armor> armors) {
@@ -46,47 +47,85 @@ public class CombatManager {
 
 
     //Execute Combat between Two Teams
-    public void executeCombat(Team teamOne, Team teamTwo) {
+    public void executeCombat(List<Member> team1Members, List<Member> team2Members) {
         int round = 1;
 
         // Perform rounds until one team is defeated
-        while (!isTeamDefeated(teamOne) && !isTeamDefeated(teamTwo)) {
-            executeTurn(teamOne, teamTwo);
-            executeTurn(teamTwo, teamOne); // Both teams attack in turns
+        while (!isTeamDefeated(team1Members) && !isTeamDefeated(team2Members)) {
+            executeTurn(team1Members,team2Members);
+            executeTurn(team2Members, team1Members);
             round++;
         }
 
         // Display combat results
-        displayCombatResult(teamOne, teamTwo);
+        //displayCombatResult(teamOne, teamTwo);
     }
 
     // Execute a Turn for a Team
-    private void executeTurn(Team attackers, Team defenders) {
+    private void executeTurn(List<Member> attackers, List<Member> defenders) {
+        for (Member attacker : attackers) {
+            if (attacker.IsKO()) {
+                continue;
+            }
 
-        Random random = new Random();
-
-        List<Member> atackMember = attackers.getMembers();
-        List<Member> defendMembers = defenders.getMembers();
-        for (Member attacker : atackMember) {
-            if (!attacker.isKO()) {
-                // Find a defender to attack
-                Member defender = selectTarget(defendMembers);
-                if (defender != null) {
-                    performAttack(attacker, defender); //Perform the attack
+            if (attacker.getStrategy().equals("balanced")) {
+                if (attacker.getWeapon() == null) {
+                    requestWeapon(attacker);
+                }
+                else {
+                    if (attacker.getArmor() != null) {
+                        if (attacker.getDamageTaken() >= 0.5 && attacker.getDamageTaken() <= 1.0) {
+                            attacker.defend();
+                            System.out.println("debug: " + attacker.getName() + " is defending this turn.");
+                        }
+                        else {
+                            //Perform the attack
+                            Member defender = selectTarget(defenders);
+                            if (defender != null) {
+                                performAttack(attacker, defender);
+                            }
+                        }
+                    }
+                    else {
+                        //perform the attack
+                        Member defender = selectTarget(defenders);
+                        if (defender != null) {
+                            performAttack(attacker, defender);
+                        }
+                    }
                 }
             }
         }
+    }
+
+    private void requestWeapon(Member member) {
+        Random random = new Random();
+
+        List<Weapon> weapons = itemManager.getAllWeapons();
+
+        Weapon randomWeapon = weapons.get(random.nextInt(weapons.size()));
+        member.equipWeapon(randomWeapon);
 
     }
 
     // Select a Target for Attack
     private Member selectTarget(List<Member> defenders) {
+
+        Random random = new Random();
+
+        List<Member> availableDefenders = new ArrayList<>();
+
         for (Member defender : defenders) {
-            if (!defender.isKO()) { // Target first active defender
-                return defender;
+            if (defender.IsKO()) {
+                availableDefenders.add(defender);
             }
         }
-        return null; // No valid target found
+
+        if (availableDefenders.isEmpty()) {
+            return null;
+        }
+
+        return availableDefenders.get(random.nextInt(availableDefenders.size()));
     }
 
     // Perform an Attack Between Characters
@@ -98,15 +137,6 @@ public class CombatManager {
 
         // Apply damage to defender
         defender.takeDamage(finalDamage);
-
-        // Display attack results
-        System.out.println(attacker.getName() + " attacks " + defender.getName() +
-                " for " + finalDamage + " damage!");
-
-        // Check KO Status
-        if (defender.isKO()) {
-            System.out.println(defender.getName() + " is KO!");
-        }
 
         // Degrade weapon and armor
         degradeEquipment(attacker, defender);
@@ -134,39 +164,13 @@ public class CombatManager {
     }
 
     // Check if a Team is Defeated
-    public boolean isTeamDefeated(Team team) {
-        /*
-        return team.getMembers().stream().allMatch(Character::isKO);
+    public boolean isTeamDefeated(List<Member> members) {
 
-         */
-
-        return true;
-    }
-
-    // Display Combat Results
-    private void displayCombatResult(Team teamOne, Team teamTwo) {
-        System.out.println("Combat Result:");
-        displayTeamStatus(teamOne);
-        displayTeamStatus(teamTwo);
-
-        if (isTeamDefeated(teamOne) && isTeamDefeated(teamTwo)) {
-            System.out.println("It's a tie! Both teams are KO.");
-        } else if (isTeamDefeated(teamOne)) {
-            System.out.println(teamTwo.getName() + " wins!");
-        } else {
-            System.out.println(teamOne.getName() + " wins!");
+        for (Member member : members) {
+            if (member.IsKO()) {
+                return false;
+            }
         }
-    }
-
-    // Display Team Status After Combat
-    private void displayTeamStatus(Team team) {
-        /*
-        System.out.println("Team: " + team.getName());
-        team.getMembers().forEach(member -> {
-            System.out.print(member.getName() + " - ");
-            System.out.println(member.isKO() ? "KO" : "Active");
-        });
-
-         */
+        return true;
     }
 }

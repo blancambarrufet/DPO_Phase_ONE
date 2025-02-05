@@ -8,7 +8,6 @@ import persistance.exceptions.PersistanceException;
 import persistance.json.TeamJsonDAO;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class TeamManager {
 

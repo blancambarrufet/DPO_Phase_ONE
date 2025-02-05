@@ -331,15 +331,13 @@ public class UI {
         System.out.println(statistics);
     }
 
-    public void displayCombatExecution(int index, int teamNumber, String teamName, List<Member> characters) {
-        System.out.println("--- ROUND " + index + " ---");
-        displayTeamStats(teamNumber, teamName, characters);
-
-
+    public void displayCombatExecution(int index, int teamNumber, Team team, List<Member> members) {
+        System.out.println("--- ROUND " + index + "! ---");
+        displayTeamStats(teamNumber, team, members);
     }
 
-    public void displayTeamStats(int teamNumber, String teamName, List<Member> members) {
-        System.out.println("\nTeam #" + teamNumber + " - " + teamName);
+    private void displayTeamStats(int teamNumber, Team team, List<Member> members) {
+        System.out.println("\nTeam #" + teamNumber + " - " + team.getName());
 
         for (Member member : members) {
             System.out.println("\t- " + member.getName() + "(" + member.getDamageTaken() + " %) " + member.getWeapon() + " - " + member.getArmor());
