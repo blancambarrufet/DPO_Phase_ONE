@@ -25,6 +25,8 @@ public class Controller {
         this.teamManager = teamManager;
         this.combatManager = combatManager;
         this.statisticsManager = statisticsManager;
+
+
     }
 
     public void runMain() {
@@ -219,65 +221,50 @@ public class Controller {
         }
     }
 
-
-
     // Simulate Combat
     private void simulateCombat() {
-        try {
-            System.out.println("\nStarting simulation...");
-
-            //Convert List<Team> to ArrayList<Team>
-            ArrayList<Team> availableTeams = new ArrayList<>(teamManager.getTeams());
-            ui.displayTeamList(availableTeams);
-
-            //checking the number of teams available
-            if (availableTeams.size() < 2) {
-                System.out.println("(ERROR) Not enough teams to start a combat.");
-                return;
-            }
-
-            int teamIndex1 = ui.requestCombatTeam(1, availableTeams.size()) - 1;
-            int teamIndex2 = ui.requestCombatTeam(2, availableTeams.size()) - 1;
-
-            Team team1 = availableTeams.get(teamIndex1);
-            Team team2 = availableTeams.get(teamIndex2);
-
-            System.out.println("\nInitializing teams...");
-
-            List<Member> team1Members = team1.getMembers();
-            List<Member> team2Members = team2.getMembers();
-
-            List<Weapon> availableWeapons = itemManager.getAllWeapons();
-            List<Armor> availableArmor = itemManager.getAllArmor();
-
-            combatManager.initializeTeams(team1Members, team2Members, availableWeapons, availableArmor);
-
-            ui.displayTeamDetails(team1,1, team1Members);
-            ui.displayTeamDetails(team2,2, team2Members);
-
-
-            System.out.println("\nCombat ready!");
-            System.out.println("<Press any key to continue...>");
-            ui.scanner.nextLine(); // Esto se puede hacer?
-
-            int round = 1;
-
-            while(!combatManager.isTeamDefeated(team1Members) && !combatManager.isTeamDefeated(team2Members)) {
-                System.out.println("\n--- ROUND " + round + "! ---");
-
-
-            }
-
-
-
-
-        } catch (Exception e) {
-            System.out.println("Error during combat simulation: " + e.getMessage());
-        }
+        combatManager.combatSimulation();
     }
 
+    public void displayTeamsAvailable(List<Team> teams) {
+        ui.displayTeamList(teams);
+    }
 
+    public void displayExecutionTurn(String attacker, double damageAttack, String weapon, double damageReceived, String defender) {
+        ui.displayExecutionTurn(attacker, damageAttack, weapon, damageReceived, defender);
+    }
 
+    public void displayItemDurabilityBreak(String memberName, String itemName) {
+        ui.displayItemDurabilityBreak(memberName, itemName);
+    }
+
+    public void displayKOMembers(List<String> messages) {
+        ui.displayKOMembers(messages);
+    }
+
+    public void displayTeamStats(Team team, int teamNumber, List<Member> members) {
+        ui.displayTeamStats(team, teamNumber, members);
+    }
+
+    public void displayMessage(String message) {
+        ui.displayMessage(message);
+    }
+
+    public int requestTeamForCombat(int teamNumber, int maxTeams) {
+        return ui.requestTeamForCombat(teamNumber, maxTeams);
+    }
+
+    public void displayTeamInitialization(Team team, int teamNumber, List<Member> members) {
+        ui.displayTeamInitialization(team,teamNumber, members);
+    }
+
+    public void requestInput() {
+        ui.scanner.nextLine();
+    }
+
+    public void displayRoundMessage(int round) {
+        ui.displayRoundMessage(round);
+    }
 
 
 //    // Update Statistics After Combat

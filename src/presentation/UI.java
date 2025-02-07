@@ -280,7 +280,7 @@ public class UI {
 
 
 
-    public int requestCombatTeam(int teamNumber, int maxTeams) {
+    public int requestTeamForCombat(int teamNumber, int maxTeams) {
         int option = -1;
         boolean valid = false;
 
@@ -311,13 +311,13 @@ public class UI {
             for (int i = 0; i < teams.size(); i++) {
                 System.out.println("\t" + (i + 1) + ") " + teams.get(i).getName());
             }
-            System.out.println();
         }
     }
 
 
-    public void displayTeamDetails(Team team, int teamNumber, List<Member> members) {
+    public void displayTeamInitialization(Team team, int teamNumber, List<Member> members) {
         System.out.println("\n\tTeam #" + teamNumber + " - " + team.getName());
+
 
         for (Member member : members) {
             System.out.println("\t- " + member.getName());
@@ -331,16 +331,11 @@ public class UI {
         System.out.println(statistics);
     }
 
-    public void displayCombatExecution(int index, int teamNumber, Team team, List<Member> members) {
-        System.out.println("--- ROUND " + index + "! ---");
-        displayTeamStats(teamNumber, team, members);
-    }
-
-    private void displayTeamStats(int teamNumber, Team team, List<Member> members) {
+    public void displayTeamStats(Team team, int teamNumber, List<Member> members) {
         System.out.println("\nTeam #" + teamNumber + " - " + team.getName());
 
         for (Member member : members) {
-            System.out.println("\t- " + member.getName() + "(" + member.getDamageTaken() + " %) " + member.getWeapon() + " - " + member.getArmor());
+            System.out.println("\t- " + member.getName() + "(" + member.getDamageTaken() + " %) " + member.getWeapon().getName() + " - " + member.getArmor().getName());
         }
     }
 
@@ -349,4 +344,24 @@ public class UI {
     }
 
 
+    public void displayExecutionTurn(String attacker, double damageAttack, String weapon, double damageReceived, String defender) {
+        System.out.println(attacker + " ATTACKS " + defender + " WITH " + weapon + " FOR " + damageAttack + " DAMAGE!");
+        System.out.println("\t" + defender + " RECEIVES " + damageReceived + " DAMAGE.");
+    }
+
+    public void displayItemDurabilityBreak(String memberName, String itemName) {
+        System.out.println("Oh no! " + memberName + "’s " + itemName + " breaks!");
+    }
+
+    public void displayKOMembers(List<String> messages) {
+
+    }
+
+    public void displayMessage(String message) {
+        System.out.println(message);
+    }
+
+    public void displayRoundMessage(int round) {
+        System.out.println("\n--- ROUND " + round + "! ---");
+    }
 }

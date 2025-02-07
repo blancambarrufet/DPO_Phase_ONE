@@ -7,12 +7,13 @@ public class Main {
         CharacterManager characterManager = new CharacterManager();
         ItemManager itemManager = new ItemManager();
         TeamManager teamManager = new TeamManager(characterManager);
-        CombatManager combatManager = new CombatManager(characterManager,itemManager);
+        CombatManager combatManager = new CombatManager(characterManager,itemManager,teamManager);
         StatisticsManager statisticsManager = new StatisticsManager();
 
         UI ui = new UI();
 
         Controller controller = new Controller(ui, combatManager, itemManager, teamManager, characterManager, statisticsManager);
+        combatManager.setController(controller);
         controller.runMain();
     }
 }
