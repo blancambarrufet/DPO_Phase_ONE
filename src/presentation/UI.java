@@ -316,14 +316,19 @@ public class UI {
 
 
     public void displayTeamInitialization(Team team, int teamNumber, List<Member> members) {
-        System.out.println("\n\tTeam #" + teamNumber + " - " + team.getName());
+        System.out.println("\tTeam #" + teamNumber + " - " + team.getName());
 
 
         for (Member member : members) {
+            // Ensure no null pointer exception occurs
+            String weaponName = (member.getWeapon() != null) ? member.getWeapon().getName() : "No Weapon";
+            String armorName = (member.getArmor() != null) ? member.getArmor().getName() : "No Armor";
+
             System.out.println("\t- " + member.getName());
-            System.out.println("\t\t   Weapon: " + (member.getWeapon() != null ? member.getWeapon().getName() : "None"));
-            System.out.println("\t\t   Armor: " + (member.getArmor() != null ? member.getArmor().getName() : "None"));
+            System.out.println("\t\t   Weapon: " + weaponName);
+            System.out.println("\t\t   Armor: " + armorName);
         }
+        System.out.println("\n");
     }
 
     public void displayStatistics(String statistics) {
@@ -332,11 +337,17 @@ public class UI {
     }
 
     public void displayTeamStats(Team team, int teamNumber, List<Member> members) {
-        System.out.println("\nTeam #" + teamNumber + " - " + team.getName());
+        System.out.println("Team #" + teamNumber + " - " + team.getName());
 
         for (Member member : members) {
-            System.out.println("\t- " + member.getName() + "(" + member.getDamageTaken() + " %) " + member.getWeapon().getName() + " - " + member.getArmor().getName());
+            // Check if the weapon is null before calling getName()
+            String weaponName = (member.getWeapon() != null) ? member.getWeapon().getName() : "No Weapon";
+            // Check if the armor is null before calling getName()
+            String armorName = (member.getArmor() != null) ? member.getArmor().getName() : "No Armor";
+
+            System.out.println("\t- " + member.getName() + " (" + member.getDamageTaken() + "%) " + weaponName + " - " + armorName);
         }
+        System.out.println("\n");
     }
 
     public void printTeamName(Team team) {
@@ -362,6 +373,11 @@ public class UI {
     }
 
     public void displayRoundMessage(int round) {
-        System.out.println("\n--- ROUND " + round + "! ---");
+        System.out.println("\n--- ROUND " + round + "! ---\n");
+    }
+
+
+    public void displayKOMember(String memberName) {
+        System.out.println(memberName + " flies away! It’s a KO!");
     }
 }

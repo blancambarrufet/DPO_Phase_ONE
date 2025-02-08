@@ -266,6 +266,10 @@ public class Controller {
         ui.displayRoundMessage(round);
     }
 
+    public void displayKOMember(String memberName) {
+        ui.displayKOMember(memberName);
+    }
+
 
 //    // Update Statistics After Combat
 //    private void updateStatistics(Team teamOne, Team teamTwo) throws PersistanceException {

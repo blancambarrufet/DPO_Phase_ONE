@@ -105,6 +105,8 @@ public class CombatManager {
 
             durabilityChecking(team1Members, team2Members);
 
+            KOChecking(team1Members, team2Members);
+
             round++;
         }
 
@@ -115,7 +117,7 @@ public class CombatManager {
     // Execute a Turn for a Team
     private void executeTurn(List<Member> attackers, List<Member> defenders) {
         for (Member attacker : attackers) {
-            if (attacker.IsKO()) {
+            if (attacker.isKO()) {
                 continue;
             }
 
@@ -169,7 +171,7 @@ public class CombatManager {
         List<Member> availableDefenders = new ArrayList<>();
 
         for (Member defender : defenders) {
-            if (!defender.IsKO()) {
+            if (!defender.isKO()) {
                 availableDefenders.add(defender);
             }
         }
@@ -210,6 +212,7 @@ public class CombatManager {
     private void degradeEquipment(Member member) {
         //check weapon durability
         if (member.getWeapon() != null) {
+
             //reduce the durability by 1 because it has been used
             member.getWeapon().reduceDurability();
 
@@ -231,11 +234,38 @@ public class CombatManager {
         }
     }
 
+    public void KOChecking(List<Member> team1Members, List<Member> team2Members) {
+        Random random = new Random();
+
+        for (Member member : team1Members) {
+            checkForKO(member, random);
+        }
+
+        for(Member member : team2Members) {
+            checkForKO(member, random);
+        }
+
+
+    }
+
+    // Check if character is KO
+    private void checkForKO(Member member, Random random) {
+        if (!member.isKO()) {
+            // Random value between 0-200
+            double knockOutValue = (random.nextInt(200) + 1) / 100.0;
+
+            if (knockOutValue > member.getDamageTaken()) {
+                member.setKO(true);
+                controller.displayKOMember(member.getName());
+            }
+        }
+    }
+
     // Check if a Team is Defeated
     public boolean isTeamDefeated(List<Member> members) {
 
         for (Member member : members) {
-            if (!member.IsKO()) {
+            if (!member.isKO()) {
                 return false;
             }
         }
