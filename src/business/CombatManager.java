@@ -110,8 +110,11 @@ public class CombatManager {
             round++;
         }
 
-        // Display combat results
-        //displayCombatResult(teamOne, teamTwo);
+        Team winnerTeam = isTeamDefeated(team1Members) ? team1 : team2;
+
+        controller.displayCombatResult(winnerTeam,team1,team1Members,team2,team2Members);
+
+
     }
 
     // Execute a Turn for a Team

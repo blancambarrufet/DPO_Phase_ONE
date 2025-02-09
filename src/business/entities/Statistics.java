@@ -2,17 +2,17 @@ package business.entities;
 
 public class Statistics {
     private String name;
-    private int gamesPlayed;
-    private int gamesWon;
-    private int koMade;
-    private int koReceived;
+    private int games_played;
+    private int games_won;
+    private int KO_done;
+    private int KO_received;
 
     public Statistics(String name) {
         this.name = name;
-        this.gamesPlayed = 0;
-        this.gamesWon = 0;
-        this.koMade = 0;
-        this.koReceived = 0;
+        this.games_played = 0;
+        this.games_won = 0;
+        this.KO_done = 0;
+        this.KO_received = 0;
     }
 
     public String getName() {
@@ -23,46 +23,46 @@ public class Statistics {
         this.name = name;
     }
 
-    public int getGamesPlayed() {
-        return gamesPlayed;
+    public int getGames_played() {
+        return games_played;
     }
 
-    public void setGamesPlayed(int gamesPlayed) {
-        this.gamesPlayed = gamesPlayed;
+    public void setGames_played(int games_played) {
+        this.games_played = games_played;
     }
 
-    public int getGamesWon() {
-        return gamesWon;
+    public int getGames_won() {
+        return games_won;
     }
 
-    public void setGamesWon(int gamesWon) {
-        this.gamesWon = gamesWon;
+    public void setGames_won(int games_won) {
+        this.games_won = games_won;
     }
 
-    public int getKoMade() {
-        return koMade;
+    public int getKO_done() {
+        return KO_done;
     }
 
-    public void setKoMade(int koMade) {
-        this.koMade = koMade;
+    public void setKO_done(int KO_done) {
+        this.KO_done = KO_done;
     }
 
-    public int getKoReceived() {
-        return koReceived;
+    public int getKO_received() {
+        return KO_received;
     }
 
-    public void setKoReceived(int koReceived) {
-        this.koReceived = koReceived;
+    public void setKO_received(int KO_received) {
+        this.KO_received = KO_received;
     }
 
-    public void incrementGamesPlayed() { gamesPlayed++; }
-    public void incrementGamesWon() { gamesWon++; }
-    public void incrementKOMade() { koMade++; }
-    public void incrementKOReceived() { koReceived++; }
+    public void incrementGamesPlayed() { games_played++; }
+    public void incrementGamesWon() { games_won++; }
+    public void incrementKOMade() { KO_done++; }
+    public void incrementKOReceived() { KO_received++; }
 
     public String getSummary() {
-        return name + " - Played: " + gamesPlayed + ", Won: " + gamesWon +
-                ", KO Made: " + koMade + ", KO Received: " + koReceived;
+        return name + " - Played: " + games_played + ", Won: " + games_won +
+                ", KO Made: " + KO_done + ", KO Received: " + KO_received;
     }
 
 }

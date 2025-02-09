@@ -31,6 +31,10 @@ public class StatisticsManager {
         statisticsDAO.saveStatistics(statistics);
     }
 
+    public List<Statistics> getStatistics() {
+        return statistics;
+    }
+
     // Record combat result
     public void recordCombatResult(String winner, String loser) throws PersistanceException {
         for (Statistics stat : statistics) {
@@ -52,17 +56,14 @@ public class StatisticsManager {
         }
     }
 
-    // Add a new team to statistics
-    public void addTeam(String teamName) throws PersistanceException {
-        if (statistics.stream().noneMatch(stat -> stat.getName().equalsIgnoreCase(teamName))) {
-            statistics.add(new Statistics(teamName));
-            saveStatistics();
+    public Statistics getStaticByName(String name) {
+        for (Statistics stat : statistics) {
+            if (stat.getName().equalsIgnoreCase(name)) {
+                return stat;
+            }
         }
+        return null;
     }
 
-    // Remove a team from statistics
-    public void removeTeam(String teamName) throws PersistanceException {
-        statistics.removeIf(stat -> stat.getName().equalsIgnoreCase(teamName));
-        saveStatistics();
-    }
+
 }

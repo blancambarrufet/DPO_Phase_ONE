@@ -170,7 +170,21 @@ public class Controller {
     // List All Teams
     private void listTeams() {
         List<Team> teams =  teamManager.getTeams();
-        ui.displayTeamList(teams);
+        int selectedOption = ui.displayTeamOptionList(teams);
+
+        if (selectedOption == 0) {
+            return; // Go back to the main menu
+        }
+
+        Team selectedTeam = teams.get(selectedOption - 1);
+
+        // Display character details via the UI
+        ui.displayTeamDetails(selectedTeam);
+
+        Statistics statistics = statisticsManager.getStaticByName(selectedTeam.getName());
+
+
+        ui.printStatistics(statistics);
     }
 
     // Delete a Team
@@ -276,6 +290,9 @@ public class Controller {
         ui.displayKOMember(memberName);
     }
 
+    public void displayCombatResult(Team teamWinner, Team team1, List<Member> team1Members, Team team2, List<Member> team2Members) {
+        ui.displayCombatResult(teamWinner, team1, team1Members, team2, team2Members);
+    }
 
 //    // Update Statistics After Combat
 //    private void updateStatistics(Team teamOne, Team teamTwo) throws PersistanceException {
