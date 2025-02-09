@@ -4,19 +4,19 @@
     "members": [
       {
         "id": 5431512,
-        "strategy": "balanced"
+        "strategy": "Social Club Member"
       },
       {
         "id": 467416287,
-        "strategy": "offensive"
+        "strategy": "LS Panda"
       },
       {
         "id": 4264041,
-        "strategy": "defensive"
+        "strategy": "DJ Tardeo"
       },
       {
         "id": 748738,
-        "strategy": "sniper"
+        "strategy": "Holy Campus Ministry"
       }
     ]
   },
@@ -25,19 +25,19 @@
     "members": [
       {
         "id": 68053,
-        "strategy": "balanced"
+        "strategy": "Technova Entrepreneur"
       },
       {
         "id": 68053,
-        "strategy": "balanced"
+        "strategy": "Technova Entrepreneur"
       },
       {
         "id": 68053,
-        "strategy": "balanced"
+        "strategy": "Technova Entrepreneur"
       },
       {
         "id": 68053,
-        "strategy": "balanced"
+        "strategy": "Technova Entrepreneur"
       }
     ]
   },
@@ -46,19 +46,40 @@
     "members": [
       {
         "id": 467416287,
-        "strategy": "balanced"
+        "strategy": "LS Panda"
       },
       {
         "id": 4115637091,
-        "strategy": "balanced"
+        "strategy": "Jean-Baptiste de La Salle"
       },
       {
         "id": 73237806,
-        "strategy": "balanced"
+        "strategy": "Ioti The Cat"
       },
       {
         "id": 748738,
-        "strategy": "balanced"
+        "strategy": "Holy Campus Ministry"
+      }
+    ]
+  },
+  {
+    "name": "BlancaTeam",
+    "members": [
+      {
+        "id": 7021,
+        "strategy": "Business Model Canvas"
+      },
+      {
+        "id": 7021,
+        "strategy": "Business Model Canvas"
+      },
+      {
+        "id": 7021,
+        "strategy": "Business Model Canvas"
+      },
+      {
+        "id": 7021,
+        "strategy": "Business Model Canvas"
       }
     ]
   }

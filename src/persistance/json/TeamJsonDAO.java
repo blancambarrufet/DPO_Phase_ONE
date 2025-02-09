@@ -1,6 +1,7 @@
 package persistance.json;
 
 import business.entities.Team;
+import business.entities.TeamPrint;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
@@ -63,7 +64,7 @@ public class TeamJsonDAO implements TeamDAO {
 
 
     @Override
-    public void saveTeams(List<Team> teams) throws PersistanceException {
+    public void saveTeams(List<TeamPrint> teams) throws PersistanceException {
         try (FileWriter writer = new FileWriter(PATH)) {
             Gson gson = new GsonBuilder().setPrettyPrinting().create();
             gson.toJson(teams, writer);
