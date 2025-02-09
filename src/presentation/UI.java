@@ -1,9 +1,8 @@
 package presentation;
 
-import business.entities.Item;
+import business.entities.*;
 import business.entities.Character;
-import business.entities.Member;
-import business.entities.Team;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -376,8 +375,100 @@ public class UI {
         System.out.println("\n--- ROUND " + round + "! ---\n");
     }
 
-
     public void displayKOMember(String memberName) {
         System.out.println(memberName + " flies away! It’s a KO!");
+    }
+
+
+    public void displayCombatResult(Team teamWinner, Team team1, List<Member> team1Members, Team team2, List<Member> team2Members) {
+        System.out.println("\n--- END OF COMBAT ---\n");
+
+        System.out.println("... and " + teamWinner.getName() + " wins!\n");
+
+        System.out.println("Team #1 – " + team1.getName());
+
+        for (Member member : team1Members) {
+
+            String status = member.isKO() ? "KO" : (member.getDamageTaken() * 100) + " %";
+
+            System.out.println(" - " + member.getName() + " (" + status + ")");
+        }
+
+        System.out.println("Team #2 – " + team2.getName());
+
+        for (Member member : team2Members) {
+
+            String status = member.isKO() ? "KO" : (member.getDamageTaken() * 100) + " %";
+
+            System.out.println(" - " + member.getName() + " (" + status + ")");
+        }
+
+        System.out.print("\n<Press any key to continue...>");
+        scanner.nextLine();
+
+
+    }
+
+    public int displayTeamOptionList(List<Team> teams) {
+        if (teams.isEmpty()) {
+            System.out.println("No teams available.");
+            return 0;
+        } else {
+            for (int i = 0; i < teams.size(); i++) {
+                System.out.println((i + 1) + ") " + teams.get(i).getName());
+            }
+            System.out.println("\n0) Back");
+
+            return requestTeamOption(teams.size());
+        }
+
+    }
+
+    private int requestTeamOption(int maxSize) {
+        int option;
+
+        do {
+            System.out.print("\nChoose an option: ");
+            option = Integer.parseInt(scanner.nextLine());
+
+            if (option >= 0 && option <= maxSize) {
+                return option;
+            }
+            else {
+                System.out.println("(ERROR) Invalid option. Please select a valid number.");
+            }
+
+        } while (option <= maxSize && option >= 0);
+
+        return 0;
+    }
+
+    public void displayTeamDetails(Team selectedTeam) {
+        System.out.println("\n\tTeam name: " + selectedTeam.getName() + "\n");
+
+        int i = 0;
+        int width = 30;
+
+        for (Member member : selectedTeam.getMembers()) {
+            String newName = String.format("%-" + width + "s", member.getName());
+            System.out.println("Character #" + i + ": " + newName + "(" + member.getStrategy().toUpperCase() + ")");
+            i++;
+        }
+    }
+
+
+    public void printStatistics(Statistics stats) {
+        int won = stats.getGames_won();
+        int played = stats.getGames_won();
+        float winRate = (float) (100 * won) /played;
+
+        System.out.println("\nCombats played: \t" +won);
+        System.out.println("Combats won: \t\t" + played);
+        System.out.println("Win rate: \t\t\t" + (int) winRate + "%");
+        System.out.println("KOs done: \t\t\t" + stats.getKO_done());
+        System.out.println("KOs received: \t\t" + stats.getKO_received());
+
+        System.out.print("\n<Press any key to continue...>");
+        scanner.nextLine();
     }
 }
