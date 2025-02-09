@@ -37,6 +37,7 @@ public class Member {
     public void setStrategy(String strategy) { this.strategy = strategy; }
     public String getName() { return character.getName(); }
     public int getWeight() { return character.getWeight(); }
+    public boolean setKO(boolean status) { return isKO = status; }
 
     public double getDamageTaken() {
         return damageTaken;
@@ -76,25 +77,14 @@ public class Member {
     public void endTurn() {
         defending = false;
     }
+
     public void resetDamage() {
         this.damageTaken = 0;
     }
 
-    // Check if character is KO
-    public boolean checkForKO() {
-        Random random = new Random();
 
-        // Random value between 0-200
-        double knockOutValue = (random.nextInt(200) + 1) / 100.0;
 
-       if (knockOutValue > damageTaken) {
-            this.isKO = true;
-        }
-
-        return isKO;
-    }
-
-    public boolean IsKO() {
+    public boolean isKO() {
         return isKO;
     }
 
