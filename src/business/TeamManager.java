@@ -1,18 +1,19 @@
 package business;
 
+import business.entities.*;
 import business.entities.Character;
-import business.entities.Member;
-import business.entities.Team;
 import persistance.TeamDAO;
 import persistance.exceptions.PersistanceException;
 import persistance.json.TeamJsonDAO;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class TeamManager {
 
     private final TeamDAO teamDAO;
     private ArrayList<Team> teams;
+    private ArrayList<TeamPrint> teamsPrint;
     private CharacterManager characterManager;
 
     public TeamManager(CharacterManager characterManager) throws PersistanceException {
@@ -21,42 +22,21 @@ public class TeamManager {
         loadTeams();
     }
 
-    public TeamManager(TeamDAO teamDAO, CharacterManager characterManager) throws PersistanceException {
-        this.teamDAO = teamDAO;
-        this.characterManager = characterManager;
-        loadTeams();
-    }
-
     // Get all teams
     public ArrayList<Team> getTeams() {
          return teams;
     }
 
-    // Create a new team
-    public void createTeam(Team newTeam) throws PersistanceException {
-        // Check if team name is unique
-        for (Team team : teams) {
-            if (team.getName().equalsIgnoreCase(newTeam.getName())) {
-                System.out.println("Team name already exists!");
-                return;
-            }
-        }
-
-        // Add team and save to file
-        teams.add(newTeam);
-        saveTeams();
-        System.out.println("Team " + newTeam.getName() + " created successfully.");
-    }
 
     // Delete a team by name
     public void deleteTeam(String teamName) throws PersistanceException {
         boolean removed = teams.removeIf(team -> team.getName().equalsIgnoreCase(teamName));
 
         if (removed) {
+            teamsPrint.removeIf(team -> team.getName().equalsIgnoreCase(teamName));
             saveTeams();
-            System.out.println("Team " + teamName + " deleted successfully.");
         } else {
-            System.out.println("Team not found.");
+            System.out.println("DEBUG: Team not found.");
         }
     }
 
@@ -67,7 +47,7 @@ public class TeamManager {
 
     // Save all teams to the persistence source
     private void saveTeams() throws PersistanceException {
-        teamDAO.saveTeams(teams);
+        teamDAO.saveTeams(teamsPrint);
     }
 
     public void loadTeams() throws PersistanceException {
@@ -93,16 +73,17 @@ public class TeamManager {
                 String id = String.valueOf(member.getCharacterId());
                 Character character = characterManager.findCharacter(id);
 
-                //if (character == null && !id.equals("0")) {
-
                 if (character == null) {
                     System.out.println("ERROR: Character with ID " + id + " not found!");
                 } else {
                     member.setCharacter(character);
                 }
             }
+        }
 
-
+        teamsPrint = new ArrayList<>();
+        for (Team team : teams) {
+            fromTeamToPrint(team);
         }
     }
 
@@ -129,6 +110,7 @@ public class TeamManager {
         if (newTeam == null) {  System.out.println("DEBUG: New tram null ");
         return;}
         teams.add(newTeam);
+        fromTeamToPrint(newTeam);
         System.out.println("DEBUG: Team successfully added to memory, saving to JSON...");
 
         saveTeams();
@@ -136,16 +118,30 @@ public class TeamManager {
     }
 
 
-    // Remove a team by name
-    public void removeTeam(String teamName) throws PersistanceException {
-        teams.removeIf(team -> team.getName().equalsIgnoreCase(teamName));
-        saveTeams(); // Save updated team list
-        System.out.println("Team removed successfully.");
-    }
+
 
     // Check if a team name already exists
     private boolean checkName(String name) {
         return teams.stream().anyMatch(team -> team.getName().equalsIgnoreCase(name));
+    }
+    private List<MemberPrint> fromMembersToPrint(List<Member> members) {
+        List<MemberPrint> memberPrints = new ArrayList<>();
+        for (Member member : members) {
+            long id = member.getCharacterId();
+            String name = member.getName();
+            memberPrints.add(new MemberPrint(id, name));
+        }
+
+        return memberPrints;
+    }
+
+    private void fromTeamToPrint(Team team) {
+        String teamName = team.getName();
+        List<Member> members = team.getMembers();
+
+        List<MemberPrint> memberPrints = fromMembersToPrint(members);
+
+        teamsPrint.add(new TeamPrint(teamName, memberPrints));
     }
 
 }

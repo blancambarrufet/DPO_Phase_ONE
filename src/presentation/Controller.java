@@ -191,7 +191,13 @@ public class Controller {
     private void deleteTeam() {
         try {
             String teamName = ui.requestTeamInfo();
-            teamManager.deleteTeam(teamName);
+            boolean sure = ui.sure(teamName);
+            if (sure) {
+                teamManager.deleteTeam(teamName);
+            }
+
+            ui.confirmationMessage(teamName, sure);
+
         } catch (PersistanceException e) {
             System.out.println("Error deleting team: " + e.getMessage());
         }
