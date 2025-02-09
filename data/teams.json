@@ -61,26 +61,5 @@
         "strategy": "Holy Campus Ministry"
       }
     ]
-  },
-  {
-    "name": "BlancaTeam",
-    "members": [
-      {
-        "id": 7021,
-        "strategy": "Business Model Canvas"
-      },
-      {
-        "id": 7021,
-        "strategy": "Business Model Canvas"
-      },
-      {
-        "id": 7021,
-        "strategy": "Business Model Canvas"
-      },
-      {
-        "id": 7021,
-        "strategy": "Business Model Canvas"
-      }
-    ]
   }
 ]

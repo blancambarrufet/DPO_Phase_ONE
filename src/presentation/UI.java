@@ -380,4 +380,20 @@ public class UI {
     public void displayKOMember(String memberName) {
         System.out.println(memberName + " flies away! It’s a KO!");
     }
+
+    public boolean sure(String name) {
+        System.out.print("\nAre you sure you want to remove \"" + name + "\" ?");
+        Scanner input = new Scanner(System.in);
+        String userInput = input.nextLine();
+        return userInput.equalsIgnoreCase("Yes");
+    }
+
+    public void confirmationMessage(String name, boolean sure) {
+        if (sure) {
+            System.out.println("\n\""+name+"\" has been removed from the system.");
+        }
+        else {
+            System.out.println("\n\""+name+"\" will not be removed from the system.");
+        }
+    }
 }

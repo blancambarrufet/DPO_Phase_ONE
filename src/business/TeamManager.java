@@ -33,10 +33,10 @@ public class TeamManager {
         boolean removed = teams.removeIf(team -> team.getName().equalsIgnoreCase(teamName));
 
         if (removed) {
+            teamsPrint.removeIf(team -> team.getName().equalsIgnoreCase(teamName));
             saveTeams();
-            System.out.println("Team " + teamName + " deleted successfully.");
         } else {
-            System.out.println("Team not found.");
+            System.out.println("DEBUG: Team not found.");
         }
     }
 
@@ -118,12 +118,7 @@ public class TeamManager {
     }
 
 
-    // Remove a team by name
-    public void removeTeam(String teamName) throws PersistanceException {
-        teams.removeIf(team -> team.getName().equalsIgnoreCase(teamName));
-        saveTeams(); // Save updated team list
-        System.out.println("Team removed successfully.");
-    }
+
 
     // Check if a team name already exists
     private boolean checkName(String name) {
