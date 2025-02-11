@@ -340,13 +340,15 @@ public class UI {
 
         for (Member member : members) {
             // Check if the weapon is null before calling getName()
-            String weaponName = (member.getWeapon() != null) ? member.getWeapon().getName() : "No Weapon";
-            // Check if the armor is null before calling getName()
-            String armorName = (member.getArmor() != null) ? member.getArmor().getName() : "No Armor";
+            String status = member.isKO() ? "KO" : (int) (member.getDamageTaken() * 100) + " %";
 
-            System.out.println("\t- " + member.getName() + " (" + member.getDamageTaken() + "%) " + weaponName + " - " + armorName);
+            String weaponName = (member.getWeapon() != null) ? member.getWeapon().getName() : "no Weapon";
+            // Check if the armor is null before calling getName()
+            String armorName = (member.getArmor() != null) ? member.getArmor().getName() : "no Armor";
+
+
+            System.out.println("\t- " + member.getName() + " (" + status + ") " + weaponName + " - " + armorName);
         }
-        System.out.println("\n");
     }
 
     public void printTeamName(Team team) {
@@ -355,8 +357,8 @@ public class UI {
 
 
     public void displayExecutionTurn(String attacker, double damageAttack, String weapon, double damageReceived, String defender) {
-        System.out.println(attacker + " ATTACKS " + defender + " WITH " + weapon + " FOR " + damageAttack + " DAMAGE!");
-        System.out.println("\t" + defender + " RECEIVES " + damageReceived + " DAMAGE.");
+        System.out.println(attacker + " ATTACKS " + defender + " WITH " + weapon + " FOR " + String.format("%.1f", damageAttack) + " DAMAGE!");
+        System.out.println("\t" + defender + " RECEIVES " + String.format("%.2f", damageReceived) + " DAMAGE.");
     }
 
     public void displayItemDurabilityBreak(String memberName, String itemName) {
@@ -388,7 +390,7 @@ public class UI {
 
         for (Member member : team1Members) {
 
-            String status = member.isKO() ? "KO" : (member.getDamageTaken() * 100) + " %";
+            String status = member.isKO() ? "KO" : (int) (member.getDamageTaken() * 100) + " %";
 
             System.out.println(" - " + member.getName() + " (" + status + ")");
         }
@@ -397,7 +399,7 @@ public class UI {
 
         for (Member member : team2Members) {
 
-            String status = member.isKO() ? "KO" : (member.getDamageTaken() * 100) + " %";
+            String status = member.isKO() ? "KO" : (int) (member.getDamageTaken() * 100) + " %";
 
             System.out.println(" - " + member.getName() + " (" + status + ")");
         }

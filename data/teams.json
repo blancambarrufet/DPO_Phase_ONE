@@ -4,19 +4,19 @@
     "members": [
       {
         "id": 5431512,
-        "strategy": "Social Club Member"
+        "strategy": "balanced"
       },
       {
         "id": 467416287,
-        "strategy": "LS Panda"
+        "strategy": "offensive"
       },
       {
         "id": 4264041,
-        "strategy": "DJ Tardeo"
+        "strategy": "defensive"
       },
       {
         "id": 748738,
-        "strategy": "Holy Campus Ministry"
+        "strategy": "sniper"
       }
     ]
   },
@@ -25,19 +25,19 @@
     "members": [
       {
         "id": 68053,
-        "strategy": "Technova Entrepreneur"
+        "strategy": "balanced"
       },
       {
         "id": 68053,
-        "strategy": "Technova Entrepreneur"
+        "strategy": "balanced"
       },
       {
         "id": 68053,
-        "strategy": "Technova Entrepreneur"
+        "strategy": "balanced"
       },
       {
         "id": 68053,
-        "strategy": "Technova Entrepreneur"
+        "strategy": "balanced"
       }
     ]
   },
@@ -46,19 +46,19 @@
     "members": [
       {
         "id": 467416287,
-        "strategy": "LS Panda"
+        "strategy": "balanced"
       },
       {
         "id": 4115637091,
-        "strategy": "Jean-Baptiste de La Salle"
+        "strategy": "balanced"
       },
       {
         "id": 73237806,
-        "strategy": "Ioti The Cat"
+        "strategy": "balanced"
       },
       {
         "id": 748738,
-        "strategy": "Holy Campus Ministry"
+        "strategy": "balanced"
       }
     ]
   }

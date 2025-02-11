@@ -103,7 +103,7 @@ public class CombatManager {
             executeTurn(team1Members, team2Members);
             executeTurn(team2Members, team1Members);
 
-            durabilityChecking(team1Members, team2Members);
+            //durabilityChecking(team1Members, team2Members);
 
             KOChecking(team1Members, team2Members);
 
@@ -127,7 +127,7 @@ public class CombatManager {
             if (attacker.getStrategy().equals("balanced")) {
                 if (attacker.getWeapon() == null) {
                     requestWeapon(attacker);
-                    controller.displayMessage(attacker.getName() + " requested a weapon.");
+                    controller.displayMessage(attacker.getName() + " requested a weapon!!!!.\n");
                 }
                 else {
                     if (attacker.getArmor() != null) {
@@ -195,44 +195,46 @@ public class CombatManager {
         double attackDamage = attacker.calculateAttack();
         double finalDamage = defender.calculateFinalDamage(attackDamage);
 
-        controller.displayExecutionTurn(attacker.getName(), attackDamage,attacker.getWeapon().getName(),finalDamage, defender.getName());
+        controller.displayExecutionTurn(attacker.getName(), attackDamage, attacker.getWeapon().getName(),finalDamage, defender.getName());
 
         // Apply damage to defender
         defender.takeDamage(finalDamage);
+
+        degradeEquipment(attacker, defender);
     }
 
-    public void durabilityChecking(List<Member> team1, List<Member> team2) {
-        for (Member member : team1) {
-            degradeEquipment(member);
-        }
-
-        for (Member member : team2) {
-            degradeEquipment(member);
-        }
-    }
+//    public void durabilityChecking(List<Member> team1, List<Member> team2) {
+//        for (Member member : team1) {
+//            degradeEquipment(member);
+//        }
+//
+//        for (Member member : team2) {
+//            degradeEquipment(member);
+//        }
+//    }
 
     //Degrade Equipment (Weapon and Armor)
-    private void degradeEquipment(Member member) {
-        //check weapon durability
-        if (member.getWeapon() != null) {
+    private void degradeEquipment(Member attacker, Member defender) {
+        //Reduce attacker's weapon durability
+        if (attacker.getWeapon() != null) {
 
             //reduce the durability by 1 because it has been used
-            member.getWeapon().reduceDurability();
+            attacker.getWeapon().reduceDurability();
 
-            if (member.getWeapon().isBroken()) {
-                controller.displayItemDurabilityBreak(member.getName(), member.getWeapon().getName());
-                member.equipWeapon(null); // Remove broken weapon
+            if (attacker.getWeapon().isBroken()) {
+                controller.displayItemDurabilityBreak(attacker.getName(), attacker.getWeapon().getName());
+                attacker.equipWeapon(null); // Remove broken weapon
             }
         }
 
-        //check for armor durability
-        if (member.getArmor() != null) {
+        //Reduce defender's armor durability
+        if (defender.getArmor() != null) {
             //reduce the durability of the armor by 1
-            member.getArmor().reduceDurability();
+            defender.getArmor().reduceDurability();
 
-            if (member.getArmor().isBroken()) {
-                controller.displayItemDurabilityBreak(member.getName(), member.getArmor().getName());
-                member.equipArmor(null); // Remove broken armor
+            if (defender.getArmor().isBroken()) {
+                controller.displayItemDurabilityBreak(defender.getName(), defender.getArmor().getName());
+                defender.equipArmor(null); // Remove broken armor
             }
         }
     }
@@ -254,12 +256,20 @@ public class CombatManager {
     // Check if character is KO
     private void checkForKO(Member member, Random random) {
         if (!member.isKO()) {
-            // Random value between 0-200
-            double knockOutValue = (random.nextInt(200) + 1) / 100.0;
+            double damageTaken = member.getDamageTaken();
 
-            if (knockOutValue > member.getDamageTaken()) {
-                member.setKO(true);
-                controller.displayKOMember(member.getName());
+            if (damageTaken > 0) {
+                // Random value between 1-200
+                double knockOutValue = (random.nextInt(200) + 1) / 100.0;
+
+                System.out.println("[DEBUG] Checking KO for " + member.getName() +
+                        " | KO Threshold: " + String.format("%.2f", knockOutValue) +
+                        " | Damage Taken: " + String.format("%.2f", damageTaken));
+
+                if (knockOutValue > damageTaken) {
+                    member.setKO(true);
+                    controller.displayKOMember(member.getName());
+                }
             }
         }
     }
