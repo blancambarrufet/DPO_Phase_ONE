@@ -8,16 +8,16 @@
   },
   {
     "name": "Technova",
-    "games_played": 5,
+    "games_played": 8,
     "games_won": 2,
-    "KO_done": 11,
-    "KO_received": 18
+    "KO_done": 16,
+    "KO_received": 28
   },
   {
     "name": "DPOO All-star",
-    "games_played": 5,
-    "games_won": 2,
-    "KO_done": 16,
-    "KO_received": 13
+    "games_played": 8,
+    "games_won": 5,
+    "KO_done": 28,
+    "KO_received": 18
   }
 ]

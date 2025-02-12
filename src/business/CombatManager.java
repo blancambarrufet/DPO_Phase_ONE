@@ -30,7 +30,7 @@ public class CombatManager {
     public void combatSimulation() {
         controller.displayMessage("\nStarting simulation...");
 
-        List<Team> availableTeams = teamManager.getTeams();
+        List<Team> availableTeams = teamManager.loadTeams();
         controller.displayTeamsAvailable(availableTeams);
 
         if (availableTeams.size() < 2) {

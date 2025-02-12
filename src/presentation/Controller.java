@@ -70,8 +70,6 @@ public class Controller {
 
             //Missing the creation of the file team and statistics
 
-            // DEBUG:
-            teamManager.loadTeams();                        // Teams
 
             // Check and return based on UI validation
             return ui.validatePersistence(charactersOk, itemsOk);
