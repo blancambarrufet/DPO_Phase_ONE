@@ -3,7 +3,6 @@ package presentation;
 import business.entities.*;
 import business.entities.Character;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
@@ -112,7 +111,6 @@ public class UI {
         return null;
     }
 
-
     //*************************************************
     //********Functions for 2.1) Team Creation ********
     //*************************************************
@@ -129,9 +127,32 @@ public class UI {
 
     public String requestStrategy(int index) {
         System.out.println("Game strategy for character #" + index + "?");
-        System.out.print("\t1) Balanced");
-        System.out.println("\nChoose an option: ");
-        return scanner.nextLine();
+        System.out.println("\t1) Balanced");
+        System.out.println("\t2) Offensive");
+        System.out.println("\t3) Defensive");
+        System.out.println("\t4) Sniper");
+        System.out.print("\nChoose an option: ");
+
+        while (true) {
+            try {
+                int option = Integer.parseInt(scanner.nextLine());
+
+                switch (option) {
+                    case 1:
+                        return "balanced";
+                    case 2:
+                        return "offensive";
+                    case 3:
+                        return "defensive";
+                    case 4:
+                        return "sniper";
+                    default:
+                        System.out.println("(ERROR) Invalid option. Please choose between 1 and 4.");
+                }
+            } catch (NumberFormatException e) {
+                System.out.println("(ERROR) Invalid input. Please enter a number.");
+            }
+        }
     }
 
     public void errorCreateTeam(String name){
@@ -205,22 +226,6 @@ public class UI {
 
         System.out.print("\n<Press any key to continue...>");
         scanner.nextLine();
-    }
-
-    // Display Teams Information
-    public void displayTeams(ArrayList<Team> teams) {
-        if (teams.isEmpty()) {
-            System.out.println("No teams available.");
-        } else {
-            System.out.println("\nTeams:");
-            for (Team team : teams) {
-                System.out.println("Team: " + team.getName());
-                System.out.println("Members:");
-                team.getMembers().forEach(member ->
-                        System.out.println("\tCharacter ID: " + member.getCharacterId() +
-                                ", Strategy: " + member.getStrategy()));
-            }
-        }
     }
 
     public int displayCharactersList(List<Character> characters) {
@@ -417,9 +422,9 @@ public class UI {
             return 0;
         } else {
             for (int i = 0; i < teams.size(); i++) {
-                System.out.println((i + 1) + ") " + teams.get(i).getName());
+                System.out.println("\t" + (i + 1) + ") " + teams.get(i).getName());
             }
-            System.out.println("\n0) Back");
+            System.out.println("\n\t0) Back");
 
             return requestTeamOption(teams.size());
         }
@@ -453,7 +458,7 @@ public class UI {
 
         for (Member member : selectedTeam.getMembers()) {
             String newName = String.format("%-" + width + "s", member.getName());
-            System.out.println("Character #" + i + ": " + newName + "(" + member.getStrategy().toUpperCase() + ")");
+            System.out.println("\tCharacter #" + (i + 1) + ": " + newName + "(" + member.getStrategy().toUpperCase() + ")");
             i++;
         }
     }
@@ -461,16 +466,16 @@ public class UI {
 
     public void printStatistics(Statistics stats) {
         int won = stats.getGames_won();
-        int played = stats.getGames_won();
+        int played = stats.getGames_played();
         float winRate = (float) (100 * won) /played;
 
-        System.out.println("\nCombats played: \t" +won);
-        System.out.println("Combats won: \t\t" + played);
-        System.out.println("Win rate: \t\t\t" + (int) winRate + "%");
-        System.out.println("KOs done: \t\t\t" + stats.getKO_done());
-        System.out.println("KOs received: \t\t" + stats.getKO_received());
+        System.out.println("\n\tCombats played: \t" + played);
+        System.out.println("\tCombats won: \t\t" + won);
+        System.out.println("\tWin rate: \t\t\t" + (int) winRate + "%");
+        System.out.println("\tKOs done: \t\t\t" + stats.getKO_done());
+        System.out.println("\tKOs received: \t\t" + stats.getKO_received());
 
-        System.out.print("\n<Press any key to continue...>");
+        System.out.print("\n\t<Press any key to continue...>");
         scanner.nextLine();
     }
 

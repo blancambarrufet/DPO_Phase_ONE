@@ -60,9 +60,4 @@ public class Statistics {
     public void incrementKOMade(int increment) { KO_done += increment; }
     public void incrementKOReceived(int increment ) { KO_received+=increment; }
 
-    public String getSummary() {
-        return name + " - Played: " + games_played + ", Won: " + games_won +
-                ", KO Made: " + KO_done + ", KO Received: " + KO_received;
-    }
-
 }

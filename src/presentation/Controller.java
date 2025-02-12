@@ -72,7 +72,6 @@ public class Controller {
 
             // DEBUG:
             teamManager.loadTeams();                        // Teams
-            statisticsManager.displayStatistics();         // Stats
 
             // Check and return based on UI validation
             return ui.validatePersistence(charactersOk, itemsOk);
@@ -135,6 +134,9 @@ public class Controller {
             }
 
             teamManager.addTeam(newTeam);
+
+            //create team statistics
+            statisticsManager.createNewStats(teamName, true);
         } catch (PersistanceException e) {
             ui.displayMessage("Error creating team: " + e.getMessage());
         }
@@ -142,22 +144,23 @@ public class Controller {
 
     // List All Teams
     private void listTeams() {
-        List<Team> teams =  teamManager.loadTeams();
-        int selectedOption = ui.displayTeamOptionList(teams);
+        try {
+            List<Team> teams =  teamManager.loadTeams();
+            int selectedOption = ui.displayTeamOptionList(teams);
 
-        if (selectedOption == 0) {
-            return; // Go back to the main menu
+            if (selectedOption == 0) {
+                return; // Go back to the main menu
+            }
+
+            Team selectedTeam = teams.get(selectedOption - 1);
+            ui.displayTeamDetails(selectedTeam);
+
+            Statistics statistics = statisticsManager.getStaticByName(selectedTeam.getName());
+
+            ui.printStatistics(statistics);
+        } catch (PersistanceException e) {
+            ui.displayMessage("Error retrieving teams: " + e.getMessage());
         }
-
-        Team selectedTeam = teams.get(selectedOption - 1);
-
-        // Display character details via the UI
-        ui.displayTeamDetails(selectedTeam);
-
-        Statistics statistics = statisticsManager.getStaticByName(selectedTeam.getName());
-
-
-        ui.printStatistics(statistics);
     }
 
     // Delete a Team
@@ -168,6 +171,7 @@ public class Controller {
 
             if (sure) {
                 teamManager.deleteTeam(teamName);
+                statisticsManager.createNewStats(teamName, false);
             }
 
             ui.confirmationMessage(teamName, sure);
@@ -190,7 +194,6 @@ public class Controller {
 
             Item selectedItem = items.get(selectedItemOption - 1);
             ui.displayItemDetails(selectedItem);
-
         } catch (PersistanceException e) {
             ui.displayMessage("Error retrieving items: " + e.getMessage());
         }
