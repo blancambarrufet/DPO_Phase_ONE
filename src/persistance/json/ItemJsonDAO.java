@@ -8,7 +8,6 @@ import persistance.ItemDAO;
 import persistance.exceptions.PersistanceException;
 
 import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -83,31 +82,4 @@ public class ItemJsonDAO implements ItemDAO {
         }
     }
 
-    @Override
-    public void saveItems(List<Item> items) throws PersistanceException {
-        try (FileWriter writer = new FileWriter(PATH)) {
-            JsonArray jsonArray = new JsonArray();
-
-            for (Item item : items) {
-                JsonObject jsonObject = new JsonObject();
-                jsonObject.addProperty("id", item.getId());
-                jsonObject.addProperty("name", item.getName());
-                jsonObject.addProperty("power", item.getPower());
-                jsonObject.addProperty("durability", item.getDurability());
-
-                // Add "class" field for type identification
-                if (item instanceof Weapon) {
-                    jsonObject.addProperty("class", "Weapon");
-                } else if (item instanceof Armor) {
-                    jsonObject.addProperty("class", "Armor");
-                }
-
-                jsonArray.add(jsonObject);
-            }
-
-            gson.toJson(jsonArray, writer); // Save to file
-        } catch (IOException e) {
-            throw new PersistanceException("Couldn't write items file: " + PATH, e);
-        }
-    }
 }

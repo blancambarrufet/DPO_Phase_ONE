@@ -7,7 +7,5 @@ public interface CharacterDAO {
 
     List<Character> loadAllCharacters();
 
-    void saveCharacters(List<Character> characters);
-
     boolean validateFile();
 }

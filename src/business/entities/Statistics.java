@@ -57,8 +57,8 @@ public class Statistics {
 
     public void incrementGamesPlayed() { games_played++; }
     public void incrementGamesWon() { games_won++; }
-    public void incrementKOMade() { KO_done++; }
-    public void incrementKOReceived() { KO_received++; }
+    public void incrementKOMade(int increment) { KO_done += increment; }
+    public void incrementKOReceived(int increment ) { KO_received+=increment; }
 
     public String getSummary() {
         return name + " - Played: " + games_played + ", Won: " + games_won +

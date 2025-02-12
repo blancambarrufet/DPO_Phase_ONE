@@ -6,11 +6,12 @@ import persistance.exceptions.PersistanceException;
 import persistance.json.StatisticsJsonDAO;
 
 import java.util.List;
+import java.util.ArrayList;
 
 public class StatisticsManager {
 
     private final StatisticsDAO statisticsDAO;
-    private List<Statistics> statistics;
+    private ArrayList<Statistics> statistics;
 
     public StatisticsManager() throws PersistanceException {
         this.statisticsDAO = new StatisticsJsonDAO();
@@ -35,17 +36,30 @@ public class StatisticsManager {
         return statistics;
     }
 
-    // Record combat result
-    public void recordCombatResult(String winner, String loser) throws PersistanceException {
+
+
+
+    public void recordCombatResult(String Team1, String Team2, int koTeam1, int koTeam2, String winner) throws PersistanceException {
+        loadStatistics();
+
+
         for (Statistics stat : statistics) {
-            if (stat.getName().equalsIgnoreCase(winner)) {
-                stat.incrementGamesWon();
+
+            if (stat.getName().equalsIgnoreCase(Team1)) {
+                stat.incrementGamesPlayed();
+                if (winner.equalsIgnoreCase(Team1)) stat.incrementGamesWon();
+                stat.incrementKOMade(koTeam2);
+                stat.incrementKOReceived(koTeam2);
             }
-            if (stat.getName().equalsIgnoreCase(loser)) {
-                //stat.incrementGamesLost();
+            if (stat.getName().equalsIgnoreCase(Team2)) {
+                stat.incrementGamesPlayed();
+                if (winner.equalsIgnoreCase(Team2)) stat.incrementGamesWon();
+                stat.incrementKOMade(koTeam1);
+                stat.incrementKOReceived(koTeam2);
             }
-            stat.incrementGamesPlayed();
+
         }
+
         saveStatistics(); // Save changes
     }
 
@@ -63,6 +77,12 @@ public class StatisticsManager {
             }
         }
         return null;
+    }
+
+    public void createNewStats(String name, boolean add) {
+        if (add) statistics.add(new Statistics(name));
+        else statistics.removeIf(stat -> stat.getName().equalsIgnoreCase(name));
+        saveStatistics();
     }
 
 

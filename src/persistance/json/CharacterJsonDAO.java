@@ -8,7 +8,6 @@ import persistance.CharacterDAO;
 import persistance.exceptions.PersistanceException;
 
 import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -57,12 +56,4 @@ public class CharacterJsonDAO implements CharacterDAO {
         }
     }
 
-    @Override
-    public void saveCharacters(List<Character> characters) throws PersistanceException {
-        try (FileWriter writer = new FileWriter(PATH)) {
-            gson.toJson(characters, writer);
-        } catch (IOException e) {
-            throw new PersistanceException("Couldn't write characters file: " + PATH, e);
-        }
-    }
 }

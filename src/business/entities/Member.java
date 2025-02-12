@@ -1,7 +1,5 @@
 package business.entities;
 
-import java.util.Random;
-
 public class Member {
     private long id;
     private String strategy;
@@ -11,6 +9,8 @@ public class Member {
     private Armor armor;
     private boolean defending;
     private boolean isKO;
+    private boolean defendingNextTurn;
+    private double pendingDamageTaken;
 
     public enum Strategy { //THIS SHOULD BE IN A CLASS ENUM
         BALANCED, AGGRESSIVE, DEFENSIVE
@@ -25,6 +25,8 @@ public class Member {
         this.armor = null;
         this.defending = false;
         this.isKO = false;
+        this.defendingNextTurn = false;
+        this.pendingDamageTaken = 0;
     }
 
     // Getters and Setters
@@ -39,12 +41,28 @@ public class Member {
     public int getWeight() { return character.getWeight(); }
     public boolean setKO(boolean status) { return isKO = status; }
 
+    public void defendNextTurn() {
+        defendingNextTurn = true;
+    }
+
+    public void applyDefending() {
+        if (defendingNextTurn) {
+            defending = true;
+            defendingNextTurn = false; //reset the flag
+        }
+    }
+
+    public boolean isDefendingNextTurn() {
+        return defendingNextTurn;
+    }
+
     public double getDamageTaken() {
         return damageTaken;
     }
     public boolean isDefending() {
         return defending;
     }
+
     public Weapon getWeapon() {
         return weapon;
     }
@@ -61,13 +79,13 @@ public class Member {
     }
 
     //applying damage (Step 3 of 2.5.2)
-    public void takeDamage(double damage) {
-        damageTaken += damage;
+    public void updatePendingDamage() {
+        damageTaken += pendingDamageTaken;
+        pendingDamageTaken = 0;// reset the accumulator
     }
 
-    //setting the position of the character to DEFEND
-    public void defend() {
-        defending = true;
+    public void accumulateDamage(double damage) {
+        pendingDamageTaken += damage;
     }
 
     public void resetDefending() {
@@ -81,8 +99,6 @@ public class Member {
     public void resetDamage() {
         this.damageTaken = 0;
     }
-
-
 
     public boolean isKO() {
         return isKO;
@@ -128,6 +144,7 @@ public class Member {
         if (defending) {
             damageReduction = getWeight() / 400.0;
             finalDamage -= damageReduction;
+            System.out.println("\tDEBUG: " + getName() + " reduces damage by " + String.format("%.2f", damageReduction));
         }
 
         //return finalDamage;

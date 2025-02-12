@@ -12,84 +12,99 @@ import java.util.List;
 public class TeamManager {
 
     private final TeamDAO teamDAO;
-    private ArrayList<Team> teams;
-    private ArrayList<TeamPrint> teamsPrint;
     private CharacterManager characterManager;
 
     public TeamManager(CharacterManager characterManager) throws PersistanceException {
         this.teamDAO = new TeamJsonDAO();
         this.characterManager = characterManager; // Assign CharacterManager
-        loadTeams();
     }
 
     // Get all teams
-    public ArrayList<Team> getTeams() {
-         return teams;
+    public List<Team> getTeams() throws PersistanceException {
+         return teamDAO.loadTeams();
     }
-
 
     // Delete a team by name
     public void deleteTeam(String teamName) throws PersistanceException {
-        boolean removed = teams.removeIf(team -> team.getName().equalsIgnoreCase(teamName));
+        List<Team> teams = teamDAO.loadTeams();
+        boolean removed = false;
+
+        for (int i = 0; i < teams.size(); i++) {
+            if (teams.get(i).getName().equalsIgnoreCase(teamName)) {
+                teams.remove(i);
+                removed = true;
+                break;
+            }
+        }
 
         if (removed) {
-            teamsPrint.removeIf(team -> team.getName().equalsIgnoreCase(teamName));
-            saveTeams();
+            saveTeams(teams);
         } else {
             System.out.println("DEBUG: Team not found.");
         }
     }
 
     // Check if a team exists by name
-    public boolean teamExists(String teamName) {
-        return teams.stream().anyMatch(team -> team.getName().equalsIgnoreCase(teamName));
+    public boolean teamExists(String teamName) throws PersistanceException {
+        List<Team> teams = teamDAO.loadTeams();
+
+        for (Team team : teams) {
+            if (team.getName().equalsIgnoreCase(teamName)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     // Save all teams to the persistence source
-    private void saveTeams() throws PersistanceException {
+    private void saveTeams(List<Team> teams) throws PersistanceException {
+
+        List<TeamPrint> teamsPrint = new ArrayList<>();
+
+        for (Team team : teams) {
+            teamsPrint.add(convertToTeamPrint(team));
+        }
+
         teamDAO.saveTeams(teamsPrint);
     }
 
-    public void loadTeams() throws PersistanceException {
-        teams = teamDAO.loadTeams(); // Load teams from JSON
+    //get All teams with the character referenced in each team
+    public List<Team> loadTeams() throws PersistanceException {
+        List<Team> teams = teamDAO.loadTeams(); // Load teams from JSON
 
         if (teams == null || teams.isEmpty()) {
             System.out.println("DEBUG: No teams loaded from JSON file.");
-            teams = new ArrayList<>();
-            return;
+            return null;
         }
 
         System.out.println("DEBUG: Teams loaded -> " + teams.size());
 
         // Ensure each Member has its corresponding Character
         for (Team team : teams) {
-
             for (Member member : team.getMembers()) {
                 if (member.getCharacterId() == 0) {
-                    System.out.println("WARNING: Member has an ID of 0. Skipping.");
+                    System.out.println("DEBUG: WARNING: Member has an ID of 0. Skipping.");
                     continue;
                 }
 
-                String id = String.valueOf(member.getCharacterId());
-                Character character = characterManager.findCharacter(id);
+                Character character = characterManager.findCharacter(String.valueOf(member.getCharacterId()));
 
                 if (character == null) {
-                    System.out.println("ERROR: Character with ID " + id + " not found!");
+                    System.out.println("DEBUG: ERROR: Character with ID " + member.getCharacterId()+ " not found!");
                 } else {
                     member.setCharacter(character);
                 }
             }
         }
 
-        teamsPrint = new ArrayList<>();
-        for (Team team : teams) {
-            fromTeamToPrint(team);
-        }
+        return teams;
     }
 
     // Add a new team
     public void addTeam(Team newTeam) throws PersistanceException {
         System.out.println("DEBUG: Attempting to create team: " + newTeam.getName());
+        List<Team> teams = teamDAO.loadTeams();
 
         // Check if team name is unique
         for (Team team : teams) {
@@ -99,49 +114,19 @@ public class TeamManager {
             }
         }
 
-
-        loadTeams();
-        System.out.println("teams Loaded");
-        if (teams== null){
-            System.out.println("DEBUG: No teams loaded from JSON file.");
-            return;
-        }
-        // Add team and save to file
-        if (newTeam == null) {  System.out.println("DEBUG: New tram null ");
-        return;}
         teams.add(newTeam);
-        fromTeamToPrint(newTeam);
-        System.out.println("DEBUG: Team successfully added to memory, saving to JSON...");
-
-        saveTeams();
+        saveTeams(teams);
         System.out.println("DEBUG: Team " + newTeam.getName() + " created successfully.");
     }
 
-
-
-
-    // Check if a team name already exists
-    private boolean checkName(String name) {
-        return teams.stream().anyMatch(team -> team.getName().equalsIgnoreCase(name));
-    }
-    private List<MemberPrint> fromMembersToPrint(List<Member> members) {
+    private TeamPrint convertToTeamPrint(Team team) {
         List<MemberPrint> memberPrints = new ArrayList<>();
-        for (Member member : members) {
-            long id = member.getCharacterId();
-            String name = member.getName();
-            memberPrints.add(new MemberPrint(id, name));
+
+        for (Member member : team.getMembers()) {
+            memberPrints.add(new MemberPrint(member.getCharacterId(), member.getStrategy()));
         }
 
-        return memberPrints;
-    }
-
-    private void fromTeamToPrint(Team team) {
-        String teamName = team.getName();
-        List<Member> members = team.getMembers();
-
-        List<MemberPrint> memberPrints = fromMembersToPrint(members);
-
-        teamsPrint.add(new TeamPrint(teamName, memberPrints));
+        return new TeamPrint(team.getName(), memberPrints);
     }
 
 }

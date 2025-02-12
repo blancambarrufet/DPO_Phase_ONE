@@ -5,7 +5,6 @@ import business.entities.*;
 import business.entities.Character;
 import persistance.exceptions.PersistanceException;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class Controller {
@@ -53,13 +52,13 @@ public class Controller {
                         simulateCombat();
                         break;
                     case EXIT:
-                        System.out.println("We hope to see you again!");
+                        ui.displayMessage("We hope to see you again!");
                         System.exit(0);
                         break;
                 }
             }
         } catch (Exception e) {
-            System.out.println("An unexpected error occurred: " + e.getMessage());
+            ui.displayMessage("An unexpected error occurred: " + e.getMessage());
         }
     }
 
@@ -69,14 +68,16 @@ public class Controller {
             boolean charactersOk = characterManager.validatePersistenceSource(); // Characters.json
             boolean itemsOk = itemManager.validatePersistenceSource();          // Items.json
 
-            // Initialize optional files (Teams & Stats)
+            //Missing the creation of the file team and statistics
+
+            // DEBUG:
             teamManager.loadTeams();                        // Teams
             statisticsManager.displayStatistics();         // Stats
 
             // Check and return based on UI validation
             return ui.validatePersistence(charactersOk, itemsOk);
+
         } catch (Exception e) {
-            e.printStackTrace(); // Log error for debugging
             return ui.validatePersistence(false, false); // Graceful shutdown
         }
     }
@@ -84,22 +85,26 @@ public class Controller {
 
     //List Characters
     public void listCharacters() {
-        // Fetch characters and teams from the business layer
-        ArrayList<Character> characters = new ArrayList<>(characterManager.getAllCharacters());
-        ArrayList<Team> teams = new ArrayList<>(teamManager.getTeams());
+        try {
+            // Fetch characters and teams from the business layer
+            List<Character> characters = characterManager.getAllCharacters();
+            List<Team> teams = teamManager.loadTeams();
 
-        //Ask UI to display the characters and get the selected option
-        int selectedOption = ui.displayCharactersList(characters);
+            //Ask UI to display the characters and get the selected option
+            int selectedOption = ui.displayCharactersList(characters);
 
-        if (selectedOption == 0) {
-            return; // Go back to the main menu
+            if (selectedOption == 0) {
+                return; // Go back to the main menu
+            }
+
+            // Fetch selected character and associated teams
+            Character selectedCharacter = characters.get(selectedOption - 1);
+
+            // Display character details via the UI
+            ui.displayCharacterDetails(selectedCharacter, teams);
+        } catch (PersistanceException e) {
+            ui.displayMessage("Error retrieving characters: " + e.getMessage());
         }
-
-        // Fetch selected character and associated teams
-        Character selectedCharacter = characters.get(selectedOption - 1);
-
-        // Display character details via the UI
-        ui.displayCharacterDetails(selectedCharacter, teams);
     }
 
 
@@ -113,63 +118,31 @@ public class Controller {
                 return;
             }
 
-
-            String Character1 = ui.requestCharacterName(1);
-            String strategy1 = ui.requestStrategy(1);
-
-            String Character2 = ui.requestCharacterName(2);
-            String strategy2 = ui.requestStrategy(2);
-
-            String Character3 = ui.requestCharacterName(3);
-            String strategy3 = ui.requestStrategy(3);
-
-            String Character4 = ui.requestCharacterName(4);
-            String strategy4 = ui.requestStrategy(4);
-
             Team newTeam = new Team(teamName);
 
-            Character character1 =  characterManager.findCharacter(Character1);
-            if (character1 == null) {
-                ui.errorCreateTeam(Character1);
-                return;
-            }
-            Member member1 = new Member(character1.getId(), character1, strategy1);
+            for (int i = 1; i <= 4; i++) {
+                String characterInput = ui.requestCharacterName(i);
+                String strategy = ui.requestStrategy(i);
 
-            Character character2 =  characterManager.findCharacter(Character2);
-            if (character2 == null) {
-                ui.errorCreateTeam(Character2);
-                return;
-            }
-            Member member2 =new Member(character2.getId(), character2, strategy2);
+                Character character = characterManager.findCharacter(characterInput);
+                if (character == null) {
+                    ui.errorCreateTeam(characterInput);
+                    return;
+                }
 
-            Character character3 =  characterManager.findCharacter(Character3);
-            if (character3 == null) {
-                ui.errorCreateTeam(Character3);
-                return;
+                Member member = new Member(character.getId(), character, strategy);
+                newTeam.addMember(member);
             }
-            Member member3 = new Member(character3.getId(), character3, strategy3);
-
-            Character character4 =  characterManager.findCharacter(Character4);
-            if (character4 == null) {
-                ui.errorCreateTeam(Character4);
-                return;
-            }
-            Member member4 = new Member(character4.getId(),character4, strategy4);
-
-            newTeam.addMember(member1);
-            newTeam.addMember(member2);
-            newTeam.addMember(member3);
-            newTeam.addMember(member4);
 
             teamManager.addTeam(newTeam);
         } catch (PersistanceException e) {
-            System.out.println("Error creating team: " + e.getMessage());
+            ui.displayMessage("Error creating team: " + e.getMessage());
         }
     }
 
     // List All Teams
     private void listTeams() {
-        List<Team> teams =  teamManager.getTeams();
+        List<Team> teams =  teamManager.loadTeams();
         int selectedOption = ui.displayTeamOptionList(teams);
 
         if (selectedOption == 0) {
@@ -192,6 +165,7 @@ public class Controller {
         try {
             String teamName = ui.requestTeamInfo();
             boolean sure = ui.sure(teamName);
+
             if (sure) {
                 teamManager.deleteTeam(teamName);
             }
@@ -199,7 +173,7 @@ public class Controller {
             ui.confirmationMessage(teamName, sure);
 
         } catch (PersistanceException e) {
-            System.out.println("Error deleting team: " + e.getMessage());
+            ui.displayMessage("Error deleting team: " + e.getMessage());
         }
     }
 
@@ -207,7 +181,7 @@ public class Controller {
     // List All Items
     private void listItems() {
         try {
-            ArrayList<Item> items = new ArrayList<>(itemManager.getAllItems());
+            List<Item> items = itemManager.getAllItems();
             int selectedItemOption = ui.displayItemsList(items);
 
             if (selectedItemOption == 0) {
@@ -215,10 +189,10 @@ public class Controller {
             }
 
             Item selectedItem = items.get(selectedItemOption - 1);
-
             ui.displayItemDetails(selectedItem);
+
         } catch (PersistanceException e) {
-            System.out.println("Error retrieving items: " + e.getMessage());
+            ui.displayMessage("Error retrieving items: " + e.getMessage());
         }
     }
 
@@ -258,9 +232,6 @@ public class Controller {
         ui.displayItemDurabilityBreak(memberName, itemName);
     }
 
-    public void displayKOMembers(List<String> messages) {
-        ui.displayKOMembers(messages);
-    }
 
     public void displayTeamStats(Team team, int teamNumber, List<Member> members) {
         ui.displayTeamStats(team, teamNumber, members);
@@ -294,18 +265,5 @@ public class Controller {
         ui.displayCombatResult(teamWinner, team1, team1Members, team2, team2Members);
     }
 
-//    // Update Statistics After Combat
-//    private void updateStatistics(Team teamOne, Team teamTwo) throws PersistanceException {
-//        if (combatManager.isTeamDefeated(teamOne) && combatManager.isTeamDefeated(teamTwo)) {
-//            // Tie - no winner
-//            statisticsManager.recordCombatResult("TIE", "TIE");
-//        } else if (combatManager.isTeamDefeated(teamOne)) {
-//            // Team Two wins
-//            statisticsManager.recordCombatResult(teamTwo.getName(), teamOne.getName());
-//        } else {
-//            // Team One wins
-//            statisticsManager.recordCombatResult(teamOne.getName(), teamTwo.getName());
-//        }
-//    }
 
 }

@@ -10,7 +10,4 @@ public class Weapon extends Item {
         return getPower();
     }
 
-    public void setAttackValue(int attackValue) {
-        setPower(attackValue);;
-    }
 }

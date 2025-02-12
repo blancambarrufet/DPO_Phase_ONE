@@ -10,7 +10,4 @@ public class Armor extends Item {
         return getPower();
     }
 
-    public void setDefenseValue(int defenseValue) {
-        setPower(defenseValue);;
-    }
 }

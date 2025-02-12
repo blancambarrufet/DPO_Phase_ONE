@@ -1,6 +1,7 @@
 package business;
 
 import business.entities.*;
+import persistance.exceptions.PersistanceException;
 import presentation.Controller;
 
 import java.util.ArrayList;
@@ -13,11 +14,13 @@ public class CombatManager {
     private ItemManager itemManager;
     private Controller controller;
     private TeamManager teamManager;
+    private StatisticsManager statisticsManager;
 
-    public CombatManager(CharacterManager characterManager, ItemManager itemManager,TeamManager teamManager) {
+    public CombatManager(CharacterManager characterManager, ItemManager itemManager,TeamManager teamManager, StatisticsManager statisticsManager) {
         this.characterManager = characterManager;
         this.itemManager = itemManager;
         this.teamManager = teamManager;
+        this.statisticsManager = statisticsManager;
     }
 
     public void setController(Controller controller) {
@@ -25,7 +28,7 @@ public class CombatManager {
     }
 
     public void combatSimulation() {
-        controller.displayMessage("Starting simulation...");
+        controller.displayMessage("\nStarting simulation...");
 
         List<Team> availableTeams = teamManager.getTeams();
         controller.displayTeamsAvailable(availableTeams);
@@ -41,51 +44,54 @@ public class CombatManager {
         Team team1 = availableTeams.get(teamIndex1);
         Team team2 = availableTeams.get(teamIndex2);
 
-        controller.displayMessage("\nInitializing teams...");
+        controller.displayMessage("\nInitializing teams...\n");
 
         List<Member> team1Members = team1.getMembers();
         List<Member> team2Members = team2.getMembers();
 
-        List<Weapon> availableWeapons = itemManager.getAllWeapons();
-        List<Armor> availableArmor = itemManager.getAllArmor();
-
-        initializeTeams(team1Members, team2Members, availableWeapons, availableArmor);
+        initializeTeams(team1Members, team2Members);
 
         controller.displayTeamInitialization(team1, 1, team1Members);
         controller.displayTeamInitialization(team2, 2, team2Members);
 
-        controller.displayMessage("\nCombat ready!");
+        controller.displayMessage("Combat ready!");
         controller.displayMessage("<Press any key to continue...>");
         controller.requestInput(); //requesting the user an input
 
         executeCombat(team1,team1Members, team2,team2Members);
     }
 
-    public void initializeTeams (List<Member> team1Members, List<Member> team2Members, List<Weapon> weapons, List<Armor> armors) {
+    public void initializeTeams (List<Member> team1Members, List<Member> team2Members) {
         Random random = new Random();
 
         for (Member member : team1Members) {
-            equipItems(member, weapons,armors, random);
+            equipItems(member, random);
             member.resetDamage();
         }
 
         for (Member member : team2Members) {
-            equipItems(member, weapons,armors, random);
+            equipItems(member, random);
             member.resetDamage();
         }
 
     }
 
-    private void equipItems(Member member, List<Weapon> weapons, List<Armor> armors, Random random) {
+    private void equipItems(Member member, Random random) {
+        try {
+            List<Weapon> weapons = itemManager.getAllWeapons();
+            List<Armor> armors = itemManager.getAllArmor();
 
-        if (!weapons.isEmpty()) {
-            Weapon randomWeapon = weapons.get(random.nextInt(weapons.size()));
-            member.equipWeapon(randomWeapon);
-        }
+            if (!weapons.isEmpty()) {
+                Weapon randomWeapon = weapons.get(random.nextInt(weapons.size()));
+                member.equipWeapon(randomWeapon);
+            }
 
-        if (!armors.isEmpty()) {
-            Armor randomArmor = armors.get(random.nextInt(armors.size()));
-            member.equipArmor(randomArmor);
+            if (!armors.isEmpty()) {
+                Armor randomArmor = armors.get(random.nextInt(armors.size()));
+                member.equipArmor(randomArmor);
+            }
+        } catch (PersistanceException e) {
+            controller.displayMessage("Error fetching items: " + e.getMessage());
         }
     }
 
@@ -97,24 +103,72 @@ public class CombatManager {
         while (!isTeamDefeated(team1Members) && !isTeamDefeated(team2Members)) {
             controller.displayRoundMessage(round);
 
+            //applying defense from the previous turn
+            applyDefendingForMembers(team1Members);
+            applyDefendingForMembers(team2Members);
+
+            //display the stats in the start of a new round
             controller.displayTeamStats(team1, 1, team1Members);
             controller.displayTeamStats(team2, 2, team2Members);
 
+            //execute the turns of each team
             executeTurn(team1Members, team2Members);
             executeTurn(team2Members, team1Members);
+
+            applyAccumulatedDamage(team1Members);
+            applyAccumulatedDamage(team2Members);
 
             //durabilityChecking(team1Members, team2Members);
 
             KOChecking(team1Members, team2Members);
 
+            //reset the defending characters after turn ends
+            resetDefenseAfterTurn(team1Members);
+            resetDefenseAfterTurn(team2Members);
+
             round++;
         }
 
-        Team winnerTeam = isTeamDefeated(team1Members) ? team1 : team2;
+        // Step 1: Check if both teams are KO (Tie Condition)
+        boolean team1Defeated = isTeamDefeated(team1Members);
+        boolean team2Defeated = isTeamDefeated(team2Members);
+        Team winner = null;
+        if (team1Defeated && team2Defeated) {
+            controller.displayCombatResult(null, team1, team1Members, team2, team2Members); // NULL indicates a tie
+        } else {
+            winner = team1Defeated ? team2 : team1;
+            controller.displayCombatResult(winner, team1, team1Members, team2, team2Members);
+        }
 
-        controller.displayCombatResult(winnerTeam,team1,team1Members,team2,team2Members);
+
+        int koTeam1 = numberOfKO(team1Members);
+        int koTeam2 = numberOfKO(team2Members);
+
+        String winnerName = " ";
+        if (winner!=null) {
+             winnerName = winner.getName();
+        }
+
+        statisticsManager.recordCombatResult(team1.getName(), team2.getName(), koTeam1, koTeam2, winnerName);
 
 
+    }
+
+    private void applyAccumulatedDamage(List<Member> team1Members) {
+        for(Member member : team1Members) {
+            member.updatePendingDamage();
+        }
+    }
+
+    private int numberOfKO(List<Member> team1Members) {
+        int count = 0;
+        for (Member member : team1Members) {
+            if(member.isKO()) {
+                count++;
+            }
+        }
+
+        return count;
     }
 
     // Execute a Turn for a Team
@@ -127,13 +181,13 @@ public class CombatManager {
             if (attacker.getStrategy().equals("balanced")) {
                 if (attacker.getWeapon() == null) {
                     requestWeapon(attacker);
-                    controller.displayMessage(attacker.getName() + " requested a weapon!!!!.\n");
+                    controller.displayMessage("\nDEBUG: " + attacker.getName() + " picks " + attacker.getWeapon().getName() + " as a random weapon!!!!.\n");
                 }
                 else {
                     if (attacker.getArmor() != null) {
                         if (attacker.getDamageTaken() >= 0.5 && attacker.getDamageTaken() <= 1.0) {
-                            attacker.defend();
-                            controller.displayMessage("debug: " + attacker.getName() + " is defending the next turn.");
+                            attacker.defendNextTurn();
+                            controller.displayMessage("DEBUG: " + attacker.getName() + " will defend in the next turn.");
                         }
                         else {
                             //Perform the attack
@@ -159,10 +213,16 @@ public class CombatManager {
     private void requestWeapon(Member member) {
         Random random = new Random();
 
-        List<Weapon> weapons = itemManager.getAllWeapons();
+        try {
+            List<Weapon> weapons = itemManager.getAllWeapons();
+            if (!weapons.isEmpty()) {
+                Weapon randomWeapon = weapons.get(random.nextInt(weapons.size()));
+                member.equipWeapon(randomWeapon);
+            }
 
-        Weapon randomWeapon = weapons.get(random.nextInt(weapons.size()));
-        member.equipWeapon(randomWeapon);
+        } catch (PersistanceException e) {
+            controller.displayMessage("Error fetching weapons: " + e.getMessage());
+        }
 
     }
 
@@ -197,8 +257,8 @@ public class CombatManager {
 
         controller.displayExecutionTurn(attacker.getName(), attackDamage, attacker.getWeapon().getName(),finalDamage, defender.getName());
 
-        // Apply damage to defender
-        defender.takeDamage(finalDamage);
+        //Store the damage
+        defender.accumulateDamage(finalDamage);
 
         degradeEquipment(attacker, defender);
     }
@@ -266,7 +326,7 @@ public class CombatManager {
                         " | KO Threshold: " + String.format("%.2f", knockOutValue) +
                         " | Damage Taken: " + String.format("%.2f", damageTaken));
 
-                if (knockOutValue > damageTaken) {
+                if (knockOutValue < damageTaken) {
                     member.setKO(true);
                     controller.displayKOMember(member.getName());
                 }
@@ -283,6 +343,19 @@ public class CombatManager {
             }
         }
         return true;
+    }
+
+    private void applyDefendingForMembers(List<Member> teamMembers) {
+        for (Member member : teamMembers) {
+            member.applyDefending(); //apply defense if it was set in the last turn
+        }
+    }
+
+    private void resetDefenseAfterTurn(List<Member> teamMembers) {
+        for(Member member : teamMembers) {
+            member.resetDefending();
+        }
+
     }
 
 
