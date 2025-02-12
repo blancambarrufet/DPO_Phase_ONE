@@ -232,7 +232,8 @@ public class UI {
         if (characters.isEmpty()) {
             System.out.println("No characters available.");
             return 0; // Return 0 to go back
-        } else {
+        }
+        else {
             for (int i = 0; i < characters.size(); i++) {
                 System.out.println((i + 1) + ") " + characters.get(i).getName());
             }
@@ -333,11 +334,6 @@ public class UI {
             System.out.println("\t\t   Armor: " + armorName);
         }
         System.out.println();
-    }
-
-    public void displayStatistics(String statistics) {
-        System.out.println("\nStatistics: ");
-        System.out.println(statistics);
     }
 
     public void displayTeamStats(Team team, int teamNumber, List<Member> members) {
