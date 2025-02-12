@@ -7,8 +7,8 @@ public class Main {
         CharacterManager characterManager = new CharacterManager();
         ItemManager itemManager = new ItemManager();
         TeamManager teamManager = new TeamManager(characterManager);
-        CombatManager combatManager = new CombatManager(characterManager,itemManager,teamManager);
         StatisticsManager statisticsManager = new StatisticsManager();
+        CombatManager combatManager = new CombatManager(characterManager,itemManager,teamManager, statisticsManager);
 
         UI ui = new UI();
 

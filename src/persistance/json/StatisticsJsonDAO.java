@@ -1,7 +1,11 @@
 package persistance.json;
 
 import business.entities.Statistics;
+import business.entities.Team;
+import business.entities.TeamPrint;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonSyntaxException;
 import com.google.gson.stream.JsonReader;
 import persistance.StatisticsDAO;
 import persistance.exceptions.PersistanceException;
@@ -13,6 +17,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.List;
+import java.util.ArrayList;
+
 
 public class StatisticsJsonDAO implements StatisticsDAO {
 
@@ -29,23 +35,34 @@ public class StatisticsJsonDAO implements StatisticsDAO {
         return Files.exists(filePath) && Files.isReadable(filePath);
     }
 
+
     @Override
-    public List<Statistics> loadStatistics() throws PersistanceException {
-        try {
-            JsonReader reader = new JsonReader(new FileReader(PATH));
+    public ArrayList<Statistics> loadStatistics() throws PersistanceException {
+        try (JsonReader reader = new JsonReader(new FileReader(PATH))) {
             Statistics[] statsArray = gson.fromJson(reader, Statistics[].class);
-            return Arrays.asList(statsArray);
-        } catch (IOException e) {
-            throw new PersistanceException("Couldn't read statistics file: " + PATH, e);
+
+            // Ensure the list is initialized correctly
+            if (statsArray == null) {
+                return new ArrayList<>(); // Return an empty list if file is empty or improperly formatted
+            }
+
+            return new ArrayList<>(Arrays.asList(statsArray)); // Convert array to ArrayList
+        } catch (JsonSyntaxException | IOException e) {
+            throw new PersistanceException("Couldn't read teams file: " + PATH, e);
         }
     }
 
     @Override
-    public void saveStatistics(List<Statistics> statistics) throws PersistanceException {
+    public void saveStatistics(List<Statistics> statistics) {
         try (FileWriter writer = new FileWriter(PATH)) {
+            Gson gson = new GsonBuilder().setPrettyPrinting().create();
             gson.toJson(statistics, writer);
         } catch (IOException e) {
-            throw new PersistanceException("Couldn't write statistics file: " + PATH, e);
+            throw new PersistanceException("Couldn't write teams file: " + PATH, e);
         }
     }
+
+
+
+
 }
