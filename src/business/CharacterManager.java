@@ -48,7 +48,7 @@ public class CharacterManager {
             }
 
         } catch (PersistanceException e) {
-            System.out.println("Error retrieving character: " + e.getMessage());
+            return null;
         }
 
         return null;

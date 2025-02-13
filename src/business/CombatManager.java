@@ -239,7 +239,6 @@ public class CombatManager {
             }
         }
 
-        //System.out.println(availableDefenders);
 
         if (availableDefenders.isEmpty()) {
             return null;
@@ -322,9 +321,9 @@ public class CombatManager {
                 // Random value between 1-200
                 double knockOutValue = (random.nextInt(200) + 1) / 100.0;
 
-                System.out.println("[DEBUG] Checking KO for " + member.getName() +
-                        " | KO Threshold: " + String.format("%.2f", knockOutValue) +
-                        " | Damage Taken: " + String.format("%.2f", damageTaken));
+//                System.out.println("[DEBUG] Checking KO for " + member.getName() +
+//                        " | KO Threshold: " + String.format("%.2f", knockOutValue) +
+//                        " | Damage Taken: " + String.format("%.2f", damageTaken));
 
                 if (knockOutValue < damageTaken) {
                     member.setKO(true);

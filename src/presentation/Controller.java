@@ -133,6 +133,7 @@ public class Controller {
 
             teamManager.addTeam(newTeam);
 
+
             //create team statistics
             statisticsManager.createNewStats(teamName, true);
         } catch (PersistanceException e) {
@@ -167,16 +168,19 @@ public class Controller {
             String teamName = ui.requestTeamInfo();
             boolean sure = ui.sure(teamName);
 
+            int done=0;
             if (sure) {
-                teamManager.deleteTeam(teamName);
+                done = teamManager.deleteTeam(teamName);
                 statisticsManager.createNewStats(teamName, false);
+                if (done == 0) sure = false;
             }
-
             ui.confirmationMessage(teamName, sure);
+
 
         } catch (PersistanceException e) {
             ui.displayMessage("Error deleting team: " + e.getMessage());
         }
+
     }
 
 

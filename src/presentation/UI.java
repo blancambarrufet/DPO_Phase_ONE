@@ -78,6 +78,25 @@ public class UI {
         return null;
     }
 
+    public int inputScanner(int min, int max, String parameter) {
+        Scanner scanner = new Scanner(System.in);
+        int option;
+        do {
+            while (!scanner.hasNextInt()) {
+                System.out.println("\tInvalid format for " + parameter + ".");
+                System.out.print("\tPlease enter a valid " + parameter + ": ");
+                scanner.next();
+            }
+
+            option = scanner.nextInt();
+            if (option < min|| option > max) {
+                System.out.print("\tInvalid option. Please enter a number between " + min + " and " + max + ":");
+            }
+
+        }while (option < min || option > max);
+        return option;
+    }
+
     public TeamManagementMenu printTeamMenu() {
         int option = 0;
         do {
@@ -88,8 +107,7 @@ public class UI {
             System.out.println("\t4) Back");
             System.out.print("\nChoose an option: ");
 
-            String select = scanner.nextLine();
-            option = Integer.parseInt(select);
+            option = inputScanner(1, 4, "Team Management");
 
             try {
                 switch (option) {
@@ -135,7 +153,7 @@ public class UI {
 
         while (true) {
             try {
-                int option = Integer.parseInt(scanner.nextLine());
+                int option = inputScanner(1, 4, "Strategy");
 
                 switch (option) {
                     case 1:
@@ -488,6 +506,13 @@ public class UI {
         }
         else {
             System.out.println("\n\""+name+"\" will not be removed from the system.");
+        }
+    }
+
+    public void TeamCreationError(int option){
+        switch (option) {
+            case 1-> System.out.println("Team already exists.");
+
         }
     }
 

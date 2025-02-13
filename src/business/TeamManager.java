@@ -25,7 +25,7 @@ public class TeamManager {
     }
 
     // Delete a team by name
-    public void deleteTeam(String teamName) throws PersistanceException {
+    public int deleteTeam(String teamName) throws PersistanceException {
         List<Team> teams = teamDAO.loadTeams();
         boolean removed = false;
 
@@ -39,8 +39,9 @@ public class TeamManager {
 
         if (removed) {
             saveTeams(teams);
+            return 1;
         } else {
-            System.out.println("DEBUG: Team not found.");
+            return 0;
         }
     }
 
@@ -84,17 +85,12 @@ public class TeamManager {
         for (Team team : teams) {
             for (Member member : team.getMembers()) {
                 if (member.getCharacterId() == 0) {
-                    System.out.println("DEBUG: WARNING: Member has an ID of 0. Skipping.");
                     continue;
                 }
 
                 Character character = characterManager.findCharacter(String.valueOf(member.getCharacterId()));
 
-                if (character == null) {
-                    System.out.println("DEBUG: ERROR: Character with ID " + member.getCharacterId()+ " not found!");
-                } else {
-                    member.setCharacter(character);
-                }
+                if (character != null) member.setCharacter(character);
             }
         }
 
@@ -103,20 +99,9 @@ public class TeamManager {
 
     // Add a new team
     public void addTeam(Team newTeam) throws PersistanceException {
-        System.out.println("DEBUG: Attempting to create team: " + newTeam.getName());
         List<Team> teams = teamDAO.loadTeams();
-
-        // Check if team name is unique
-        for (Team team : teams) {
-            if (team.getName().equalsIgnoreCase(newTeam.getName())) {
-                System.out.println("DEBUG: Team name already exists!");
-                return;
-            }
-        }
-
         teams.add(newTeam);
         saveTeams(teams);
-        System.out.println("DEBUG: Team " + newTeam.getName() + " created successfully.");
     }
 
     private TeamPrint convertToTeamPrint(Team team) {

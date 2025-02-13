@@ -61,5 +61,26 @@
         "strategy": "balanced"
       }
     ]
+  },
+  {
+    "name": "Carlos",
+    "members": [
+      {
+        "id": 7021,
+        "strategy": "balanced"
+      },
+      {
+        "id": 7021,
+        "strategy": "balanced"
+      },
+      {
+        "id": 7021,
+        "strategy": "balanced"
+      },
+      {
+        "id": 7021,
+        "strategy": "sniper"
+      }
+    ]
   }
 ]
