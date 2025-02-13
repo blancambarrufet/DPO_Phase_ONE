@@ -38,6 +38,8 @@ public class StatisticsJsonDAO implements StatisticsDAO {
 
     @Override
     public ArrayList<Statistics> loadStatistics() throws PersistanceException {
+
+
         try (JsonReader reader = new JsonReader(new FileReader(PATH))) {
             Statistics[] statsArray = gson.fromJson(reader, Statistics[].class);
 

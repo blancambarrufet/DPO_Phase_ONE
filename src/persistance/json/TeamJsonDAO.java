@@ -33,7 +33,7 @@ public class TeamJsonDAO implements TeamDAO {
         Path filePath = Path.of(PATH);
         if (!Files.exists(filePath)) {
             try (FileWriter writer = new FileWriter(PATH)) {
-                gson.toJson(List.of(), writer); // Empty JSON array
+                gson.toJson(new ArrayList<>(), writer); // Empty JSON array
             } catch (IOException e) {
                 throw new RuntimeException("Error initializing teams.json file.", e);
             }

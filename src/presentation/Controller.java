@@ -68,11 +68,10 @@ public class Controller {
             boolean charactersOk = characterManager.validatePersistenceSource(); // Characters.json
             boolean itemsOk = itemManager.validatePersistenceSource();          // Items.json
 
-            //Missing the creation of the file team and statistics
-
-
             // Check and return based on UI validation
             return ui.validatePersistence(charactersOk, itemsOk);
+
+
 
         } catch (Exception e) {
             return ui.validatePersistence(false, false); // Graceful shutdown
