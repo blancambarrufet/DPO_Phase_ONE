@@ -94,10 +94,8 @@ public class TeamManager {
     }
 
     // Add a new team
-    public void addTeam(Team newTeam) throws PersistanceException {
-        List<Team> teams = teamDAO.loadTeams();
-        teams.add(newTeam);
-        saveTeams(teams);
+    public void addTeam(String newTeam) throws PersistanceException {
+        teamDAO.saveTeams(newTeam);
     }
 
     private TeamPrint convertToTeamPrint(Team team) {

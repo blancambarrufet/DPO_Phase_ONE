@@ -232,13 +232,13 @@ public class UI {
         return 0;
     }
 
-    public int displayItemsList(List<Item> items) {
+    public int displayItemsList(List<String> items) {
         if (items.isEmpty()) {
             System.out.println("No items available.");
             return 0;
         } else {
             for (int i = 0; i < items.size(); i++) {
-                System.out.println((i +1) + ") " + items.get(i).getName());
+                System.out.println((i +1) + ") " + items.get(i));
             }
             System.out.println("\n0) Back");
 

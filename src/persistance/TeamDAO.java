@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface TeamDAO {
     ArrayList<Team> loadTeams();
-    void saveTeams(List<TeamPrint> team);
+    void saveTeams(String team);
     boolean isFileOk();
     Team getTeamByName(String name);
     List<String> getTeamsNamesWithCharacter(long id);

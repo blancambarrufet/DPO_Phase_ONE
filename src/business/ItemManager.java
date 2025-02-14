@@ -24,4 +24,32 @@ public class ItemManager {
     }
 
 
+    public Armor getRandomArmor() {
+        return itemDAO.getRandomArmor();
+    }
+
+    public Weapon getRandomWeapon() {
+        return itemDAO.getRandomWeapon();
+    }
+
+    public List<String> getItemNames(){
+        return itemDAO.getItemNames();
+    }
+
+    public Item getItemByName(String selectedItemName) {
+        return itemDAO.getItemByName(selectedItemName);
+    }
+
+    public void equipItemsMember(Member member) throws PersistanceException {
+        Weapon weapon = getRandomWeapon();
+        Armor armor = getRandomArmor();
+
+        member.equipWeapon(weapon);
+        member.equipArmor(armor);
+    }
+
+    public void assignRandomWeapon(Member member) {
+        Weapon weapon = getRandomWeapon();
+        member.equipWeapon(weapon);
+    }
 }

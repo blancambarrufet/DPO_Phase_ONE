@@ -185,14 +185,15 @@ public class Controller {
     // List All Items
     private void listItems() {
         try {
-            List<Item> items = itemManager.getAllItems();
+            List<String> items = itemManager.getItemNames();
             int selectedItemOption = ui.displayItemsList(items);
 
             if (selectedItemOption == 0) {
                 return;
             }
 
-            Item selectedItem = items.get(selectedItemOption - 1);
+            String selectedItemName = items.get(selectedItemOption - 1);
+            Item selectedItem = itemManager.getItemByName(selectedItemName);
             ui.displayItemDetails(selectedItem);
         } catch (PersistanceException e) {
             ui.displayMessage("Error retrieving items: " + e.getMessage());

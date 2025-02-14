@@ -19,19 +19,5 @@
     "games_won": 2,
     "KO_done": 14,
     "KO_received": 9
-  },
-  {
-    "name": "Carlos",
-    "games_played": 0,
-    "games_won": 0,
-    "KO_done": 0,
-    "KO_received": 0
-  },
-  {
-    "name": "carlos",
-    "games_played": 0,
-    "games_won": 0,
-    "KO_done": 0,
-    "KO_received": 0
   }
 ]

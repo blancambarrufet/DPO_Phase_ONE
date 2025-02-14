@@ -62,31 +62,20 @@ public class CombatManager {
         Random random = new Random();
 
         for (Member member : team1Members) {
-            equipItems(member, random);
+            equipItems(member);
             member.resetDamage();
         }
 
         for (Member member : team2Members) {
-            equipItems(member, random);
+            equipItems(member);
             member.resetDamage();
         }
 
     }
 
-    private void equipItems(Member member, Random random) {
+    private void equipItems(Member member) {
         try {
-            List<Weapon> weapons = itemManager.getAllWeapons();
-            List<Armor> armors = itemManager.getAllArmor();
-
-            if (!weapons.isEmpty()) {
-                Weapon randomWeapon = weapons.get(random.nextInt(weapons.size()));
-                member.equipWeapon(randomWeapon);
-            }
-
-            if (!armors.isEmpty()) {
-                Armor randomArmor = armors.get(random.nextInt(armors.size()));
-                member.equipArmor(randomArmor);
-            }
+            itemManager.equipItemsMember(member);
         } catch (PersistanceException e) {
             controller.displayMessage("Error equipping items: " + e.getMessage());
         }
