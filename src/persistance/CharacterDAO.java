@@ -8,4 +8,10 @@ public interface CharacterDAO {
     List<Character> loadAllCharacters();
 
     boolean validateFile();
+
+    Character getCharacterById(long id);
+
+    Character getCharacterByName(String name);
+
+    List<String> getCharactersByNames();
 }

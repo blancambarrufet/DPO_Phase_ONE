@@ -4,7 +4,6 @@ import business.entities.*;
 import persistance.exceptions.PersistanceException;
 import presentation.Controller;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -54,9 +53,7 @@ public class CombatManager {
         controller.displayTeamInitialization(team1, 1, team1Members);
         controller.displayTeamInitialization(team2, 2, team2Members);
 
-        controller.displayMessage("Combat ready!");
-        controller.displayMessage("<Press any key to continue...>");
-        controller.requestInput(); //requesting the user an input
+        controller.displayEndRoundMessage();
 
         executeCombat(team1,team1Members, team2,team2Members);
     }
@@ -91,7 +88,7 @@ public class CombatManager {
                 member.equipArmor(randomArmor);
             }
         } catch (PersistanceException e) {
-            controller.displayMessage("Error fetching items: " + e.getMessage());
+            controller.displayMessage("Error equipping items: " + e.getMessage());
         }
     }
 
@@ -112,8 +109,8 @@ public class CombatManager {
             controller.displayTeamStats(team2, 2, team2Members);
 
             //execute the turns of each team
-            executeTurn(team1Members, team2Members);
-            executeTurn(team2Members, team1Members);
+            executeTurn(team1,team1Members, team2, team2Members);
+            executeTurn(team2,team2Members, team1, team1Members);
 
             applyAccumulatedDamage(team1Members);
             applyAccumulatedDamage(team2Members);
@@ -172,7 +169,7 @@ public class CombatManager {
     }
 
     // Execute a Turn for a Team
-    private void executeTurn(List<Member> attackers, List<Member> defenders) {
+    private void executeTurn(Team attackingTeam, List<Member> attackers, Team defendingTeam, List<Member> defenders) {
         for (Member attacker : attackers) {
             if (attacker.isKO()) {
                 continue;
@@ -191,7 +188,7 @@ public class CombatManager {
                         }
                         else {
                             //Perform the attack
-                            Member defender = selectTarget(defenders);
+                            Member defender = selectTarget(defendingTeam);
                             if (defender != null) {
                                 performAttack(attacker, defender);
 
@@ -200,7 +197,7 @@ public class CombatManager {
                     }
                     else {
                         //perform the attack
-                        Member defender = selectTarget(defenders);
+                        Member defender = selectTarget(defendingTeam);
                         if (defender != null) {
                             performAttack(attacker, defender);
                         }
@@ -211,40 +208,23 @@ public class CombatManager {
     }
 
     private void requestWeapon(Member member) {
-        Random random = new Random();
-
         try {
-            List<Weapon> weapons = itemManager.getAllWeapons();
-            if (!weapons.isEmpty()) {
-                Weapon randomWeapon = weapons.get(random.nextInt(weapons.size()));
-                member.equipWeapon(randomWeapon);
-            }
+            itemManager.assignRandomWeapon(member);
 
         } catch (PersistanceException e) {
-            controller.displayMessage("Error fetching weapons: " + e.getMessage());
+            controller.displayMessage("Error equipping weapon: " + e.getMessage());
         }
 
     }
 
     // Select a Target for Attack
-    private Member selectTarget(List<Member> defenders) {
-
-        Random random = new Random();
-
-        List<Member> availableDefenders = new ArrayList<>();
-
-        for (Member defender : defenders) {
-            if (!defender.isKO()) {
-                availableDefenders.add(defender);
-            }
-        }
-
-
-        if (availableDefenders.isEmpty()) {
+    private Member selectTarget(Team defendingTeam) {
+        try {
+            return teamManager.getRandomAvailableDefender(defendingTeam.getName());
+        } catch (PersistanceException e) {
+            controller.displayMessage("Error selecting target: " + e.getMessage());
             return null;
         }
-
-        return availableDefenders.get(random.nextInt(availableDefenders.size()));
     }
 
     // Perform an Attack Between Characters

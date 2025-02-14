@@ -11,6 +11,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -56,4 +57,47 @@ public class CharacterJsonDAO implements CharacterDAO {
         }
     }
 
+    @Override
+    public Character getCharacterById(long id) {
+        try (JsonReader reader = new JsonReader(new FileReader(PATH))) {
+            Character[] charactersArray = gson.fromJson(reader, Character[].class);
+            for (Character character : charactersArray) {
+                if (character.getId() == id) {
+                    return character;
+                }
+            }
+            return null;
+        } catch (IOException e) {
+            throw new PersistanceException("Couldn't read characters file: " + PATH, e);
+        }
+    }
+
+    @Override
+    public Character getCharacterByName(String name) {
+        try (JsonReader reader = new JsonReader(new FileReader(PATH))) {
+            Character[] charactersArray = gson.fromJson(reader, Character[].class);
+            for (Character character : charactersArray) {
+                if (character.getName().equalsIgnoreCase(name)) {
+                    return character;
+                }
+            }
+            return null;
+        } catch (IOException e) {
+            throw new PersistanceException("Couldn't read characters file: " + PATH, e);
+        }
+    }
+
+    @Override
+    public List<String> getCharactersByNames() {
+        try (JsonReader reader = new JsonReader(new FileReader(PATH))) {
+            Character[] charactersArray = gson.fromJson(reader, Character[].class);
+            List<String> names = new ArrayList<>();
+            for (Character character : charactersArray) {
+                names.add(character.getName());
+            }
+            return names;
+        } catch (IOException e) {
+            throw new PersistanceException("Couldn't read characters file: " + PATH, e);
+        }
+    }
 }

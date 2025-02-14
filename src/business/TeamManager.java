@@ -19,9 +19,13 @@ public class TeamManager {
         this.characterManager = characterManager; // Assign CharacterManager
     }
 
-    // Get all teams
-    public List<Team> getTeams() throws PersistanceException {
-         return teamDAO.loadTeams();
+    public boolean validatePersistence() {
+        try {
+            teamDAO.loadTeams();
+            return true;
+        } catch (PersistanceException e) {
+            return false;
+        }
     }
 
     // Delete a team by name
@@ -47,15 +51,7 @@ public class TeamManager {
 
     // Check if a team exists by name
     public boolean teamExists(String teamName) throws PersistanceException {
-        List<Team> teams = teamDAO.loadTeams();
-
-        for (Team team : teams) {
-            if (team.getName().equalsIgnoreCase(teamName)) {
-                return true;
-            }
-        }
-
-        return false;
+        return teamDAO.getTeamByName(teamName) != null;
     }
 
     // Save all teams to the persistence source
@@ -114,4 +110,13 @@ public class TeamManager {
         return new TeamPrint(team.getName(), memberPrints);
     }
 
+    public List<String> getTeamsNamesWithCharacter(long characterId) throws PersistanceException {
+        return teamDAO.getTeamsNamesWithCharacter(characterId);
+    }
+
+
+    public Member getRandomAvailableDefender(String teamName) throws PersistanceException {
+        return teamDAO.getRandomAvailableDefender(teamName);
+
+    }
 }

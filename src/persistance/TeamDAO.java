@@ -1,5 +1,6 @@
 package persistance;
 
+import business.entities.Member;
 import business.entities.Team;
 import business.entities.TeamPrint;
 
@@ -10,4 +11,10 @@ public interface TeamDAO {
     ArrayList<Team> loadTeams();
     void saveTeams(List<TeamPrint> team);
     boolean isFileOk();
+    Team getTeamByName(String name);
+    List<String> getTeamsNamesWithCharacter(long id);
+    TeamPrint convertToTeamPrint(Team team);
+    Team findTeamByName(String name);
+
+    Member getRandomAvailableDefender(String teamName);
 }

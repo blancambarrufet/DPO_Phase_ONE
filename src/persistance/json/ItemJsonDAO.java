@@ -4,6 +4,7 @@ import business.entities.Item;
 import business.entities.Weapon;
 import business.entities.Armor;
 import com.google.gson.*;
+import com.google.gson.stream.JsonReader;
 import persistance.ItemDAO;
 import persistance.exceptions.PersistanceException;
 
@@ -48,6 +49,54 @@ public class ItemJsonDAO implements ItemDAO {
     }
 
     @Override
+    public Item getItemById(int id) {
+        try (JsonReader reader = new JsonReader(new FileReader(PATH))) {
+            JsonArray jsonArray = JsonParser.parseReader(reader).getAsJsonArray();
+            for (JsonElement element : jsonArray) {
+                JsonObject jsonObject = element.getAsJsonObject();
+                if (jsonObject.get("id").getAsLong() == id) {
+                    return parseItem(jsonObject);
+                }
+            }
+            return null;
+        } catch (IOException e) {
+            throw new PersistanceException("Couldn't read items file: " + PATH, e);
+        }
+    }
+
+    @Override
+    public Weapon getRandomWeapon() {
+        return (Weapon) getRandomItem("Weapon");
+    }
+
+    @Override
+    public Armor getRandomArmor() {
+        return (Armor) getRandomItem("Armor");
+    }
+
+    private Item getRandomItem(String type) {
+        try (JsonReader reader = new JsonReader(new FileReader(PATH))) {
+            reader.beginArray();
+            Item selectedItem = null;
+            int count = 0;
+
+            while (reader.hasNext()) {
+                JsonObject jsonObject = JsonParser.parseReader(reader).getAsJsonObject();
+                if (jsonObject.get("class").getAsString().equals(type)) {
+                    count++;
+                    if (random.nextInt(count) == 0) {
+                        selectedItem = parseItem(jsonObject);
+                    }
+                }
+            }
+            reader.endArray();
+            return selectedItem;
+        } catch (IOException e) {
+            throw new PersistanceException("Couldn't read items file: " + PATH, e);
+        }
+    }
+
+    @Override
     public List<Item> loadItems() throws PersistanceException {
         List<Item> items = new ArrayList<>();
         try {
@@ -81,5 +130,55 @@ public class ItemJsonDAO implements ItemDAO {
             throw new PersistanceException("Couldn't read items file: " + PATH, e);
         }
     }
+
+    private Item parseItem(JsonObject jsonObject) {
+        long id = jsonObject.get("id").getAsLong();
+        String name = jsonObject.get("name").getAsString();
+        int power = jsonObject.get("power").getAsInt();
+        int durability = jsonObject.get("durability").getAsInt();
+        String itemType = jsonObject.get("class").getAsString();
+
+        return itemType.equals("Weapon") ? new Weapon(id, name, power, durability)
+                : new Armor(id, name, power, durability);
+    }
+
+    public List<String> getItemNames() {
+        List<String> itemNames = new ArrayList<>();
+
+        try (JsonReader reader = new JsonReader(new FileReader(PATH))) {
+            JsonArray jsonArray = JsonParser.parseReader(reader).getAsJsonArray();
+
+            for (JsonElement element : jsonArray) {
+                JsonObject jsonObject = element.getAsJsonObject();
+                if (jsonObject.has("name")) {
+                    itemNames.add(jsonObject.get("name").getAsString());
+                }
+            }
+
+        } catch (IOException e) {
+            throw new PersistanceException("Couldn't read items file: " + PATH, e);
+        }
+
+        return itemNames;
+    }
+
+    public Item getItemByName(String name) {
+        try (JsonReader reader = new JsonReader(new FileReader(PATH))) {
+            JsonArray jsonArray = JsonParser.parseReader(reader).getAsJsonArray();
+
+            for (JsonElement element : jsonArray) {
+                JsonObject jsonObject = element.getAsJsonObject();
+                if (jsonObject.has("name") && jsonObject.get("name").getAsString().equalsIgnoreCase(name)) {
+                    return parseItem(jsonObject);
+                }
+            }
+        } catch (IOException e) {
+            throw new PersistanceException("Couldn't read items file: " + PATH, e);
+        }
+
+        return null;
+    }
+
+
 
 }

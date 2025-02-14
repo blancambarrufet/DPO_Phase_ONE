@@ -10,7 +10,7 @@ public class UI {
 
     Scanner scanner = new Scanner(System.in);
 
-    public boolean validatePersistence(boolean charactersOk, boolean itemsOk) {
+    public boolean validatePersistence(boolean charactersOk, boolean itemsOk, boolean teamsOk, boolean statsOk) {
         System.out.println("  ___                      _    ___     ___         _ ");
         System.out.println(" / __|_  _ _ __  ___ _ _  | |  / __|   | _ )_ _ ___| |");
         System.out.println(" \\__ \\ || | '_ \\/ -_) '_| | |__\\__ \\_  | _ \\ '_/ _ \\_|");
@@ -30,12 +30,24 @@ public class UI {
             System.out.println("Error: The items.json file can’t be accessed.");
         } else {
             System.out.println("Files OK.");
-            System.out.println("Starting program... \n");
-            return true; // Continue if files are OK
         }
 
-        System.out.println("Shutting down...");
-        return false; // Stop if errors exist
+
+        if (!teamsOk) {
+            System.out.println("Warning: teams.json could not be loaded. No teams will be available.");
+        }
+
+        if (!statsOk) {
+            System.out.println("Warning: stats.json could not be loaded. No statistics will be available.");
+        }
+
+        if (!charactersOk || !itemsOk) {
+            System.out.println("Shutting down...");
+            return false; // Stop execution if required files are missing
+        }
+
+        System.out.println("Starting program... \n");
+        return true; // Continue if files are OK
     }
 
     public MainMenu printMainMenu() {
@@ -246,14 +258,14 @@ public class UI {
         scanner.nextLine();
     }
 
-    public int displayCharactersList(List<Character> characters) {
+    public int displayCharactersList(List<String> characters) {
         if (characters.isEmpty()) {
             System.out.println("No characters available.");
             return 0; // Return 0 to go back
         }
         else {
             for (int i = 0; i < characters.size(); i++) {
-                System.out.println((i + 1) + ") " + characters.get(i).getName());
+                System.out.println((i + 1) + ") " + characters.get(i));
             }
             System.out.println("\n0) Back");
 
@@ -262,45 +274,26 @@ public class UI {
         }
     }
 
-    public void displayCharacterDetails(Character character, List<Team> teams) {
-
-        String characterName = character.getName();
+    public void displayCharacterDetails(Character character, List<String> teams) {
         System.out.println("\n\tID: " + "\t " + character.getId());
-        System.out.println("\tNAME:    " + characterName);
+        System.out.println("\tNAME:    " + character.getName());
         System.out.println("\tWEIGHT:  " + character.getWeight() + " kg");
 
         // Display teams
         System.out.println("\tTEAMS:");
 
         int exist=0;
-        for (Team team : teams) {
-            for (Member member : team.getMembers()) {
-                if (member == null) {
-                    System.out.println("Null member detected in team: " + team.getName());
-                    break;
-                }
-                if (member != null) {
-                    String memberName = member.getName();
-                    if (characterName.equals(memberName)) {
-                        printTeamName(team);
-                        exist++;
-                        break;
-                    }
-                }
-
+        if (teams.isEmpty()) {
+            System.out.println("\t\tNo teams related.");
+        } else {
+            for (String teamName : teams) {
+                System.out.println("\t\t- " + teamName);
             }
         }
-
-
-
-        if (exist==0) System.out.println("\t\t\tNo teams related.");
-
 
         System.out.print("\n<Press any key to continue...>");
         scanner.nextLine();
     }
-
-
 
     public int requestTeamForCombat(int teamNumber, int maxTeams) {
         int option = -1;
@@ -370,11 +363,6 @@ public class UI {
         }
         System.out.println();
     }
-
-    public void printTeamName(Team team) {
-        System.out.println("\t\t   - " + team.getName());
-    }
-
 
     public void displayExecutionTurn(String attacker, double damageAttack, String weapon, double damageReceived, String defender) {
         System.out.println(attacker + " ATTACKS " + defender + " WITH " + weapon + " FOR " + String.format("%.1f", damageAttack) + " DAMAGE!");
@@ -509,11 +497,9 @@ public class UI {
         }
     }
 
-    public void TeamCreationError(int option){
-        switch (option) {
-            case 1-> System.out.println("Team already exists.");
-
-        }
+    public void displayEndRoundMessage() {
+        System.out.println("Combat ready!");
+        System.out.println("<Press any key to continue...>");
+        scanner.nextLine();
     }
-
 }

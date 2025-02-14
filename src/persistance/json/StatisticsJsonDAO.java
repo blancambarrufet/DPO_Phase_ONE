@@ -38,15 +38,19 @@ public class StatisticsJsonDAO implements StatisticsDAO {
 
     @Override
     public ArrayList<Statistics> loadStatistics() throws PersistanceException {
+        Path filePath = Path.of(PATH);
 
+        if (!Files.exists(filePath)) {
+            try (FileWriter writer = new FileWriter(PATH)) {
+                gson.toJson(new ArrayList<Statistics>(), writer);
+            } catch (IOException e) {
+                throw new PersistanceException("Error initializing stats.json file.", e);
+            }
+        }
 
+        //loading existing statistics
         try (JsonReader reader = new JsonReader(new FileReader(PATH))) {
             Statistics[] statsArray = gson.fromJson(reader, Statistics[].class);
-
-            // Ensure the list is initialized correctly
-            if (statsArray == null) {
-                return new ArrayList<>(); // Return an empty list if file is empty or improperly formatted
-            }
 
             return new ArrayList<>(Arrays.asList(statsArray)); // Convert array to ArrayList
         } catch (JsonSyntaxException | IOException e) {
@@ -63,8 +67,5 @@ public class StatisticsJsonDAO implements StatisticsDAO {
             throw new PersistanceException("Couldn't write teams file: " + PATH, e);
         }
     }
-
-
-
 
 }

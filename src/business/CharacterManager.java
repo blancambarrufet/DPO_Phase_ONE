@@ -24,33 +24,28 @@ public class CharacterManager {
         return characterDAO.validateFile();
     }
 
-    // Retrieve all characters
-    public List<Character> getAllCharacters() throws PersistanceException {
-        return characterDAO.loadAllCharacters();
-    }
-
-    public Character findCharacter(String input) {
+    public Character findCharacter(String input) throws PersistanceException {
         try {
-            List<Character> characters = characterDAO.loadAllCharacters();
-
-            // First, check if the input matches any character ID
-            for (Character character : characters) {
-                if (String.valueOf(character.getId()).equals(input)) {
-                    return character;
-                }
+            // First, check if input is a numeric ID
+            if (input.matches("\\d+")) { //DEBUG: CHECK OTHER WAY
+                return characterDAO.getCharacterById(Long.parseLong(input));
+            } else {
+                return characterDAO.getCharacterByName(input);
             }
-
-            // If not found by ID, check by name
-            for (Character character : characters) {
-                if (character.getName().equalsIgnoreCase(input)) {
-                    return character;
-                }
-            }
-
         } catch (PersistanceException e) {
             return null;
         }
+    }
 
-        return null;
+    public List<String> getCharacterNames() {
+        return characterDAO.getCharactersByNames();
+    }
+
+    public Character getCharacterById(long id) {
+        return characterDAO.getCharacterById(id);
+    }
+
+    public Character getCharacterByName(String name) {
+        return characterDAO.getCharacterByName(name);
     }
 }
