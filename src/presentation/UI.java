@@ -317,25 +317,25 @@ public class UI {
         return option;
     }
 
-    public void displayTeamList(List<Team> teams) {
+    public void displayTeamsAvailable(List<String> teams) {
         System.out.println("Looking for available teams...\n");
         if (teams.isEmpty()) {
             System.out.println("\nNo teams available.\n");
         }
         else {
             for (int i = 0; i < teams.size(); i++) {
-                System.out.println("\t" + (i + 1) + ") " + teams.get(i).getName());
+                System.out.println("\t" + (i + 1) + ") " + teams.get(i));
             }
         }
         System.out.println();
     }
 
 
-    public void displayTeamInitialization(Team team, int teamNumber, List<Member> members) {
+    public void displayTeamInitialization(Team team, int teamNumber) {
         System.out.println("\tTeam #" + teamNumber + " - " + team.getName());
 
 
-        for (Member member : members) {
+        for (Member member : team.getMembers()) {
             // Ensure no null pointer exception occurs
             String weaponName = (member.getWeapon() != null) ? member.getWeapon().getName() : "No Weapon";
             String armorName = (member.getArmor() != null) ? member.getArmor().getName() : "No Armor";
@@ -347,10 +347,10 @@ public class UI {
         System.out.println();
     }
 
-    public void displayTeamStats(Team team, int teamNumber, List<Member> members) {
+    public void displayTeamStats(Team team, int teamNumber) {
         System.out.println("Team #" + teamNumber + " - " + team.getName());
 
-        for (Member member : members) {
+        for (Member member : team.getMembers()) {
             // Check if the weapon is null before calling getName()
             String status = member.isKO() ? "KO" : (int) (member.getDamageTaken() * 100) + " %";
 
@@ -418,13 +418,13 @@ public class UI {
 
     }
 
-    public int displayTeamOptionList(List<Team> teams) {
-        if (teams.isEmpty()) {
+    public int displayTeamOptionList(List<String> teams) {
+        if (teams.isEmpty() ) {
             System.out.println("No teams available.");
             return 0;
         } else {
             for (int i = 0; i < teams.size(); i++) {
-                System.out.println("\t" + (i + 1) + ") " + teams.get(i).getName());
+                System.out.println("\t" + (i + 1) + ") " + teams.get(i));
             }
             System.out.println("\n\t0) Back");
 

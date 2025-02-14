@@ -14,4 +14,8 @@ public interface CharacterDAO {
     Character getCharacterByName(String name);
 
     List<String> getCharactersByNames();
+
+    Character findCharacter(String input);
+    Character findCharacterByIndex(int index);
+
 }

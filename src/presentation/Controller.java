@@ -83,14 +83,17 @@ public class Controller {
             List<String> characterNames = characterManager.getCharacterNames();
 
             int selectedOption = ui.displayCharactersList(characterNames);
+
+
             if (selectedOption == 0) {
                 return; // Go back to the main menu
             }
 
-            Character selectedCharacter = characterManager.getCharacterById(selectedOption);
+            Character selectedCharacter = characterManager.findCharacterByIndex(selectedOption);
 
             if (selectedCharacter != null) {
                 List<String> teamsOfCharacter = teamManager.getTeamsNamesWithCharacter(selectedCharacter.getId());
+
                 // Display character details via the UI
                 ui.displayCharacterDetails(selectedCharacter, teamsOfCharacter);
             }
@@ -118,7 +121,7 @@ public class Controller {
             for (int i = 1; i <= 4; i++) {
                 String characterInput = ui.requestCharacterName(i);
 
-                Character character = characterManager.getCharacterByName(characterInput);
+                Character character = characterManager.findCharacter(characterInput);
                 if (character == null) {
                     ui.errorCreateTeam(characterInput);
                     return;
@@ -143,14 +146,16 @@ public class Controller {
     // List All Teams
     private void listTeams() {
         try {
-            List<Team> teams =  teamManager.loadTeams();
+            List<String> teams =  teamManager.loadTeamNames();
+
             int selectedOption = ui.displayTeamOptionList(teams);
 
             if (selectedOption == 0) {
                 return; // Go back to the main menu
             }
 
-            Team selectedTeam = teams.get(selectedOption - 1);
+            Team selectedTeam = teamManager.findTeamByIndex(selectedOption);
+
             ui.displayTeamDetails(selectedTeam);
 
             Statistics statistics = statisticsManager.getStaticByName(selectedTeam.getName());
@@ -221,11 +226,33 @@ public class Controller {
 
     // Simulate Combat
     private void simulateCombat() {
-        combatManager.combatSimulation();
-    }
+        displayMessage("\nStarting simulation...");
 
-    public void displayTeamsAvailable(List<Team> teams) {
-        ui.displayTeamList(teams);
+        try {
+            List<String> availableTeams = teamManager.loadTeamNames();
+            ui.displayTeamsAvailable(availableTeams);
+
+            if (availableTeams.size() < 2) {
+                displayMessage("(ERROR) Not enough teams to start a combat.");
+                return;
+            }
+
+            // Select teams using indexes
+            int teamIndex1 = ui.requestTeamForCombat(1, availableTeams.size()) - 1;
+            int teamIndex2 = ui.requestTeamForCombat(2, availableTeams.size()) - 1;
+
+            Team team1 = teamManager.findTeamByIndex(teamIndex1);
+            Team team2 = teamManager.findTeamByIndex(teamIndex2);
+
+            displayMessage("\nInitializing teams...\n");
+
+
+
+            combatManager.combatStart(team1, team2);
+
+        } catch (PersistanceException e) {
+            displayMessage("Error during combat setup: " + e.getMessage());
+        }
     }
 
     public void displayExecutionTurn(String attacker, double damageAttack, String weapon, double damageReceived, String defender) {
@@ -237,20 +264,16 @@ public class Controller {
     }
 
 
-    public void displayTeamStats(Team team, int teamNumber, List<Member> members) {
-        ui.displayTeamStats(team, teamNumber, members);
+    public void displayTeamStats(Team team, int teamNumber) {
+        ui.displayTeamStats(team, teamNumber);
     }
 
     public void displayMessage(String message) {
         ui.displayMessage(message);
     }
 
-    public int requestTeamForCombat(int teamNumber, int maxTeams) {
-        return ui.requestTeamForCombat(teamNumber, maxTeams);
-    }
-
-    public void displayTeamInitialization(Team team, int teamNumber, List<Member> members) {
-        ui.displayTeamInitialization(team,teamNumber, members);
+    public void displayTeamInitialization(Team team, int teamNumber) {
+        ui.displayTeamInitialization(team,teamNumber);
     }
 
     public void displayRoundMessage(int round) {

@@ -6,7 +6,7 @@ public class Main {
     public static void main(String[] args) {
         CharacterManager characterManager = new CharacterManager();
         ItemManager itemManager = new ItemManager();
-        TeamManager teamManager = new TeamManager(characterManager);
+        TeamManager teamManager = new TeamManager(itemManager);
         StatisticsManager statisticsManager = new StatisticsManager();
         CombatManager combatManager = new CombatManager(characterManager,itemManager,teamManager, statisticsManager);
 

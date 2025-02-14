@@ -25,27 +25,18 @@ public class CharacterManager {
     }
 
     public Character findCharacter(String input) throws PersistanceException {
-        try {
-            // First, check if input is a numeric ID
-            if (input.matches("\\d+")) { //DEBUG: CHECK OTHER WAY
-                return characterDAO.getCharacterById(Long.parseLong(input));
-            } else {
-                return characterDAO.getCharacterByName(input);
-            }
-        } catch (PersistanceException e) {
-            return null;
-        }
+        return characterDAO.findCharacter(input);
     }
 
     public List<String> getCharacterNames() {
         return characterDAO.getCharactersByNames();
     }
 
-    public Character getCharacterById(long id) {
-        return characterDAO.getCharacterById(id);
-    }
-
     public Character getCharacterByName(String name) {
         return characterDAO.getCharacterByName(name);
+    }
+
+    public Character findCharacterByIndex(int index){
+        return characterDAO.findCharacterByIndex(index);
     }
 }

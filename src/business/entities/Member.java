@@ -52,15 +52,8 @@ public class Member {
         }
     }
 
-    public boolean isDefendingNextTurn() {
-        return defendingNextTurn;
-    }
-
     public double getDamageTaken() {
         return damageTaken;
-    }
-    public boolean isDefending() {
-        return defending;
     }
 
     public Weapon getWeapon() {
@@ -89,10 +82,6 @@ public class Member {
     }
 
     public void resetDefending() {
-        defending = false;
-    }
-
-    public void endTurn() {
         defending = false;
     }
 

@@ -18,8 +18,6 @@ public class Team {
     public void setName(String name) { this.name = name; }
     public List<Member> getMembers() { return members; }
 
-    public void setMembers(List<Member> members) { this.members = members; }
-
     public void addMember(Member member) {
         if (members.size() < 4) {
             members.add(member);
@@ -29,25 +27,22 @@ public class Team {
         }
     }
 
-
-
-    public void addMember(String Id) {
-        //search in the DB for ID
-        //if ID not found look for name
-        //if name not found return error
-
+    public void applyDefending() {
+        for (Member member : members) {
+            member.applyDefending(); //apply defense if it was set in the last turn
+        }
     }
 
-
-    public boolean isFull() {
-        return members.size() == 4;
+    public void applyAccumulatedDamage() {
+        for(Member member : members) {
+            member.updatePendingDamage();
+        }
     }
 
-    public void removeMember(Member member) {
-        members.remove(member);
+    public void resetDefenseAfterTurn() {
+        for(Member member : members) {
+            member.resetDefending();
+        }
+
     }
-
-
-
-
 }

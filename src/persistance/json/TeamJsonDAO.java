@@ -1,5 +1,6 @@
 package persistance.json;
 
+import business.entities.Character;
 import business.entities.Member;
 import business.entities.MemberPrint;
 import business.entities.Team;
@@ -14,19 +15,17 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.security.PublicKey;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 public class TeamJsonDAO implements TeamDAO {
 
     private static final String PATH = "data/teams.json";
     private final Gson gson;
+    CharacterJsonDAO characterJsonDAO;
 
     public TeamJsonDAO() {
         this.gson = new GsonBuilder().setPrettyPrinting().create();
+        this.characterJsonDAO = new CharacterJsonDAO();
         initializeFile();
     }
 
@@ -87,20 +86,42 @@ public class TeamJsonDAO implements TeamDAO {
     }
 
 
+    private ArrayList<Team> matchCharacterTeam() {
+        ArrayList<Team> teams = loadTeams();
+
+        if (teams == null) return new ArrayList<>(); // Ensure it's not null
+
+        for (Team team : teams) {
+            for (Member member : team.getMembers()) {
+                if (member.getCharacterId() == 0) continue;
+
+                if (characterJsonDAO == null) {
+                    characterJsonDAO = new CharacterJsonDAO(); // Initialize if null
+                }
+
+                //String newId = String.valueOf(member.getCharacterId());
+
+                //Character character = characterJsonDAO.findCharacter(newId);
+
+                Character character = characterJsonDAO.getCharacterById(member.getCharacterId());
+                if (character != null) {
+                    member.setCharacter(character);
+                }
+            }
+        }
+        return teams;
+    }
+
     @Override
-    public void saveTeams(String newTeamName) throws PersistanceException {
+    public void saveNewTeams(Team newTeamName) throws PersistanceException {
         try {
             // Load existing teams
             List<TeamPrint> teams = loadTeamsPrint();
 
-            // Find the team by name
-            Team team = findTeamByName(newTeamName);
-            if (team == null) {
-                throw new PersistanceException("Team not found: " + newTeamName);
-            }
+
 
             // Convert to TeamPrint
-            TeamPrint teamPrint = convertToTeamPrint(team);
+            TeamPrint teamPrint = convertToTeamPrint(newTeamName);
 
             // Add the new team print if not already in the list
             if (!teams.contains(teamPrint)) {
@@ -201,5 +222,65 @@ public class TeamJsonDAO implements TeamDAO {
 
         return new TeamPrint(team.getName(), memberPrints);
     }
+
+    public void deleteTeam(String teamName) {
+
+        List<TeamPrint> teams = loadTeamsPrint();
+
+        // Remove the team
+        boolean removed = teams.removeIf(team -> team.getName().equalsIgnoreCase(teamName));
+
+        if (!removed) {
+            throw new PersistanceException("Team not found: " + teamName);
+        }
+
+
+        // Write updated list back to file
+        try (FileWriter writer = new FileWriter(PATH)) {
+            gson.toJson(teams, writer);
+        } catch (IOException e) {
+            throw new PersistanceException("Failed to write updated team list", e);
+        }
+    }
+
+    public boolean exists(String teamName) {
+        List<Team> teams = matchCharacterTeam();
+
+        for (Team team : teams) {
+            if (team.getName().equalsIgnoreCase(teamName)) {
+                return true; // Found the team, return true immediately
+            }
+        }
+
+        return false; // No match found, return false
+    }
+
+
+    public List<String> loadTeamNames() {
+        List<Team> teams = matchCharacterTeam();
+
+        // Ensure teams is never null
+        if (teams == null) {
+            return new ArrayList<>(); // Return an empty list instead of initializing
+        }
+
+        List<String> teamNames = new ArrayList<>();
+        for (Team team : teams) {
+            if (team.getName() != null) { // Avoid NullPointerException
+                teamNames.add(team.getName());
+            }
+        }
+
+        return teamNames;
+    }
+
+
+    public Team findTeamByIndex(int index){
+        List<Team> teams = matchCharacterTeam();
+        return teams.get(index-1);
+    }
+
+
+
 
 }

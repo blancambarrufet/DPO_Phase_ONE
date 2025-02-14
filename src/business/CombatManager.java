@@ -26,98 +26,57 @@ public class CombatManager {
         this.controller = controller;
     }
 
-    public void combatSimulation() {
-        controller.displayMessage("\nStarting simulation...");
+    public void combatStart(Team team1, Team team2) {
+        teamManager.initializeTeam(team1);
+        teamManager.initializeTeam(team2);
 
-        List<Team> availableTeams = teamManager.loadTeams();
-        controller.displayTeamsAvailable(availableTeams);
+        controller.displayTeamInitialization(team1, 1);
+        controller.displayTeamInitialization(team2, 2);
 
-        if (availableTeams.size() < 2) {
-            controller.displayMessage("(ERROR) Not enough teams to start a combat.");
-            return;
-        }
+        controller.displayEndRoundMessage();
 
-        int teamIndex1 = controller.requestTeamForCombat(1, availableTeams.size()) - 1;
-        int teamIndex2 = controller.requestTeamForCombat(2, availableTeams.size()) - 1;
+        executeCombat(team1, team2);
+    }
 
-        Team team1 = availableTeams.get(teamIndex1);
-        Team team2 = availableTeams.get(teamIndex2);
-
-        controller.displayMessage("\nInitializing teams...\n");
+    //Execute Combat between Two Teams
+    private void executeCombat(Team team1, Team team2) {
+        int round = 1;
 
         List<Member> team1Members = team1.getMembers();
         List<Member> team2Members = team2.getMembers();
 
-        initializeTeams(team1Members, team2Members);
-
-        controller.displayTeamInitialization(team1, 1, team1Members);
-        controller.displayTeamInitialization(team2, 2, team2Members);
-
-        controller.displayEndRoundMessage();
-
-        executeCombat(team1,team1Members, team2,team2Members);
-    }
-
-    public void initializeTeams (List<Member> team1Members, List<Member> team2Members) {
-        Random random = new Random();
-
-        for (Member member : team1Members) {
-            equipItems(member);
-            member.resetDamage();
-        }
-
-        for (Member member : team2Members) {
-            equipItems(member);
-            member.resetDamage();
-        }
-
-    }
-
-    private void equipItems(Member member) {
-        try {
-            itemManager.equipItemsMember(member);
-        } catch (PersistanceException e) {
-            controller.displayMessage("Error equipping items: " + e.getMessage());
-        }
-    }
-
-    //Execute Combat between Two Teams
-    public void executeCombat(Team team1, List<Member> team1Members, Team team2, List<Member> team2Members) {
-        int round = 1;
-
         // Perform rounds until one team is defeated
-        while (!isTeamDefeated(team1Members) && !isTeamDefeated(team2Members)) {
+        while (!teamManager.isTeamDefeated(team1) && !teamManager.isTeamDefeated(team2)) {
             controller.displayRoundMessage(round);
 
             //applying defense from the previous turn
-            applyDefendingForMembers(team1Members);
-            applyDefendingForMembers(team2Members);
+            team1.applyDefending();
+            team2.applyDefending();
 
             //display the stats in the start of a new round
-            controller.displayTeamStats(team1, 1, team1Members);
-            controller.displayTeamStats(team2, 2, team2Members);
+            controller.displayTeamStats(team1, 1);
+            controller.displayTeamStats(team2, 2);
 
             //execute the turns of each team
             executeTurn(team1,team1Members, team2, team2Members);
             executeTurn(team2,team2Members, team1, team1Members);
 
-            applyAccumulatedDamage(team1Members);
-            applyAccumulatedDamage(team2Members);
-
-            //durabilityChecking(team1Members, team2Members);
+            team1.applyAccumulatedDamage();
+            team2.applyAccumulatedDamage();
 
             KOChecking(team1Members, team2Members);
 
             //reset the defending characters after turn ends
-            resetDefenseAfterTurn(team1Members);
-            resetDefenseAfterTurn(team2Members);
+            team1.resetDefenseAfterTurn();
+            team2.resetDefenseAfterTurn();
 
             round++;
         }
 
         // Step 1: Check if both teams are KO (Tie Condition)
-        boolean team1Defeated = isTeamDefeated(team1Members);
-        boolean team2Defeated = isTeamDefeated(team2Members);
+        boolean team1Defeated = teamManager.isTeamDefeated(team1);
+        boolean team2Defeated = teamManager.isTeamDefeated(team2);
+
         Team winner = null;
         if (team1Defeated && team2Defeated) {
             controller.displayCombatResult(null, team1, team1Members, team2, team2Members); // NULL indicates a tie
@@ -136,14 +95,6 @@ public class CombatManager {
         }
 
         statisticsManager.recordCombatResult(team1.getName(), team2.getName(), koTeam1, koTeam2, winnerName);
-
-
-    }
-
-    private void applyAccumulatedDamage(List<Member> team1Members) {
-        for(Member member : team1Members) {
-            member.updatePendingDamage();
-        }
     }
 
     private int numberOfKO(List<Member> team1Members) {
@@ -231,16 +182,6 @@ public class CombatManager {
         degradeEquipment(attacker, defender);
     }
 
-//    public void durabilityChecking(List<Member> team1, List<Member> team2) {
-//        for (Member member : team1) {
-//            degradeEquipment(member);
-//        }
-//
-//        for (Member member : team2) {
-//            degradeEquipment(member);
-//        }
-//    }
-
     //Degrade Equipment (Weapon and Armor)
     private void degradeEquipment(Member attacker, Member defender) {
         //Reduce attacker's weapon durability
@@ -267,7 +208,7 @@ public class CombatManager {
         }
     }
 
-    public void KOChecking(List<Member> team1Members, List<Member> team2Members) {
+    private void KOChecking(List<Member> team1Members, List<Member> team2Members) {
         Random random = new Random();
 
         for (Member member : team1Members) {
@@ -300,30 +241,6 @@ public class CombatManager {
                 }
             }
         }
-    }
-
-    // Check if a Team is Defeated
-    public boolean isTeamDefeated(List<Member> members) {
-
-        for (Member member : members) {
-            if (!member.isKO()) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    private void applyDefendingForMembers(List<Member> teamMembers) {
-        for (Member member : teamMembers) {
-            member.applyDefending(); //apply defense if it was set in the last turn
-        }
-    }
-
-    private void resetDefenseAfterTurn(List<Member> teamMembers) {
-        for(Member member : teamMembers) {
-            member.resetDefending();
-        }
-
     }
 
 

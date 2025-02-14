@@ -63,7 +63,7 @@ public class CharacterJsonDAO implements CharacterDAO {
             Character[] charactersArray = gson.fromJson(reader, Character[].class);
             for (Character character : charactersArray) {
                 if (character.getId() == id) {
-                    return character;
+                    return character; // Return the correct character by ID
                 }
             }
             return null;
@@ -99,5 +99,30 @@ public class CharacterJsonDAO implements CharacterDAO {
         } catch (IOException e) {
             throw new PersistanceException("Couldn't read characters file: " + PATH, e);
         }
+    }
+
+    //Function used to return the character for the Create Team option
+    @Override
+    public Character findCharacter(String input) throws PersistanceException {
+        try {
+            // First, check if input is a numeric ID
+            if (input.matches("\\d+")) { //DEBUG: CHECK OTHER WAY
+                return getCharacterById(Long.parseLong(input));
+            } else {
+                return getCharacterByName(input);
+            }
+        } catch (PersistanceException e) {
+            return null;
+        }
+    }
+
+    public Character findCharacterByIndex(int index) throws PersistanceException {
+        try {
+            List<Character> characters = loadAllCharacters();
+            return characters.get(index-1);
+        } catch (PersistanceException e) {
+            return null;
+        }
+
     }
 }
