@@ -73,8 +73,8 @@ public class Member {
 
     //applying damage (Step 3 of 2.5.2)
     public void updatePendingDamage() {
-        damageTaken += pendingDamageTaken;
-        pendingDamageTaken = 0;// reset the accumulator
+        this.damageTaken += pendingDamageTaken;
+        this.pendingDamageTaken = 0;// reset the accumulator
     }
 
     public void accumulateDamage(double damage) {
