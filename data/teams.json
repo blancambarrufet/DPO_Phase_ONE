@@ -1,0 +1,65 @@
+[
+  {
+    "name": "Salle Fest Bois",
+    "members": [
+      {
+        "id": 5431512,
+        "strategy": "balanced"
+      },
+      {
+        "id": 467416287,
+        "strategy": "offensive"
+      },
+      {
+        "id": 4264041,
+        "strategy": "defensive"
+      },
+      {
+        "id": 748738,
+        "strategy": "sniper"
+      }
+    ]
+  },
+  {
+    "name": "Technova",
+    "members": [
+      {
+        "id": 68053,
+        "strategy": "balanced"
+      },
+      {
+        "id": 68053,
+        "strategy": "balanced"
+      },
+      {
+        "id": 68053,
+        "strategy": "balanced"
+      },
+      {
+        "id": 68053,
+        "strategy": "balanced"
+      }
+    ]
+  },
+  {
+    "name": "DPOO All-star",
+    "members": [
+      {
+        "id": 467416287,
+        "strategy": "balanced"
+      },
+      {
+        "id": 4115637091,
+        "strategy": "balanced"
+      },
+      {
+        "id": 73237806,
+        "strategy": "balanced"
+      },
+      {
+        "id": 748738,
+        "strategy": "balanced"
+      }
+    ]
+  }
+]

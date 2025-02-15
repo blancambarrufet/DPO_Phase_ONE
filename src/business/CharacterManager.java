@@ -1,52 +1,42 @@
 package business;
 
-import java.io.*;
+import business.entities.Character;
+import persistance.CharacterDAO;
+import persistance.exceptions.PersistanceException;
+import persistance.json.CharacterJsonDAO;
 import java.util.*;
 
+
 public class CharacterManager {
+    private final CharacterDAO characterDAO;
 
-/*
-    private void loadCharacters() {
-        // TODO implement here
-
-        String filePath = "path/to/your/file.json";
-
-        JSONParser parser = new JSONParser();
-        try {
-            Object obj = parser.parse(new FileReader("/Users/User/Desktop/course.json"));
-            JSONObject jsonObject = (JSONObject)obj;
-            String name = (String)jsonObject.get("Name");
-            String course = (String)jsonObject.get("Course");
-            JSONArray subjects = (JSONArray)jsonObject.get("Subjects");
-            System.out.println("Name: " + name);
-            System.out.println("Course: " + course);
-            System.out.println("Subjects:");
-            Iterator iterator = subjects.iterator();
-            while (iterator.hasNext()) {
-                System.out.println(iterator.next());
-            }
-        } catch(Exception e) {
-            e.printStackTrace();
-        }
+    // Default Constructor - Creates DAO internally
+    public CharacterManager() throws PersistanceException {
+        this.characterDAO = new CharacterJsonDAO();
     }
 
-*/
-
-    public void printCharacter(String characterName) {
-
+    public CharacterManager(CharacterDAO characterDAO) throws PersistanceException {
+        this.characterDAO = characterDAO;
     }
 
-    private void characterList(){
-        // TODO implement here
+    // Validate the persistence source through the DAO
+    public boolean validatePersistenceSource() {
+        return characterDAO.validateFile();
     }
 
-    public void showCharactersInTeams(String teamName){
-        // TODO implement here
+    public Character findCharacter(String input) throws PersistanceException {
+        return characterDAO.findCharacter(input);
     }
 
-    public void displayCharacterInfo(String characterName){
-        // TODO implement here
+    public List<String> getCharacterNames() {
+        return characterDAO.getCharactersByNames();
     }
 
+    public Character getCharacterByName(String name) {
+        return characterDAO.getCharacterByName(name);
+    }
 
+    public Character findCharacterByIndex(int index){
+        return characterDAO.findCharacterByIndex(index);
+    }
 }

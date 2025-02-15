@@ -1,4 +1,4 @@
-package persistance;
+package business.entities;
 
 public class Combat {
     private Team teamOne;

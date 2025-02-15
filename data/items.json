@@ -1,0 +1,128 @@
+[
+  {
+    "id": 687141167,
+    "name": "Welder",
+    "power": 56,
+    "durability": 4,
+    "class": "Weapon"
+  },
+  {
+    "id": 131768176,
+    "name": "Motherboard",
+    "power": 39,
+    "durability": 2,
+    "class": "Armor"
+  },
+  {
+    "id": 7698434,
+    "name": "Stale Pudding",
+    "power": 47,
+    "durability": 1,
+    "class": "Weapon"
+  },
+  {
+    "id": 406,
+    "name": "Plot Armor",
+    "power": 100,
+    "durability": 5,
+    "class": "Armor"
+  },
+  {
+    "id": 4168,
+    "name": "Tin Whip",
+    "power": 9,
+    "durability": 1,
+    "class": "Weapon"
+  },
+  {
+    "id": 6360147176,
+    "name": "Electronic Board",
+    "power": 63,
+    "durability": 3,
+    "class": "Armor"
+  },
+  {
+    "id": 229520010,
+    "name": "Coding Skillz",
+    "power": 10,
+    "durability": 4,
+    "class": "Weapon"
+  },
+  {
+    "id": 707325,
+    "name": "Energy Drink",
+    "power": 57,
+    "durability": 2,
+    "class": "Weapon"
+  },
+  {
+    "id": 427194246,
+    "name": "StarUML Cracked Licence",
+    "power": 15,
+    "durability": 3,
+    "class": "Weapon"
+  },
+  {
+    "id": 37550151,
+    "name": "Elevator Card",
+    "power": 29,
+    "durability": 4,
+    "class": "Weapon"
+  },
+  {
+    "id": 2498476611,
+    "name": "10L Coffee Bottle",
+    "power": 34,
+    "durability": 3,
+    "class": "Weapon"
+  },
+  {
+    "id": 45547649659,
+    "name": "Knowledge",
+    "power": 81,
+    "durability": 5,
+    "class": "Weapon"
+  },
+  {
+    "id": 46774781,
+    "name": "A Friend Who Knows",
+    "power": 25,
+    "durability": 2,
+    "class": "Weapon"
+  },
+  {
+    "id": 76243552135,
+    "name": "Offcampus",
+    "power": 61,
+    "durability": 1,
+    "class": "Armor"
+  },
+  {
+    "id": 737,
+    "name": "Parents' Letter",
+    "power": 19,
+    "durability": 1,
+    "class": "Armor"
+  },
+  {
+    "id": 72794,
+    "name": "Project Teammate",
+    "power": 71,
+    "durability": 3,
+    "class": "Armor"
+  },
+  {
+    "id": 565719363,
+    "name": "Class Diagram",
+    "power": 78,
+    "durability": 2,
+    "class": "Armor"
+  },
+  {
+    "id": 5769993,
+    "name": "Backup Project Partner",
+    "power": 42,
+    "durability": 5,
+    "class": "Armor"
+  }
+]

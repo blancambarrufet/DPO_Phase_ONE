@@ -1,13 +1,19 @@
-import business.CombatManager;
+import business.*;
 import presentation.Controller;
 import presentation.UI;
 
 public class Main {
     public static void main(String[] args) {
-        CombatManager combatManager = new CombatManager();
+        CharacterManager characterManager = new CharacterManager();
+        ItemManager itemManager = new ItemManager();
+        TeamManager teamManager = new TeamManager(itemManager);
+        StatisticsManager statisticsManager = new StatisticsManager();
+        CombatManager combatManager = new CombatManager(characterManager,itemManager,teamManager, statisticsManager);
+
         UI ui = new UI();
 
-        Controller controller = new Controller(ui, combatManager);
+        Controller controller = new Controller(ui, combatManager, itemManager, teamManager, characterManager, statisticsManager);
+        combatManager.setController(controller);
         controller.runMain();
     }
 }
