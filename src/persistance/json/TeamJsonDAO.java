@@ -178,10 +178,8 @@ public class TeamJsonDAO implements TeamDAO {
 
     @Override
     public Member getRandomAvailableDefender(String teamName) {
-        try (JsonReader reader = new JsonReader(new FileReader(PATH))) {
-            Team[] teamsArray = gson.fromJson(reader, Team[].class);
-            if (teamsArray == null) return null;
 
+        List<Team> teamsArray = matchCharacterTeam();
             for (Team team : teamsArray) {
                 if (team.getName().equalsIgnoreCase(teamName)) {
                     List<Member> availableDefenders = new ArrayList<>();
@@ -194,9 +192,7 @@ public class TeamJsonDAO implements TeamDAO {
                     return availableDefenders.isEmpty() ? null : availableDefenders.get(new Random().nextInt(availableDefenders.size()));
                 }
             }
-        } catch (IOException | JsonSyntaxException e) {
-            throw new PersistanceException("Error loading teams from " + PATH + ": " + e.getMessage(), e);
-        }
+
 
         return null; // Team not found
     }

@@ -118,8 +118,7 @@ public class Member {
         //calculate the armor value
         if (armor != null) {
             armorValue = armor.getDefenseValue();
-        }
-        else {
+        } else {
             armorValue = 0;
         }
 
@@ -139,4 +138,6 @@ public class Member {
         //return finalDamage;
         return Math.max(finalDamage, 0); //there will be no negative damage
     }
+
+
 }

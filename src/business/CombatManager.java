@@ -110,7 +110,11 @@ public class CombatManager {
     }
 
     // Execute a Turn for a Team
-    private void executeTurn(Team attackingTeam, List<Member> attackers, Team defendingTeam, List<Member> defenders) {
+    private void executeTurn(Team attackingTeam, Team defendingTeam) {
+
+        List<Member> attackers = attackingTeam.getMembers();
+        List<Member> defenders = defendingTeam.getMembers();
+
         for (Member attacker : attackers) {
             if (attacker.isKO()) {
                 continue;

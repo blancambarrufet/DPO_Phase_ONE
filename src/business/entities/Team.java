@@ -38,6 +38,7 @@ public class Team {
     public void applyDefending() {
         for (Member member : members) {
             member.applyDefending(); //apply defense if it was set in the last turn
+
         }
     }
 
