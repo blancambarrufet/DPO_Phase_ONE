@@ -4,6 +4,7 @@ import business.entities.*;
 import persistance.exceptions.PersistanceException;
 import presentation.Controller;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -42,9 +43,6 @@ public class CombatManager {
     private void executeCombat(Team team1, Team team2) {
         int round = 1;
 
-        List<Member> team1Members = team1.getMembers();
-        List<Member> team2Members = team2.getMembers();
-
         // Perform rounds until one team is defeated
         while (!teamManager.isTeamDefeated(team1) && !teamManager.isTeamDefeated(team2)) {
             controller.displayRoundMessage(round);
@@ -52,10 +50,6 @@ public class CombatManager {
             //applying defense from the previous turn
             team1.applyDefending();
             team2.applyDefending();
-
-
-            team1.applyAccumulatedDamage();
-            team2.applyAccumulatedDamage();
 
             //display the stats in the start of a new round
             controller.displayTeamStats(team1, 1);
@@ -65,7 +59,10 @@ public class CombatManager {
             executeTurn(team1, team2);
             executeTurn(team2, team1);
 
-            KOChecking(team1Members, team2Members);
+            team1.applyAccumulatedDamage();
+            team2.applyAccumulatedDamage();
+
+            KOChecking(team1, team2);
 
             //reset the defending characters after turn ends
             team1.resetDefenseAfterTurn();
@@ -80,15 +77,15 @@ public class CombatManager {
 
         Team winner = null;
         if (team1Defeated && team2Defeated) {
-            controller.displayCombatResult(null, team1, team1Members, team2, team2Members); // NULL indicates a tie
+            controller.displayCombatResult(null, team1, team2); // NULL indicates a tie
         } else {
             winner = team1Defeated ? team2 : team1;
-            controller.displayCombatResult(winner, team1, team1Members, team2, team2Members);
+            controller.displayCombatResult(winner, team1, team2);
         }
 
 
-        int koTeam1 = numberOfKO(team1Members);
-        int koTeam2 = numberOfKO(team2Members);
+        int koTeam1 = numberOfKO(team1.getMembers());
+        int koTeam2 = numberOfKO(team2.getMembers());
 
         String winnerName = " ";
         if (winner!=null) {
@@ -112,10 +109,7 @@ public class CombatManager {
     // Execute a Turn for a Team
     private void executeTurn(Team attackingTeam, Team defendingTeam) {
 
-        List<Member> attackers = attackingTeam.getMembers();
-        List<Member> defenders = defendingTeam.getMembers();
-
-        for (Member attacker : attackers) {
+        for (Member attacker : attackingTeam.getMembers()) {
             if (attacker.isKO()) {
                 continue;
             }
@@ -164,12 +158,21 @@ public class CombatManager {
 
     // Select a Target for Attack
     private Member selectTarget(Team defendingTeam) {
-        try {
-            return teamManager.getRandomAvailableDefender(defendingTeam.getName());
-        } catch (PersistanceException e) {
-            controller.displayMessage("Error selecting target: " + e.getMessage());
-            return null;
+        List<Member> availableDefenders = new ArrayList<>();
+
+        // Filter available defenders directly from the team's in-memory members
+        for (Member member : defendingTeam.getMembers()) {
+            if (!member.isKO()) {
+                availableDefenders.add(member);
+            }
         }
+
+        // Select a random available defender if any are left
+        if (availableDefenders.isEmpty()) return null;
+
+        Random random = new Random();
+        int index = random.nextInt(availableDefenders.size());
+        return availableDefenders.get(index);
     }
 
     // Perform an Attack Between Characters
@@ -213,18 +216,16 @@ public class CombatManager {
         }
     }
 
-    private void KOChecking(List<Member> team1Members, List<Member> team2Members) {
+    private void KOChecking(Team team1, Team team2) {
         Random random = new Random();
 
-        for (Member member : team1Members) {
+        for (Member member : team1.getMembers()) {
             checkForKO(member, random);
         }
 
-        for(Member member : team2Members) {
+        for(Member member : team2.getMembers()) {
             checkForKO(member, random);
         }
-
-
     }
 
     // Check if character is KO

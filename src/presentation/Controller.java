@@ -282,8 +282,8 @@ public class Controller {
         ui.displayKOMember(memberName);
     }
 
-    public void displayCombatResult(Team teamWinner, Team team1, List<Member> team1Members, Team team2, List<Member> team2Members) {
-        ui.displayCombatResult(teamWinner, team1, team1Members, team2, team2Members);
+    public void displayCombatResult(Team teamWinner, Team team1, Team team2) {
+        ui.displayCombatResult(teamWinner, team1, team2);
     }
 
     public void displayEndRoundMessage() {

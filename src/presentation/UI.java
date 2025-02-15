@@ -385,7 +385,7 @@ public class UI {
         System.out.println(memberName + " flies away! It’s a KO!\n");
     }
 
-    public void displayCombatResult(Team teamWinner, Team team1, List<Member> team1Members, Team team2, List<Member> team2Members) {
+    public void displayCombatResult(Team teamWinner, Team team1,Team team2) {
         System.out.println("\n--- END OF COMBAT ---\n");
 
         if (teamWinner == null) {
@@ -396,7 +396,7 @@ public class UI {
 
         System.out.println("Team #1 – " + team1.getName());
 
-        for (Member member : team1Members) {
+        for (Member member : team1.getMembers()) {
 
             String status = member.isKO() ? "KO" : (int) (member.getDamageTaken() * 100) + " %";
 
@@ -405,7 +405,7 @@ public class UI {
 
         System.out.println("\nTeam #2 – " + team2.getName());
 
-        for (Member member : team2Members) {
+        for (Member member : team2.getMembers()) {
 
             String status = member.isKO() ? "KO" : (int) (member.getDamageTaken() * 100) + " %";
 
