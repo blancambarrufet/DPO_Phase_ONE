@@ -24,8 +24,6 @@ public class Controller {
         this.teamManager = teamManager;
         this.combatManager = combatManager;
         this.statisticsManager = statisticsManager;
-
-
     }
 
     public void runMain() {
@@ -67,14 +65,14 @@ public class Controller {
             // Validate critical files
             boolean charactersOk = characterManager.validatePersistenceSource(); // Characters.json
             boolean itemsOk = itemManager.validatePersistenceSource();          // Items.json
+            boolean teamsOk = teamManager.validatePersistence();
+            boolean statsOk = statisticsManager.validatePersistance();
 
             // Check and return based on UI validation
-            return ui.validatePersistence(charactersOk, itemsOk);
-
-
+            return ui.validatePersistence(charactersOk, itemsOk, teamsOk, statsOk);
 
         } catch (Exception e) {
-            return ui.validatePersistence(false, false); // Graceful shutdown
+            return ui.validatePersistence(false, false, false, false); // Graceful shutdown
         }
     }
 
@@ -82,27 +80,31 @@ public class Controller {
     //List Characters
     public void listCharacters() {
         try {
-            // Fetch characters and teams from the business layer
-            List<Character> characters = characterManager.getAllCharacters();
-            List<Team> teams = teamManager.loadTeams();
+            List<String> characterNames = characterManager.getCharacterNames();
 
-            //Ask UI to display the characters and get the selected option
-            int selectedOption = ui.displayCharactersList(characters);
+            int selectedOption = ui.displayCharactersList(characterNames);
+
 
             if (selectedOption == 0) {
                 return; // Go back to the main menu
             }
 
-            // Fetch selected character and associated teams
-            Character selectedCharacter = characters.get(selectedOption - 1);
+            Character selectedCharacter = characterManager.findCharacterByIndex(selectedOption);
 
-            // Display character details via the UI
-            ui.displayCharacterDetails(selectedCharacter, teams);
+            if (selectedCharacter != null) {
+                List<String> teamsOfCharacter = teamManager.getTeamsNamesWithCharacter(selectedCharacter.getId());
+
+                // Display character details via the UI
+                ui.displayCharacterDetails(selectedCharacter, teamsOfCharacter);
+            }
+            else {
+                ui.displayMessage("Character not found!");
+            }
+
         } catch (PersistanceException e) {
             ui.displayMessage("Error retrieving characters: " + e.getMessage());
         }
     }
-
 
     // Create a New Team
     private void createTeam() {
@@ -118,13 +120,14 @@ public class Controller {
 
             for (int i = 1; i <= 4; i++) {
                 String characterInput = ui.requestCharacterName(i);
-                String strategy = ui.requestStrategy(i);
 
                 Character character = characterManager.findCharacter(characterInput);
                 if (character == null) {
                     ui.errorCreateTeam(characterInput);
                     return;
                 }
+
+                String strategy = ui.requestStrategy(i);
 
                 Member member = new Member(character.getId(), character, strategy);
                 newTeam.addMember(member);
@@ -143,14 +146,16 @@ public class Controller {
     // List All Teams
     private void listTeams() {
         try {
-            List<Team> teams =  teamManager.loadTeams();
+            List<String> teams =  teamManager.loadTeamNames();
+
             int selectedOption = ui.displayTeamOptionList(teams);
 
             if (selectedOption == 0) {
                 return; // Go back to the main menu
             }
 
-            Team selectedTeam = teams.get(selectedOption - 1);
+            Team selectedTeam = teamManager.findTeamByIndex(selectedOption);
+
             ui.displayTeamDetails(selectedTeam);
 
             Statistics statistics = statisticsManager.getStaticByName(selectedTeam.getName());
@@ -175,7 +180,6 @@ public class Controller {
             }
             ui.confirmationMessage(teamName, sure);
 
-
         } catch (PersistanceException e) {
             ui.displayMessage("Error deleting team: " + e.getMessage());
         }
@@ -186,14 +190,15 @@ public class Controller {
     // List All Items
     private void listItems() {
         try {
-            List<Item> items = itemManager.getAllItems();
+            List<String> items = itemManager.getItemNames();
             int selectedItemOption = ui.displayItemsList(items);
 
             if (selectedItemOption == 0) {
                 return;
             }
 
-            Item selectedItem = items.get(selectedItemOption - 1);
+            String selectedItemName = items.get(selectedItemOption - 1);
+            Item selectedItem = itemManager.getItemByName(selectedItemName);
             ui.displayItemDetails(selectedItem);
         } catch (PersistanceException e) {
             ui.displayMessage("Error retrieving items: " + e.getMessage());
@@ -221,11 +226,31 @@ public class Controller {
 
     // Simulate Combat
     private void simulateCombat() {
-        combatManager.combatSimulation();
-    }
+        displayMessage("\nStarting simulation...");
 
-    public void displayTeamsAvailable(List<Team> teams) {
-        ui.displayTeamList(teams);
+        try {
+            List<String> availableTeams = teamManager.loadTeamNames();
+            ui.displayTeamsAvailable(availableTeams);
+
+            if (availableTeams.size() < 2) {
+                displayMessage("(ERROR) Not enough teams to start a combat.");
+                return;
+            }
+
+            // Select teams using indexes
+            int teamIndex1 = ui.requestTeamForCombat(1, availableTeams.size()) ;
+            int teamIndex2 = ui.requestTeamForCombat(2, availableTeams.size()) ;
+
+            Team team1 = teamManager.findTeamByIndex(teamIndex1);
+            Team team2 = teamManager.findTeamByIndex(teamIndex2);
+
+            displayMessage("\nInitializing teams...\n");
+
+            combatManager.combatStart(team1, team2);
+
+        } catch (PersistanceException e) {
+            displayMessage("Error during combat setup: " + e.getMessage());
+        }
     }
 
     public void displayExecutionTurn(String attacker, double damageAttack, String weapon, double damageReceived, String defender) {
@@ -237,24 +262,16 @@ public class Controller {
     }
 
 
-    public void displayTeamStats(Team team, int teamNumber, List<Member> members) {
-        ui.displayTeamStats(team, teamNumber, members);
+    public void displayTeamStats(Team team, int teamNumber) {
+        ui.displayTeamStats(team, teamNumber);
     }
 
     public void displayMessage(String message) {
         ui.displayMessage(message);
     }
 
-    public int requestTeamForCombat(int teamNumber, int maxTeams) {
-        return ui.requestTeamForCombat(teamNumber, maxTeams);
-    }
-
-    public void displayTeamInitialization(Team team, int teamNumber, List<Member> members) {
-        ui.displayTeamInitialization(team,teamNumber, members);
-    }
-
-    public void requestInput() {
-        ui.scanner.nextLine();
+    public void displayTeamInitialization(Team team, int teamNumber) {
+        ui.displayTeamInitialization(team,teamNumber);
     }
 
     public void displayRoundMessage(int round) {
@@ -267,6 +284,10 @@ public class Controller {
 
     public void displayCombatResult(Team teamWinner, Team team1, List<Member> team1Members, Team team2, List<Member> team2Members) {
         ui.displayCombatResult(teamWinner, team1, team1Members, team2, team2Members);
+    }
+
+    public void displayEndRoundMessage() {
+        ui.displayEndRoundMessage();
     }
 
 

@@ -10,14 +10,18 @@ import java.util.List;
 public class StatisticsManager {
 
     private final StatisticsDAO statisticsDAO;
-    //private ArrayList<Statistics> statistics;
 
     public StatisticsManager() throws PersistanceException {
         this.statisticsDAO = new StatisticsJsonDAO();
     }
 
-    public List<Statistics> getStatistics() throws PersistanceException {
-        return statisticsDAO.loadStatistics();
+    public boolean validatePersistance() {
+        try {
+            statisticsDAO.loadStatistics();
+            return true;
+        } catch (PersistanceException e) {
+            return false;
+        }
     }
 
     public void recordCombatResult(String Team1, String Team2, int koTeam1, int koTeam2, String winner) throws PersistanceException {

@@ -52,15 +52,8 @@ public class Member {
         }
     }
 
-    public boolean isDefendingNextTurn() {
-        return defendingNextTurn;
-    }
-
     public double getDamageTaken() {
         return damageTaken;
-    }
-    public boolean isDefending() {
-        return defending;
     }
 
     public Weapon getWeapon() {
@@ -85,14 +78,10 @@ public class Member {
     }
 
     public void accumulateDamage(double damage) {
-        pendingDamageTaken += damage;
+        this.pendingDamageTaken += damage;
     }
 
     public void resetDefending() {
-        defending = false;
-    }
-
-    public void endTurn() {
         defending = false;
     }
 
@@ -129,8 +118,7 @@ public class Member {
         //calculate the armor value
         if (armor != null) {
             armorValue = armor.getDefenseValue();
-        }
-        else {
+        } else {
             armorValue = 0;
         }
 
@@ -150,4 +138,6 @@ public class Member {
         //return finalDamage;
         return Math.max(finalDamage, 0); //there will be no negative damage
     }
+
+
 }
