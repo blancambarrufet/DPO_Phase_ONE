@@ -76,7 +76,7 @@ public class TeamManager {
     }
 
     public Team findTeamByIndex(int selectedOption) {
-        return teamDAO.findTeamByIndex(selectedOption);
+        return teamDAO.findTeamByIndex(selectedOption - 1);
     }
 
     // Check if a Team is Defeated

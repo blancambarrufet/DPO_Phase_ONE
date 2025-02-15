@@ -66,6 +66,7 @@ public class CharacterJsonDAO implements CharacterDAO {
                     return character; // Return the correct character by ID
                 }
             }
+            System.out.println("ERROR: No character found with ID: " + id);
             return null;
         } catch (IOException e) {
             throw new PersistanceException("Couldn't read characters file: " + PATH, e);

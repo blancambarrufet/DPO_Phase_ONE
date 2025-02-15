@@ -99,13 +99,11 @@ public class TeamJsonDAO implements TeamDAO {
                     characterJsonDAO = new CharacterJsonDAO(); // Initialize if null
                 }
 
-                //String newId = String.valueOf(member.getCharacterId());
-
-                //Character character = characterJsonDAO.findCharacter(newId);
-
                 Character character = characterJsonDAO.getCharacterById(member.getCharacterId());
                 if (character != null) {
-                    member.setCharacter(character);
+                    member.setCharacter(character); // Assign character properly
+                } else {
+                    System.out.println("WARNING: Character with ID " + member.getCharacterId() + " not found.");
                 }
             }
         }
@@ -277,7 +275,7 @@ public class TeamJsonDAO implements TeamDAO {
 
     public Team findTeamByIndex(int index){
         List<Team> teams = matchCharacterTeam();
-        return teams.get(index-1);
+        return teams.get(index );
     }
 
 

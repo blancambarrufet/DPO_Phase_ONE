@@ -238,15 +238,13 @@ public class Controller {
             }
 
             // Select teams using indexes
-            int teamIndex1 = ui.requestTeamForCombat(1, availableTeams.size()) - 1;
-            int teamIndex2 = ui.requestTeamForCombat(2, availableTeams.size()) - 1;
+            int teamIndex1 = ui.requestTeamForCombat(1, availableTeams.size()) ;
+            int teamIndex2 = ui.requestTeamForCombat(2, availableTeams.size()) ;
 
             Team team1 = teamManager.findTeamByIndex(teamIndex1);
             Team team2 = teamManager.findTeamByIndex(teamIndex2);
 
             displayMessage("\nInitializing teams...\n");
-
-
 
             combatManager.combatStart(team1, team2);
 

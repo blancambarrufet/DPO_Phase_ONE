@@ -78,7 +78,7 @@ public class Member {
     }
 
     public void accumulateDamage(double damage) {
-        pendingDamageTaken += damage;
+        this.pendingDamageTaken += damage;
     }
 
     public void resetDefending() {

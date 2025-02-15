@@ -53,16 +53,17 @@ public class CombatManager {
             team1.applyDefending();
             team2.applyDefending();
 
+
+            team1.applyAccumulatedDamage();
+            team2.applyAccumulatedDamage();
+
             //display the stats in the start of a new round
             controller.displayTeamStats(team1, 1);
             controller.displayTeamStats(team2, 2);
 
             //execute the turns of each team
-            executeTurn(team1,team1Members, team2, team2Members);
-            executeTurn(team2,team2Members, team1, team1Members);
-
-            team1.applyAccumulatedDamage();
-            team2.applyAccumulatedDamage();
+            executeTurn(team1, team2);
+            executeTurn(team2, team1);
 
             KOChecking(team1Members, team2Members);
 

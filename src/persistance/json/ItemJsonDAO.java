@@ -15,17 +15,17 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-import java.util.Scanner;
 
 
 public class ItemJsonDAO implements ItemDAO {
 
     private static final String PATH = "data/items.json";
     private final Gson gson;
-    private Scanner random;
+    private Random random;
 
     public ItemJsonDAO() {
         this.gson = new GsonBuilder().setPrettyPrinting().create();
+        this.random = new Random();
     }
 
     @Override
