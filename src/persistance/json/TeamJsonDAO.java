@@ -154,27 +154,6 @@ public class TeamJsonDAO implements TeamDAO {
         return teamNames;
     }
 
-    @Override
-    public Member getRandomAvailableDefender(String teamName) {
-
-        List<Team> teamsArray = matchCharacterTeam();
-            for (Team team : teamsArray) {
-                if (team.getName().equalsIgnoreCase(teamName)) {
-                    List<Member> availableDefenders = new ArrayList<>();
-                    for (Member member : team.getMembers()) {
-                        if (!member.isKO()) {
-                            availableDefenders.add(member);
-                        }
-                    }
-
-                    return availableDefenders.isEmpty() ? null : availableDefenders.get(new Random().nextInt(availableDefenders.size()));
-                }
-            }
-
-
-        return null; // Team not found
-    }
-
     private List<TeamPrint> loadTeamsPrint() {
         try (JsonReader reader = new JsonReader(new FileReader(PATH))) {
             TeamPrint[] teamsArray = gson.fromJson(reader, TeamPrint[].class);

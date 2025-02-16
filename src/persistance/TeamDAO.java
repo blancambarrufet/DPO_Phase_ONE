@@ -14,7 +14,6 @@ public interface TeamDAO {
     List<String> getTeamsNamesWithCharacter(long id);
     TeamPrint convertToTeamPrint(Team team);
     void deleteTeam(String team);
-    Member getRandomAvailableDefender(String teamName);
     boolean exists(String teamName);
     Team findTeamByIndex(int index);
     List<String> loadTeamNames();
