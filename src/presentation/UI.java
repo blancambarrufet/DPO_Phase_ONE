@@ -262,12 +262,7 @@ public class UI {
     }
 
 
-    /**
-     * Requests the user to select an option from a menu.
-     *
-     * @param maxSize The maximum valid option number.
-     * @return int The validated user-selected option.
-     */
+
     private int requestTeamOption(int maxSize) {
         int option;
 

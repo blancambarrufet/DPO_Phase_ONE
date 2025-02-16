@@ -80,11 +80,7 @@ public class Controller {
         }
     }
 
-    /**
-     * Validates the existence of json files
-     *
-     * @return true if the file exist, false otherwise
-     */
+
     private boolean validatePersistence() {
         try {
             // Validate critical files
@@ -118,12 +114,7 @@ public class Controller {
     //************** Functions for Team  **************
     //*************************************************
 
-    /**
-     * Creation of the team, based in the user input of the name, team members by id of name and strategy.
-     * If the characterManager, TeamManager or statisticsManager fails due to a PersistenceException
-     * an error will be displayed
-     */
-    // Create a New Team
+
     private void createTeam() {
         try {
             String teamName = ui.requestTeamInfo();
@@ -161,11 +152,6 @@ public class Controller {
     }
 
 
-
-    /**
-     * Display to the user and manages the team management menu
-     */
-    // Manage Teams Menu
     private void manageTeams() {
         while (true) {
             switch (ui.printTeamMenu()) {
@@ -185,12 +171,6 @@ public class Controller {
     }
 
 
-    /**
-     * Listing all the teams in the dataset and then the user can view the detail of a specific team with
-     * their stats in the dataset
-     * If teamManager or statisticManager fails due to the PersistenceException it will display an error message
-     */
-    // List All Teams
     private void listTeams() {
         try {
             List<String> teams =  teamManager.loadTeamNames();
@@ -213,12 +193,6 @@ public class Controller {
         }
     }
 
-    /**
-     * Deletes a team of by the name prompt by the user and a requesting a confirmation to safely remove a team
-     * It will also delete the team stat information in the statistics file.
-     * If the teamManager or statisticsManager fails due to a persistenceException it will display an error message
-     */
-    // Delete a Team
     private void deleteTeam() {
         try {
             String teamName = ui.requestTeamInfo();
@@ -243,12 +217,6 @@ public class Controller {
     //*************************************************
 
 
-    /**
-     * List all characters on the dataset, then allowing them to view the details of each character selected.
-     * If the characterManager fails due to a PersistenceException, and error message will be displayed
-     *
-     */
-    //List Characters
     private void listCharacters() {
         try {
             List<String> characterNames = characterManager.getCharacterNames();
@@ -282,12 +250,6 @@ public class Controller {
     //*************************************************
 
 
-    /**
-     * Listing all the items of the data set called by the itemManager, also the user can select the item
-     * to view the information detail
-     * If the itemManager fails due to a persistenceException it will display an error message
-     */
-    // List All Items
     private void listItems() {
         try {
             List<String> items = itemManager.getItemNames();
@@ -309,16 +271,7 @@ public class Controller {
     //************* Functions for Combat **************
     //*************************************************
 
-    /**
-     * Simulates a combat match between two teams.
-     * The method:
-     * - Loads available teams from the persistence layer.
-     * - Ensures at least two teams exist before starting combat.
-     * - Prompts the user to select two teams.
-     * - Initializes the teams and starts combat.
-     * Handles persistence exceptions that may occur during team retrieval.
-     */
-    // Simulate Combat
+
     private void simulateCombat() {
         displayMessage("\nStarting simulation...");
 

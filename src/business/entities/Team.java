@@ -12,7 +12,7 @@ public class Team {
     private String name;
 
     //a list of members that composes a team
-    private List<Member> members;
+    private final List<Member> members;
 
     /**
      * Constructs a Team with the specified name with an empty list of members.

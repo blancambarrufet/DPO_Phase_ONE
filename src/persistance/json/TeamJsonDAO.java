@@ -37,9 +37,6 @@ public class TeamJsonDAO implements TeamDAO {
         initializeFile();
     }
 
-    /**
-     * Initializes the teams JSON file with an empty structure if it does not exist.
-     */
     private void initializeFile() {
         Path filePath = Path.of(PATH);
         if (!Files.exists(filePath)) {
@@ -81,11 +78,7 @@ public class TeamJsonDAO implements TeamDAO {
         }
     }
 
-    /**
-     * Matches characters with their respective teams based on character IDs.
-     *
-     * @return ArrayList<Team> A list of teams with associated character objects.
-     */
+
     private ArrayList<Team> matchCharacterTeam() {
         ArrayList<Team> teams = loadTeams();
 
@@ -108,11 +101,7 @@ public class TeamJsonDAO implements TeamDAO {
         return teams;
     }
 
-    /**
-     * Loads a list of teams in a printable format from the JSON file.
-     *
-     * @return List<TeamPrint> A list of teams formatted for display.
-     */
+
     private List<TeamPrint> loadTeamsPrint() {
             try (JsonReader reader = new JsonReader(new FileReader(PATH))) {
                 TeamPrint[] teamsArray = gson.fromJson(reader, TeamPrint[].class);

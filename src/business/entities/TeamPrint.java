@@ -11,7 +11,7 @@ public class TeamPrint {
     private final String name;
 
     //list of members tobe printed in the json file
-    private List<MemberPrint> members;
+    private final List<MemberPrint> members;
 
     /**
      * Constructs a new TeamPrint instance.

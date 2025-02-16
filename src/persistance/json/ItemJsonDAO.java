@@ -85,13 +85,7 @@ public class ItemJsonDAO implements ItemDAO {
         return (Armor) getRandomItem("Armor");
     }
 
-    /**
-     * Retrieves a random item (either a weapon or armor) based on the specified type.
-     *
-     * @param type The type of item to retrieve ("Weapon" or "Armor").
-     * @return Item A randomly selected item of the specified type.
-     * @throws PersistanceException If the JSON file cannot be read.
-     */
+
     private Item getRandomItem(String type) {
         try (JsonReader reader = new JsonReader(new FileReader(PATH))) {
             reader.beginArray();
@@ -115,12 +109,6 @@ public class ItemJsonDAO implements ItemDAO {
     }
 
 
-    /**
-     * Parses a JSON object into an Item (either Weapon or Armor).
-     *
-     * @param jsonObject The JSON object representing an item.
-     * @return Item The parsed item object.
-     */
     private Item parseItem(JsonObject jsonObject) {
         long id = jsonObject.get("id").getAsLong();
         String name = jsonObject.get("name").getAsString();

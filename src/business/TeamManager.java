@@ -49,7 +49,6 @@ public class TeamManager {
      * @return 1 if deletion is successful, 0 otherwise.
      * @throws PersistanceException If an error occurs during the deleting of the team.
      */
-    // Delete a team by name
     public int deleteTeam(String teamName) throws PersistanceException {
         boolean removed =  teamDAO.exists(teamName);
 
