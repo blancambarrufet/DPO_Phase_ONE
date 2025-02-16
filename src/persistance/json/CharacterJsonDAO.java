@@ -98,7 +98,6 @@ public class CharacterJsonDAO implements CharacterDAO {
                     return character; // Return the correct character by ID
                 }
             }
-            System.out.println("ERROR: No character found with ID: " + id);
             return null;
         } catch (IOException e) {
             throw new PersistanceException("Couldn't read characters file: " + PATH, e);
@@ -164,7 +163,7 @@ public class CharacterJsonDAO implements CharacterDAO {
     public Character findCharacter(String input) throws PersistanceException {
         try {
             // First, check if input is a numeric ID
-            if (input.matches("\\d+")) { //DEBUG: CHECK OTHER WAY
+            if (input.matches("\\d+")) {
                 return getCharacterById(Long.parseLong(input));
             } else {
                 return getCharacterByName(input);

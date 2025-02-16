@@ -155,13 +155,13 @@ public class CombatManager {
             if (attacker.getStrategy().equals("balanced")) {
                 if (attacker.getWeapon() == null) {
                     requestWeapon(attacker);
-                    controller.displayMessage("\nDEBUG: " + attacker.getName() + " picks " + attacker.getWeapon().getName() + " as a random weapon!!!!.\n");
+                    controller.displayMessage("\n" + attacker.getName() + " picks " + attacker.getWeapon().getName() + " as a random weapon!!!!.\n");
                 }
                 else {
                     if (attacker.getArmor() != null) {
                         if (attacker.getDamageTaken() >= 0.5 && attacker.getDamageTaken() <= 1.0) {
                             attacker.defendNextTurn();
-                            controller.displayMessage("DEBUG: " + attacker.getName() + " will defend in the next turn.");
+                            controller.displayMessage("\n" + attacker.getName() + " will defend in the next turn.");
                         }
                         else {
                             //Perform the attack

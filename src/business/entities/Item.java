@@ -6,7 +6,7 @@ package business.entities;
  */
 public abstract class Item {
     //name of the item
-    private final String name;
+    private String name;
 
     //id of the item
     private final long id;
@@ -18,7 +18,7 @@ public abstract class Item {
     private int durability;
 
     //type of th item (armor or weapon)
-    private final String type;
+    private String type;
 
     /**
      * Constructor of the item with the specific attributes

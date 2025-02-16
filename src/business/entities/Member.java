@@ -265,7 +265,6 @@ public class Member {
         if (defending) {
             damageReduction = getWeight() / 400.0;
             finalDamage -= damageReduction;
-            System.out.println("\tDEBUG: " + getName() + " reduces damage by " + String.format("%.2f", damageReduction));
         }
 
         return Math.max(finalDamage, 0); //there will be no negative damage

@@ -102,8 +102,6 @@ public class TeamJsonDAO implements TeamDAO {
                 Character character = characterJsonDAO.getCharacterById(member.getCharacterId());
                 if (character != null) {
                     member.setCharacter(character); // Assign character properly
-                } else {
-                    System.out.println("WARNING: Character with ID " + member.getCharacterId() + " not found.");
                 }
             }
         }
