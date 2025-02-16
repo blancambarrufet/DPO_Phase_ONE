@@ -7,7 +7,7 @@ package business.entities;
  */
 public class Statistics {
     //name of the team
-    private final String name;
+    private String name;
 
     //the number of games played of the team
     private int games_played;
