@@ -30,13 +30,11 @@ public class Member {
     }
 
     // Getters and Setters
-    public Character getCharacter() {return character;}
     public void setCharacter(Character character) {
         this.character = character;
     }
     public long getCharacterId() { return id; }
     public String getStrategy() { return strategy; }
-    public void setStrategy(String strategy) { this.strategy = strategy; }
     public String getName() { return character.getName(); }
     public int getWeight() { return character.getWeight(); }
     public boolean setKO(boolean status) { return isKO = status; }

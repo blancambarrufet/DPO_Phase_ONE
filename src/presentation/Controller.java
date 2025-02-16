@@ -10,7 +10,6 @@ import java.util.List;
 public class Controller {
 
     private final UI ui;
-
     private CombatManager combatManager;
     private ItemManager itemManager;
     private TeamManager teamManager;
@@ -78,7 +77,7 @@ public class Controller {
 
 
     //List Characters
-    public void listCharacters() {
+    private void listCharacters() {
         try {
             List<String> characterNames = characterManager.getCharacterNames();
 
@@ -172,7 +171,7 @@ public class Controller {
             String teamName = ui.requestTeamInfo();
             boolean sure = ui.sure(teamName);
 
-            int done=0;
+            int done;
             if (sure) {
                 done = teamManager.deleteTeam(teamName);
                 statisticsManager.createNewStats(teamName, false);

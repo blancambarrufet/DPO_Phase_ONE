@@ -11,10 +11,6 @@ public class TeamPrint {
         this.members = members;
     }
 
-    public List<MemberPrint> getMembers() {
-        return members;
-    }
-
     public String getName() {
         return name;
     }

@@ -15,10 +15,6 @@ public class CharacterManager {
         this.characterDAO = new CharacterJsonDAO();
     }
 
-    public CharacterManager(CharacterDAO characterDAO) throws PersistanceException {
-        this.characterDAO = characterDAO;
-    }
-
     // Validate the persistence source through the DAO
     public boolean validatePersistenceSource() {
         return characterDAO.validateFile();
@@ -30,10 +26,6 @@ public class CharacterManager {
 
     public List<String> getCharacterNames() {
         return characterDAO.getCharactersByNames();
-    }
-
-    public Character getCharacterByName(String name) {
-        return characterDAO.getCharacterByName(name);
     }
 
     public Character findCharacterByIndex(int index){

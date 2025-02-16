@@ -53,22 +53,6 @@ public class ItemJsonDAO implements ItemDAO {
     }
 
     @Override
-    public Item getItemById(int id) {
-        try (JsonReader reader = new JsonReader(new FileReader(PATH))) {
-            JsonArray jsonArray = JsonParser.parseReader(reader).getAsJsonArray();
-            for (JsonElement element : jsonArray) {
-                JsonObject jsonObject = element.getAsJsonObject();
-                if (jsonObject.get("id").getAsLong() == id) {
-                    return parseItem(jsonObject);
-                }
-            }
-            return null;
-        } catch (IOException e) {
-            throw new PersistanceException("Couldn't read items file: " + PATH, e);
-        }
-    }
-
-    @Override
     public Weapon getRandomWeapon() {
         return (Weapon) getRandomItem("Weapon");
     }
@@ -100,40 +84,6 @@ public class ItemJsonDAO implements ItemDAO {
         }
     }
 
-    @Override
-    public List<Item> loadItems() throws PersistanceException {
-        List<Item> items = new ArrayList<>();
-        try {
-            JsonArray jsonArray = JsonParser.parseReader(new FileReader(PATH)).getAsJsonArray();
-
-            for (JsonElement element : jsonArray) {
-                JsonObject jsonObject = element.getAsJsonObject();
-
-                // Extract common fields
-                long id = jsonObject.get("id").getAsLong();
-                String name = jsonObject.get("name").getAsString();
-                int power = jsonObject.get("power").getAsInt();
-                int durability = jsonObject.get("durability").getAsInt();
-                String itemType = jsonObject.get("class").getAsString();
-
-                // Instantiate based on "class"
-                switch (itemType) {
-                    case "Weapon":
-                        items.add(new Weapon(id, name, power, durability)); // Create Weapon
-                        break;
-                    case "Armor":
-                        items.add(new Armor(id, name, power, durability)); // Create Armor
-                        break;
-                    default:
-                        throw new PersistanceException("Unknown item type: " + itemType);
-                }
-            }
-            return items;
-
-        } catch (IOException | JsonSyntaxException e) {
-            throw new PersistanceException("Couldn't read items file: " + PATH, e);
-        }
-    }
 
     private Item parseItem(JsonObject jsonObject) {
         long id = jsonObject.get("id").getAsLong();

@@ -1,8 +1,6 @@
 package persistance.json;
 
 import business.entities.Statistics;
-import business.entities.Team;
-import business.entities.TeamPrint;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
@@ -28,13 +26,6 @@ public class StatisticsJsonDAO implements StatisticsDAO {
     public StatisticsJsonDAO() {
         this.gson = new Gson();
     }
-
-    // Check if file exists and is readable
-    public boolean isFileOk() {
-        Path filePath = Path.of(PATH);
-        return Files.exists(filePath) && Files.isReadable(filePath);
-    }
-
 
     @Override
     public ArrayList<Statistics> loadStatistics() throws PersistanceException {

@@ -1,7 +1,5 @@
 package business.entities;
 
-import java.util.Random;
-
 public class Character {
     private long id;
     private String name;

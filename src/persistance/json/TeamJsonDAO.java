@@ -42,12 +42,6 @@ public class TeamJsonDAO implements TeamDAO {
     }
 
     @Override
-    public boolean isFileOk() {
-        Path filePath = Path.of(PATH);
-        return Files.exists(filePath) && Files.isReadable(filePath);
-    }
-
-    @Override
     public Team getTeamByName(String name) {
         try (JsonReader reader = new JsonReader(new FileReader(PATH))) {
             Team[] teamsArray = gson.fromJson(reader, Team[].class);
@@ -160,22 +154,6 @@ public class TeamJsonDAO implements TeamDAO {
         return teamNames;
     }
 
-    public Team findTeamByName(String name) {
-        try (JsonReader reader = new JsonReader(new FileReader(PATH))) {
-            Team[] teamsArray = gson.fromJson(reader, Team[].class);
-
-            for (Team team : teamsArray) {
-                if (team.getName().equalsIgnoreCase(name)) {
-                    return team;
-                }
-            }
-        } catch (IOException e) {
-            throw new PersistanceException("Couldn't read teams file: " + PATH, e);
-        }
-
-        return null;
-    }
-
     @Override
     public Member getRandomAvailableDefender(String teamName) {
 
@@ -253,14 +231,9 @@ public class TeamJsonDAO implements TeamDAO {
     public List<String> loadTeamNames() {
         List<Team> teams = matchCharacterTeam();
 
-        // Ensure teams is never null
-        if (teams == null) {
-            return new ArrayList<>(); // Return an empty list instead of initializing
-        }
-
         List<String> teamNames = new ArrayList<>();
         for (Team team : teams) {
-            if (team.getName() != null) { // Avoid NullPointerException
+            if (team.getName() != null) {
                 teamNames.add(team.getName());
             }
         }

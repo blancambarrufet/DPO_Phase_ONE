@@ -10,14 +10,12 @@ import java.util.Random;
 
 public class CombatManager {
 
-    private CharacterManager characterManager;
     private ItemManager itemManager;
     private Controller controller;
     private TeamManager teamManager;
     private StatisticsManager statisticsManager;
 
-    public CombatManager(CharacterManager characterManager, ItemManager itemManager,TeamManager teamManager, StatisticsManager statisticsManager) {
-        this.characterManager = characterManager;
+    public CombatManager( ItemManager itemManager,TeamManager teamManager, StatisticsManager statisticsManager) {
         this.itemManager = itemManager;
         this.teamManager = teamManager;
         this.statisticsManager = statisticsManager;
@@ -160,14 +158,12 @@ public class CombatManager {
     private Member selectTarget(Team defendingTeam) {
         List<Member> availableDefenders = new ArrayList<>();
 
-        // Filter available defenders directly from the team's in-memory members
         for (Member member : defendingTeam.getMembers()) {
             if (!member.isKO()) {
                 availableDefenders.add(member);
             }
         }
 
-        // Select a random available defender if any are left
         if (availableDefenders.isEmpty()) return null;
 
         Random random = new Random();
@@ -236,10 +232,6 @@ public class CombatManager {
             if (damageTaken > 0) {
                 // Random value between 1-200
                 double knockOutValue = (random.nextInt(200) + 1) / 100.0;
-
-//                System.out.println("[DEBUG] Checking KO for " + member.getName() +
-//                        " | KO Threshold: " + String.format("%.2f", knockOutValue) +
-//                        " | Damage Taken: " + String.format("%.2f", damageTaken));
 
                 if (knockOutValue < damageTaken) {
                     member.setKO(true);

@@ -10,7 +10,6 @@ import java.util.List;
 public class TeamManager {
 
     private final TeamDAO teamDAO;
-    private CharacterManager characterManager;
     private ItemManager itemManager;
 
     public TeamManager( ItemManager itemManager) throws PersistanceException {
@@ -56,12 +55,6 @@ public class TeamManager {
 
     public List<String> getTeamsNamesWithCharacter(long characterId) throws PersistanceException {
         return teamDAO.getTeamsNamesWithCharacter(characterId);
-    }
-
-
-    public Member getRandomAvailableDefender(String teamName) throws PersistanceException {
-        return teamDAO.getRandomAvailableDefender(teamName);
-
     }
 
     public void initializeTeam(Team team) throws PersistanceException {

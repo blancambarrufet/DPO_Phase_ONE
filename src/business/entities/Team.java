@@ -22,23 +22,15 @@ public class Team {
         return members;
     }
 
-    public void setMembers(List<Member> members) {
-        this.members = members;
-    }
-
     public void addMember(Member member) {
         if (members.size() < 4) {
             members.add(member);
-        } else {
-            //this probably add-in UI
-            System.out.println("Team is full. Cannot add more members.");
         }
     }
 
     public void applyDefending() {
         for (Member member : members) {
             member.applyDefending(); //apply defense if it was set in the last turn
-
         }
     }
 

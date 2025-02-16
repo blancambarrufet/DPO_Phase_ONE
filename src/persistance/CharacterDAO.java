@@ -16,6 +16,6 @@ public interface CharacterDAO {
     List<String> getCharactersByNames();
 
     Character findCharacter(String input);
-    Character findCharacterByIndex(int index);
 
+    Character findCharacterByIndex(int index);
 }

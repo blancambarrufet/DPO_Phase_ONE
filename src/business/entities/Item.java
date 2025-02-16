@@ -1,6 +1,6 @@
 package business.entities;
 
-public abstract class Item  {
+public abstract class Item {
     private String name;
     private long id;
     private int power;
@@ -26,32 +26,12 @@ public abstract class Item  {
         return id;
     }
 
-    public void setId(long id) {
-        this.id = id;
-    }
-
     public int getPower() {
         return power;
     }
 
-    public void setPower(int power) {
-        this.power = power;
-    }
-
     public int getDurability() {
         return durability;
-    }
-
-    public void setDurability(int durability) {
-        this.durability = durability;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
     }
 
     public void reduceDurability() {
