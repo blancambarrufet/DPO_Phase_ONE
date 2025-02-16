@@ -17,16 +17,30 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.ArrayList;
 
-
+/**
+ * Implementation of StatisticsDAO for managing game statistics using JSON files.
+ * This class handles reading from and writing to the stats.json file.
+ */
 public class StatisticsJsonDAO implements StatisticsDAO {
 
     private static final String PATH = "data/stats.json";
     private final Gson gson;
 
+    /**
+     * Constructor for StatisticsJsonDAO.
+     * Initializes a Gson instance for JSON processing.
+     */
     public StatisticsJsonDAO() {
         this.gson = new Gson();
     }
 
+    /**
+     * Loads game statistics from the JSON file.
+     * If the file does not exist, it initializes a new empty stats.json file.
+     *
+     * @return ArrayList<Statistics> A list of all stored statistics.
+     * @throws PersistanceException If an error occurs while reading or initializing the file.
+     */
     @Override
     public ArrayList<Statistics> loadStatistics() throws PersistanceException {
         Path filePath = Path.of(PATH);
@@ -49,6 +63,13 @@ public class StatisticsJsonDAO implements StatisticsDAO {
         }
     }
 
+
+    /**
+     * Saves the updated game statistics to the JSON file.
+     *
+     * @param statistics The list of statistics to be saved.
+     * @throws PersistanceException If an error occurs while writing to the file.
+     */
     @Override
     public void saveStatistics(List<Statistics> statistics) {
         try (FileWriter writer = new FileWriter(PATH)) {

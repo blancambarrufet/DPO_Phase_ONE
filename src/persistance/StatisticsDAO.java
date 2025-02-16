@@ -4,8 +4,23 @@ import business.entities.Statistics;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Interface for managing game statistics persistence.
+ * Defines methods for loading and saving statistics data.
+ */
 public interface StatisticsDAO {
-    ArrayList<Statistics> loadStatistics(); // Load statistics from JSON
-    void saveStatistics(List<Statistics> statistics); // Save statistics to JSON
 
+    /**
+     * Loads game statistics from the persistence source.
+     *
+     * @return ArrayList<Statistics> A list of all stored game statistics.
+     */
+    ArrayList<Statistics> loadStatistics();
+
+    /**
+     * Saves updated game statistics to the persistence source.
+     *
+     * @param statistics The list of statistics to be saved.
+     */
+    void saveStatistics(List<Statistics> statistics);
 }

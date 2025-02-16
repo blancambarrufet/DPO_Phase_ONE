@@ -17,19 +17,29 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
 
+/**
+ * Implementation of TeamDAO for managing team data using JSON files.
+ * This class provides functionality for loading, saving, deleting, and searching teams in the system.
+ */
 public class TeamJsonDAO implements TeamDAO {
 
     private static final String PATH = "data/teams.json";
     private final Gson gson;
     CharacterJsonDAO characterJsonDAO;
 
+    /**
+     * Constructor for TeamJsonDAO.
+     * Initializes the Gson instance for JSON processing and ensures the teams file exists.
+     */
     public TeamJsonDAO() {
         this.gson = new GsonBuilder().setPrettyPrinting().create();
         this.characterJsonDAO = new CharacterJsonDAO();
         initializeFile();
     }
 
-    // Initialize file with empty structure if missing
+    /**
+     * Initializes the teams JSON file with an empty structure if it does not exist.
+     */
     private void initializeFile() {
         Path filePath = Path.of(PATH);
         if (!Files.exists(filePath)) {
@@ -41,21 +51,13 @@ public class TeamJsonDAO implements TeamDAO {
         }
     }
 
-    @Override
-    public Team getTeamByName(String name) {
-        try (JsonReader reader = new JsonReader(new FileReader(PATH))) {
-            Team[] teamsArray = gson.fromJson(reader, Team[].class);
-            for (Team team : teamsArray) {
-                if (team.getName().equalsIgnoreCase(name)) {
-                    return team;
-                }
-            }
-            return null;
-        } catch (IOException e) {
-            throw new PersistanceException("Couldn't read teams file: " + PATH, e);
-        }
-    }
-
+    /**
+     * Loads all teams from the JSON file.
+     * If the file does not exist, it initializes an empty teams.json file.
+     *
+     * @return ArrayList<Team> A list of all stored teams.
+     * @throws PersistanceException If an error occurs while reading or initializing the file.
+     */
     @Override
     public ArrayList<Team> loadTeams() throws PersistanceException {
         Path filePath = Path.of(PATH);
@@ -79,7 +81,11 @@ public class TeamJsonDAO implements TeamDAO {
         }
     }
 
-
+    /**
+     * Matches characters with their respective teams based on character IDs.
+     *
+     * @return ArrayList<Team> A list of teams with associated character objects.
+     */
     private ArrayList<Team> matchCharacterTeam() {
         ArrayList<Team> teams = loadTeams();
 
@@ -104,6 +110,42 @@ public class TeamJsonDAO implements TeamDAO {
         return teams;
     }
 
+    /**
+     * Loads a list of teams in a printable format from the JSON file.
+     *
+     * @return List<TeamPrint> A list of teams formatted for display.
+     */
+    private List<TeamPrint> loadTeamsPrint() {
+            try (JsonReader reader = new JsonReader(new FileReader(PATH))) {
+                TeamPrint[] teamsArray = gson.fromJson(reader, TeamPrint[].class);
+                return teamsArray != null ? new ArrayList<>(Arrays.asList(teamsArray)) : new ArrayList<>();
+            } catch (IOException | JsonSyntaxException e) {
+                return new ArrayList<>(); // Return empty list if the file is empty or malformed
+            }
+    }
+
+    /**
+     * Converts a team object into a printable format.
+     *
+     * @param team The team to convert.
+     * @return TeamPrint The converted team object.
+     */
+    public TeamPrint convertToTeamPrint(Team team) {
+        List<MemberPrint> memberPrints = new ArrayList<>();
+
+        for (Member member : team.getMembers()) {
+            memberPrints.add(new MemberPrint(member.getCharacterId(), member.getStrategy()));
+        }
+
+        return new TeamPrint(team.getName(), memberPrints);
+    }
+
+    /**
+     * Saves a new team to the JSON file.
+     *
+     * @param newTeamName The team to be saved.
+     * @throws PersistanceException If an error occurs while writing to the file.
+     */
     @Override
     public void saveNewTeams(Team newTeamName) throws PersistanceException {
         try {
@@ -130,7 +172,61 @@ public class TeamJsonDAO implements TeamDAO {
         }
     }
 
+    /**
+     * Deletes a team from the JSON file.
+     *
+     * @param teamName The name of the team to be deleted.
+     * @throws PersistanceException If the team is not found or an error occurs while writing to the file.
+     */
+    public void deleteTeam(String teamName) {
 
+        List<TeamPrint> teams = loadTeamsPrint();
+
+        // Remove the team
+        boolean removed = teams.removeIf(team -> team.getName().equalsIgnoreCase(teamName));
+
+        if (!removed) {
+            throw new PersistanceException("Team not found: " + teamName);
+        }
+
+
+        // Write updated list back to file
+        try (FileWriter writer = new FileWriter(PATH)) {
+            gson.toJson(teams, writer);
+        } catch (IOException e) {
+            throw new PersistanceException("Failed to write updated team list", e);
+        }
+    }
+
+    /**
+     * Retrieves a team by its name.
+     *
+     * @param name The name of the team.
+     * @return Team The corresponding team object if found, otherwise null.
+     * @throws PersistanceException If the file cannot be read.
+     */
+    @Override
+    public Team getTeamByName(String name) {
+        try (JsonReader reader = new JsonReader(new FileReader(PATH))) {
+            Team[] teamsArray = gson.fromJson(reader, Team[].class);
+            for (Team team : teamsArray) {
+                if (team.getName().equalsIgnoreCase(name)) {
+                    return team;
+                }
+            }
+            return null;
+        } catch (IOException e) {
+            throw new PersistanceException("Couldn't read teams file: " + PATH, e);
+        }
+    }
+
+    /**
+     * Retrieves a list of team names that contain a specific character.
+     *
+     * @param characterId The ID of the character.
+     * @return List<String> A list of team names containing the specified character.
+     * @throws PersistanceException If an error occurs while reading the file.
+     */
     @Override
     public List<String> getTeamsNamesWithCharacter(long characterId) throws PersistanceException {
         List<String> teamNames = new ArrayList<>();
@@ -154,46 +250,12 @@ public class TeamJsonDAO implements TeamDAO {
         return teamNames;
     }
 
-    private List<TeamPrint> loadTeamsPrint() {
-        try (JsonReader reader = new JsonReader(new FileReader(PATH))) {
-            TeamPrint[] teamsArray = gson.fromJson(reader, TeamPrint[].class);
-            return teamsArray != null ? new ArrayList<>(Arrays.asList(teamsArray)) : new ArrayList<>();
-        } catch (IOException | JsonSyntaxException e) {
-            return new ArrayList<>(); // Return empty list if the file is empty or malformed
-        }
-    }
-
-
-    public TeamPrint convertToTeamPrint(Team team) {
-        List<MemberPrint> memberPrints = new ArrayList<>();
-
-        for (Member member : team.getMembers()) {
-            memberPrints.add(new MemberPrint(member.getCharacterId(), member.getStrategy()));
-        }
-
-        return new TeamPrint(team.getName(), memberPrints);
-    }
-
-    public void deleteTeam(String teamName) {
-
-        List<TeamPrint> teams = loadTeamsPrint();
-
-        // Remove the team
-        boolean removed = teams.removeIf(team -> team.getName().equalsIgnoreCase(teamName));
-
-        if (!removed) {
-            throw new PersistanceException("Team not found: " + teamName);
-        }
-
-
-        // Write updated list back to file
-        try (FileWriter writer = new FileWriter(PATH)) {
-            gson.toJson(teams, writer);
-        } catch (IOException e) {
-            throw new PersistanceException("Failed to write updated team list", e);
-        }
-    }
-
+    /**
+     * Checks if a team with the specified name exists in the system.
+     *
+     * @param teamName The name of the team to search for.
+     * @return boolean True if the team exists, otherwise false.
+     */
     public boolean exists(String teamName) {
         List<Team> teams = matchCharacterTeam();
 
@@ -206,7 +268,11 @@ public class TeamJsonDAO implements TeamDAO {
         return false; // No match found, return false
     }
 
-
+    /**
+     * Loads the names of all teams in the system.
+     *
+     * @return List<String> A list of all available team names.
+     */
     public List<String> loadTeamNames() {
         List<Team> teams = matchCharacterTeam();
 
@@ -220,12 +286,17 @@ public class TeamJsonDAO implements TeamDAO {
         return teamNames;
     }
 
-
+    /**
+     * Retrieves a team by its index position in the list.
+     *
+     * @param index The index (0-based) of the team in the list.
+     * @return Team The corresponding team object.
+     * @throws IndexOutOfBoundsException If the provided index is out of range.
+     */
     public Team findTeamByIndex(int index){
         List<Team> teams = matchCharacterTeam();
         return teams.get(index );
     }
-
 
 
 

@@ -8,6 +8,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+/**
+ * Manages combat mechanics between two teams.
+ * This class is responsible for handling combat initialization, execution of turns,
+ * attack selection, damage calculation, and tracking KO (knockout) status.
+ */
 public class CombatManager {
 
     private ItemManager itemManager;
@@ -15,16 +20,35 @@ public class CombatManager {
     private TeamManager teamManager;
     private StatisticsManager statisticsManager;
 
+    /**
+     * Constructs a CombatManager instance with required dependencies.
+     *
+     * @param itemManager       Manages items such as weapons and armor.
+     * @param teamManager       Manages teams and character assignments.
+     * @param statisticsManager Manages combat statistics.
+     */
     public CombatManager( ItemManager itemManager,TeamManager teamManager, StatisticsManager statisticsManager) {
         this.itemManager = itemManager;
         this.teamManager = teamManager;
         this.statisticsManager = statisticsManager;
     }
 
+    /**
+     * Sets the controller for managing UI interactions.
+     *
+     * @param controller The UI controller.
+     */
     public void setController(Controller controller) {
         this.controller = controller;
     }
 
+    /**
+     * Starts a combat between two teams.
+     * Initializes teams, displays initial information, and executes combat.
+     *
+     * @param team1 The first team.
+     * @param team2 The second team.
+     */
     public void combatStart(Team team1, Team team2) {
         teamManager.initializeTeam(team1);
         teamManager.initializeTeam(team2);
@@ -37,7 +61,12 @@ public class CombatManager {
         executeCombat(team1, team2);
     }
 
-    //Execute Combat between Two Teams
+    /**
+     * Executes combat rounds between two teams until one is defeated.
+     *
+     * @param team1 The first team.
+     * @param team2 The second team.
+     */
     private void executeCombat(Team team1, Team team2) {
         int round = 1;
 
@@ -93,6 +122,12 @@ public class CombatManager {
         statisticsManager.recordCombatResult(team1.getName(), team2.getName(), koTeam1, koTeam2, winnerName);
     }
 
+    /**
+     * Counts the number of KO (knocked-out) members in a team.
+     *
+     * @param teamMembers The list of team members.
+     * @return int The number of KO members.
+     */
     private int numberOfKO(List<Member> team1Members) {
         int count = 0;
         for (Member member : team1Members) {
@@ -104,7 +139,12 @@ public class CombatManager {
         return count;
     }
 
-    // Execute a Turn for a Team
+    /**
+     * Executes a turn for a team, where each member either attacks or defends.
+     *
+     * @param attackingTeam The team taking the turn.
+     * @param defendingTeam The opposing team.
+     */
     private void executeTurn(Team attackingTeam, Team defendingTeam) {
 
         for (Member attacker : attackingTeam.getMembers()) {
@@ -144,6 +184,11 @@ public class CombatManager {
         }
     }
 
+    /**
+     * Assigns a random weapon to a member.
+     *
+     * @param member The member receiving the weapon.
+     */
     private void requestWeapon(Member member) {
         try {
             itemManager.assignRandomWeapon(member);
@@ -154,7 +199,12 @@ public class CombatManager {
 
     }
 
-    // Select a Target for Attack
+    /**
+     * Selects a random target from the defending team.
+     *
+     * @param defendingTeam The team being attacked.
+     * @return Member The selected target, or null if no valid targets exist.
+     */
     private Member selectTarget(Team defendingTeam) {
         List<Member> availableDefenders = new ArrayList<>();
 
@@ -171,7 +221,12 @@ public class CombatManager {
         return availableDefenders.get(index);
     }
 
-    // Perform an Attack Between Characters
+    /**
+     * Performs an attack between two members.
+     *
+     * @param attacker The attacking member.
+     * @param defender The defending member.
+     */
     private void performAttack(Member attacker, Member defender) {
 
         // Calculate attack and defense values
@@ -186,7 +241,12 @@ public class CombatManager {
         degradeEquipment(attacker, defender);
     }
 
-    //Degrade Equipment (Weapon and Armor)
+    /**
+     * Degrades the durability of both the attacker's weapon and the defender's armor.
+     *
+     * @param attacker The attacking member.
+     * @param defender The defending member.
+     */
     private void degradeEquipment(Member attacker, Member defender) {
         //Reduce attacker's weapon durability
         if (attacker.getWeapon() != null) {
@@ -212,6 +272,12 @@ public class CombatManager {
         }
     }
 
+    /**
+     * Checks if any members have received enough damage to be knocked out.
+     *
+     * @param team1 The first team.
+     * @param team2 The second team.
+     */
     private void KOChecking(Team team1, Team team2) {
         Random random = new Random();
 
@@ -224,7 +290,12 @@ public class CombatManager {
         }
     }
 
-    // Check if character is KO
+    /**
+     * Determines if a character is KO based on accumulated damage.
+     *
+     * @param member The member to check.
+     * @param random The random number generator for KO probability.
+     */
     private void checkForKO(Member member, Random random) {
         if (!member.isKO()) {
             double damageTaken = member.getDamageTaken();
@@ -240,6 +311,5 @@ public class CombatManager {
             }
         }
     }
-
 
 }

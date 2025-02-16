@@ -2,7 +2,17 @@ import business.*;
 import presentation.Controller;
 import presentation.UI;
 
+/**
+ * Main class that runs the start of the application
+ * It initializes the program and starts the user interaction
+ */
 public class Main {
+
+    /**
+     * The main method that initializes the managers, UI and Controller and start the main
+     *
+     * @param args Commandline arguments passed to the program
+     */
     public static void main(String[] args) {
         CharacterManager characterManager = new CharacterManager();
         ItemManager itemManager = new ItemManager();
