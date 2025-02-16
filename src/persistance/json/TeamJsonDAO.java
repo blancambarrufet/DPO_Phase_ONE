@@ -52,7 +52,7 @@ public class TeamJsonDAO implements TeamDAO {
      * Loads all teams from the JSON file.
      * If the file does not exist, it initializes an empty teams.json file.
      *
-     * @return ArrayList<Team> A list of all stored teams.
+     * @return {@code List<String>} A list of all stored teams.
      * @throws PersistanceException If an error occurs while reading or initializing the file.
      */
     @Override
@@ -211,7 +211,7 @@ public class TeamJsonDAO implements TeamDAO {
      * Retrieves a list of team names that contain a specific character.
      *
      * @param characterId The ID of the character.
-     * @return List<String> A list of team names containing the specified character.
+     * @return {@code List<String>} A list of team names containing the specified character.
      * @throws PersistanceException If an error occurs while reading the file.
      */
     @Override
@@ -258,7 +258,7 @@ public class TeamJsonDAO implements TeamDAO {
     /**
      * Loads the names of all teams in the system.
      *
-     * @return List<String> A list of all available team names.
+     * @return {@code List<String>} A list of all available team names.
      */
     public List<String> loadTeamNames() {
         List<Team> teams = matchCharacterTeam();

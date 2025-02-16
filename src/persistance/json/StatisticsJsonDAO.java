@@ -38,7 +38,7 @@ public class StatisticsJsonDAO implements StatisticsDAO {
      * Loads game statistics from the JSON file.
      * If the file does not exist, it initializes a new empty stats.json file.
      *
-     * @return ArrayList<Statistics> A list of all stored statistics.
+     * @return {@code ArrayList<Statistics>} A list of all stored statistics.
      * @throws PersistanceException If an error occurs while reading or initializing the file.
      */
     @Override

@@ -12,7 +12,7 @@ public interface CharacterDAO {
     /**
      * Loads all characters from the persistence source.
      *
-     * @return List<Character> A list of all available characters.
+     * @return {@code List<Character>}. A list of all available characters.
      */
     List<Character> loadAllCharacters();
 
@@ -42,7 +42,7 @@ public interface CharacterDAO {
     /**
      * Retrieves a list of all character names.
      *
-     * @return List<String> A list containing the names of all available characters.
+     * @return {@code List<String>}. A list containing the names of all available characters.
      */
     List<String> getCharactersByNames();
 

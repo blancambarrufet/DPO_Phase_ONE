@@ -13,7 +13,7 @@ public interface StatisticsDAO {
     /**
      * Loads game statistics from the persistence source.
      *
-     * @return ArrayList<Statistics> A list of all stored game statistics.
+     * @return {@code ArrayList<Statistics>} A list of all stored game statistics.
      */
     ArrayList<Statistics> loadStatistics();
 

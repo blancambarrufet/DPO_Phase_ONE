@@ -58,7 +58,7 @@ public class ItemManager {
     /**
      * Retrieves a list of all item names stored in the system.
      *
-     * @return List<String> A list containing the names of all available items.
+     * @return {@code List<String>}. A list containing the names of all available items.
      */
     public List<String> getItemNames() {
         return itemDAO.getItemNames();

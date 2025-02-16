@@ -36,7 +36,7 @@ public interface ItemDAO {
     /**
      * Retrieves a list of all item names stored in the system.
      *
-     * @return List<String> A list containing the names of all available items.
+     * @return {@code List<String>}. A list containing the names of all available items.
      */
     List<String> getItemNames();
 

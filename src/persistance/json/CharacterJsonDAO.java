@@ -62,7 +62,7 @@ public class CharacterJsonDAO implements CharacterDAO {
     /**
      * Loads all characters from the JSON file.
      *
-     * @return List<Character> A list of all characters stored in the JSON file.
+     * @return {@code List<Character>}. A list of all characters stored in the JSON file.
      * @throws PersistanceException If the file cannot be read.
      */
     @Override
@@ -129,7 +129,7 @@ public class CharacterJsonDAO implements CharacterDAO {
     /**
      * Retrieves a list of all character names.
      *
-     * @return List<String> A list containing the names of all characters.
+     *@return {@code List<String>}. A list containing the names of all characters.
      * @throws PersistanceException If the file cannot be read.
      */
     @Override

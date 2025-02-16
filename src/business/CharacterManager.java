@@ -46,7 +46,7 @@ public class CharacterManager {
     /**
      * Retrieves a list of all character names stored in the system.
      *
-     * @return List<String> A list containing the names of all available characters.
+     * @return {@code List<String>}. A list containing the names of all available characters.
      */
     public List<String> getCharacterNames() {
         return characterDAO.getCharactersByNames();

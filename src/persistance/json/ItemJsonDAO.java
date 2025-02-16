@@ -123,7 +123,7 @@ public class ItemJsonDAO implements ItemDAO {
     /**
      * Retrieves a list of all item names from the JSON file.
      *
-     * @return List<String> A list containing the names of all available items.
+     * @return {@code List<String>}. A list containing the names of all available items.
      * @throws PersistanceException If the JSON file cannot be read.
      */
     public List<String> getItemNames() {

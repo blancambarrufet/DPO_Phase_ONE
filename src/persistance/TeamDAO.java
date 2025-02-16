@@ -15,7 +15,7 @@ public interface TeamDAO {
     /**
      * Loads all teams from the persistence source.
      *
-     * @return ArrayList<Team> A list of all stored teams.
+     * @return {@code ArrayList<Team>} A list of all stored teams.
      */
     ArrayList<Team> loadTeams();
 
@@ -38,7 +38,7 @@ public interface TeamDAO {
      * Retrieves a list of team names that contain a specific character.
      *
      * @param id The ID of the character.
-     * @return List<String> A list of team names containing the specified character.
+     * @return {@code List<String>} A list of team names containing the specified character.
      */
     List<String> getTeamsNamesWithCharacter(long id);
 
@@ -76,7 +76,7 @@ public interface TeamDAO {
     /**
      * Loads the names of all teams in the system.
      *
-     * @return List<String> A list of all available team names.
+     * @return {@code List<String>} A list of all available team names.
      */
     List<String> loadTeamNames();
 }
