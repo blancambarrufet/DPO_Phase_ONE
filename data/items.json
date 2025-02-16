@@ -4,14 +4,14 @@
     "name": "Welder",
     "power": 56,
     "durability": 4,
-    "class": "Weapon"
+    "class": "Superweapon"
   },
   {
     "id": 131768176,
     "name": "Motherboard",
     "power": 39,
     "durability": 2,
-    "class": "Armor"
+    "class": "Superarmor"
   },
   {
     "id": 7698434,
@@ -46,7 +46,7 @@
     "name": "Coding Skillz",
     "power": 10,
     "durability": 4,
-    "class": "Weapon"
+    "class": "Superweapon"
   },
   {
     "id": 707325,
@@ -60,7 +60,7 @@
     "name": "StarUML Cracked Licence",
     "power": 15,
     "durability": 3,
-    "class": "Weapon"
+    "class": "Superweapon"
   },
   {
     "id": 37550151,
@@ -95,7 +95,7 @@
     "name": "Offcampus",
     "power": 61,
     "durability": 1,
-    "class": "Armor"
+    "class": "Superarmor"
   },
   {
     "id": 737,
@@ -123,6 +123,6 @@
     "name": "Backup Project Partner",
     "power": 42,
     "durability": 5,
-    "class": "Armor"
+    "class": "Superarmor"
   }
 ]

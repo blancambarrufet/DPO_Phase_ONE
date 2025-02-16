@@ -1,8 +1,8 @@
 package persistance;
 
-import business.entities.Member;
 import business.entities.Team;
 import business.entities.TeamPrint;
+import persistance.api.exception.ApiException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,14 +10,14 @@ import java.util.List;
 public interface TeamDAO {
     ArrayList<Team> loadTeams();
     void saveNewTeams(Team team);
-    boolean isFileOk();
+    boolean validateFile();
     Team getTeamByName(String name);
     List<String> getTeamsNamesWithCharacter(long id);
     TeamPrint convertToTeamPrint(Team team);
     Team findTeamByName(String name);
     void deleteTeam(String team);
-    Member getRandomAvailableDefender(String teamName);
-    boolean exists(String teamName);
-    Team findTeamByIndex(int index);
-    List<String> loadTeamNames();
+    boolean exists(String teamName) throws ApiException;
+    Team findTeamByIndex(int index) throws ApiException;
+    List<String> loadTeamNames() throws ApiException;
+
 }

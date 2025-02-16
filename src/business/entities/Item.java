@@ -1,17 +1,18 @@
 package business.entities;
 
-public abstract class Item  {
+public abstract class Item {
     private String name;
     private long id;
     private int power;
     private int durability;
     private String type;
 
-    public Item(String name, long id, int power, int durability) {
+    public Item(String name, long id, int power, int durability, String type) {
         this.name = name;
         this.id = id;
         this.power = power;
         this.durability = durability;
+        this.type = type;
     }
 
     public String getName() {
@@ -63,4 +64,8 @@ public abstract class Item  {
     public boolean isBroken() {
         return durability <= 0;
     }
+
+    // Abstract methods to enforce specialized behavior in subclasses
+    public abstract int getAttackPower();
+    public abstract int getDefenseValue();
 }

@@ -2,8 +2,8 @@ package business;
 
 import business.entities.*;
 import persistance.TeamDAO;
-import persistance.exceptions.PersistanceException;
-import persistance.json.TeamJsonDAO;
+import persistance.json.exceptions.PersistanceException;
+import persistance.TeamTotalDAO;
 
 import java.util.List;
 
@@ -14,7 +14,7 @@ public class TeamManager {
     private ItemManager itemManager;
 
     public TeamManager( ItemManager itemManager) throws PersistanceException {
-        this.teamDAO = new TeamJsonDAO();
+        this.teamDAO = new TeamTotalDAO();
         this.itemManager = itemManager;
     }
 
@@ -56,12 +56,6 @@ public class TeamManager {
 
     public List<String> getTeamsNamesWithCharacter(long characterId) throws PersistanceException {
         return teamDAO.getTeamsNamesWithCharacter(characterId);
-    }
-
-
-    public Member getRandomAvailableDefender(String teamName) throws PersistanceException {
-        return teamDAO.getRandomAvailableDefender(teamName);
-
     }
 
     public void initializeTeam(Team team) throws PersistanceException {

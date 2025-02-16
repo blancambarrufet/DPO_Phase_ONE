@@ -2,8 +2,8 @@ package business;
 
 import business.entities.Statistics;
 import persistance.StatisticsDAO;
-import persistance.exceptions.PersistanceException;
-import persistance.json.StatisticsJsonDAO;
+import persistance.json.exceptions.PersistanceException;
+import persistance.StatisticsTotalDAO;
 
 import java.util.List;
 
@@ -12,7 +12,7 @@ public class StatisticsManager {
     private final StatisticsDAO statisticsDAO;
 
     public StatisticsManager() throws PersistanceException {
-        this.statisticsDAO = new StatisticsJsonDAO();
+        this.statisticsDAO = new StatisticsTotalDAO();
     }
 
     public boolean validatePersistance() {

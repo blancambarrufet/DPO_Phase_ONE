@@ -2,8 +2,9 @@ package business;
 
 import business.entities.Character;
 import persistance.CharacterDAO;
-import persistance.exceptions.PersistanceException;
-import persistance.json.CharacterJsonDAO;
+import persistance.api.exception.ApiException;
+import persistance.json.exceptions.PersistanceException;
+import persistance.CharacterTotalDAO;
 import java.util.*;
 
 
@@ -11,8 +12,8 @@ public class CharacterManager {
     private final CharacterDAO characterDAO;
 
     // Default Constructor - Creates DAO internally
-    public CharacterManager() throws PersistanceException {
-        this.characterDAO = new CharacterJsonDAO();
+    public CharacterManager() throws PersistanceException, ApiException {
+        this.characterDAO = new CharacterTotalDAO();
     }
 
     public CharacterManager(CharacterDAO characterDAO) throws PersistanceException {

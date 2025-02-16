@@ -1,4 +1,4 @@
-package persistance.exceptions;
+package persistance.json.exceptions;
 
 public class PersistanceException extends RuntimeException {
     public PersistanceException(String message) {

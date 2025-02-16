@@ -3,7 +3,7 @@ package presentation;
 import business.*;
 import business.entities.*;
 import business.entities.Character;
-import persistance.exceptions.PersistanceException;
+import persistance.json.exceptions.PersistanceException;
 
 import java.util.List;
 
@@ -78,7 +78,7 @@ public class Controller {
 
 
     //List Characters
-    public void listCharacters() {
+    private void listCharacters() {
         try {
             List<String> characterNames = characterManager.getCharacterNames();
 

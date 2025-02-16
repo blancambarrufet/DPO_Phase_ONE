@@ -7,8 +7,6 @@ public interface CharacterDAO {
 
     List<Character> loadAllCharacters();
 
-    boolean validateFile();
-
     Character getCharacterById(long id);
 
     Character getCharacterByName(String name);
@@ -18,4 +16,5 @@ public interface CharacterDAO {
     Character findCharacter(String input);
     Character findCharacterByIndex(int index);
 
+    boolean validateFile();
 }

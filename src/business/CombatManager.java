@@ -1,7 +1,7 @@
 package business;
 
 import business.entities.*;
-import persistance.exceptions.PersistanceException;
+import persistance.json.exceptions.PersistanceException;
 import presentation.Controller;
 
 import java.util.ArrayList;

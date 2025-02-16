@@ -98,13 +98,17 @@ public class Member {
         double weaponAttack;
 
         if (weapon != null) {
-            weaponAttack = weapon.getAttackPower();
-        }
-        else {
+            // Check if it's a SuperWeapon
+            if (weapon instanceof SuperWeapon) {
+                weaponAttack = ((SuperWeapon) weapon).computeWeaponAttack(getWeight()); // Apply SuperWeapon formula
+            } else {
+                weaponAttack = weapon.getAttackPower(); // Normal weapon attack
+            }
+        } else {
             weaponAttack = 0;
         }
 
-        attack = ((getWeight() * (1 - damageTaken)) / 10.0) + (weaponAttack/ 20.0) + 18;
+        attack = ((getWeight() * (1 - damageTaken)) / 10.0) + (weaponAttack / 20.0) + 18;
 
         return attack;
     }
@@ -115,28 +119,32 @@ public class Member {
         double finalDamage;
         double damageReduction;
 
-        //calculate the armor value
+        // Calculate armor value
         if (armor != null) {
-            armorValue = armor.getDefenseValue();
+            // Check if it's a SuperArmor
+            if (armor instanceof SuperArmor) {
+                armorValue = ((SuperArmor) armor).computeArmorValue(getWeight()); // Apply SuperArmor formula
+            } else {
+                armorValue = armor.getDefenseValue(); // Normal armor
+            }
         } else {
             armorValue = 0;
         }
 
-        //calculate the defense value
+        // Calculate defense value
         defenseValue = ((200 * (1 - damageTaken)) / getWeight()) + (armorValue / 20.0);
 
-        //calculate the final damage
+        // Calculate final damage
         finalDamage = (incomingAttack - ((defenseValue) * 1.4)) / 100.0;
 
-        //check if character is defending to apply defense BONUS
+        // Check if character is defending to apply defense BONUS
         if (defending) {
             damageReduction = getWeight() / 400.0;
             finalDamage -= damageReduction;
             System.out.println("\tDEBUG: " + getName() + " reduces damage by " + String.format("%.2f", damageReduction));
         }
 
-        //return finalDamage;
-        return Math.max(finalDamage, 0); //there will be no negative damage
+        return Math.max(finalDamage, 0); // Ensure no negative damage
     }
 
 
