@@ -6,10 +6,46 @@ import business.entities.Character;
 import java.util.List;
 import java.util.Scanner;
 
+
+/**
+ * Handles all user interface interactions in the application.
+ * This class is responsible for displaying menus, retrieving user input,
+ * and showing relevant information such as character details, team management,
+ * combat simulation, and game statistics.
+ *
+ * Key functionalities include:
+ * - Displaying and handling the main menu.
+ * - Managing teams (creating, listing, and deleting).
+ * - Listing characters and displaying their details.
+ * - Listing items and showing item details.
+ * - Simulating combat between teams.
+ * - Displaying team and combat statistics.
+ *
+ * This class interacts with the user via the console and ensures that
+ * valid input is collected before proceeding with game operations.
+ */
+
+
+
 public class UI {
 
     Scanner scanner = new Scanner(System.in);
 
+    //*************************************************
+    //************ General functionalities ************
+    //*************************************************
+
+    /**
+     * Validates the persistence of required JSON files before running the program.
+     * The method checks for the existence of characters.json, items.json, teams.json, and stats.json files.
+     * If characters.json or items.json is missing, the program shuts down.
+     *
+     * @param charactersOk Boolean flag indicating if characters.json is accessible.
+     * @param itemsOk Boolean flag indicating if items.json is accessible.
+     * @param teamsOk Boolean flag indicating if teams.json is accessible.
+     * @param statsOk Boolean flag indicating if stats.json is accessible.
+     * @return boolean Returns true if the required files are available; otherwise, false.
+     */
     public boolean validatePersistence(boolean charactersOk, boolean itemsOk, boolean teamsOk, boolean statsOk) {
         System.out.println("  ___                      _    ___     ___         _ ");
         System.out.println(" / __|_  _ _ __  ___ _ _  | |  / __|   | _ )_ _ ___| |");
@@ -50,6 +86,12 @@ public class UI {
         return true; // Continue if files are OK
     }
 
+    /**
+     * Displays the main menu and retrieves the user’s selection.
+     * The menu provides options for character listing, team management, item listing, and combat simulation.
+     *
+     * @return MainMenu The selected option mapped to an enumeration value.
+     */
     public MainMenu printMainMenu() {
         int option = 0 ;
         do {
@@ -90,6 +132,15 @@ public class UI {
         return null;
     }
 
+    /**
+     * Ensures the user input is within a specified range.
+     * This method continuously prompts the user until a valid integer is entered.
+     *
+     * @param min Minimum valid integer value.
+     * @param max Maximum valid integer value.
+     * @param parameter Name of the parameter being validated.
+     * @return int The validated user input.
+     */
     public int inputScanner(int min, int max, String parameter) {
         Scanner scanner = new Scanner(System.in);
         int option;
@@ -109,6 +160,18 @@ public class UI {
         return option;
     }
 
+
+    //*************************************************
+    //************** Functions for Team  **************
+    //*************************************************
+
+
+    /**
+     * Displays the team management menu and retrieves the user’s selection.
+     * Options include creating, listing, and deleting teams, as well as returning to the main menu.
+     *
+     * @return TeamManagementMenu The selected option mapped to an enumeration value.
+     */
     public TeamManagementMenu printTeamMenu() {
         int option = 0;
         do {
@@ -141,20 +204,33 @@ public class UI {
         return null;
     }
 
-    //*************************************************
-    //********Functions for 2.1) Team Creation ********
-    //*************************************************
-
+    /**
+     * Requests the user to enter a team's name.
+     *
+     * @return String The trimmed team name entered by the user.
+     */
     public String requestTeamInfo() {
         System.out.print("\nPlease enter the team's name: ");
         return scanner.nextLine().trim();
     }
 
+    /**
+     * Requests the user to enter a character's name or ID.
+     *
+     * @param index The index of the character (1-based).
+     * @return String The trimmed character name or ID entered by the user.
+     */
     public String requestCharacterName(int index) {
         System.out.print("\nPlease enter name or id for character #" + index +" : ");
         return scanner.nextLine().trim();
     }
 
+    /**
+     * Prompts the user to choose a strategy for a character from the available options.
+     *
+     * @param index The index of the character (1-based).
+     * @return String The chosen strategy as a lowercase string ("balanced", "offensive", "defensive", or "sniper").
+     */
     public String requestStrategy(int index) {
         System.out.println("Game strategy for character #" + index + "?");
         System.out.println("\t1) Balanced");
@@ -185,14 +261,119 @@ public class UI {
         }
     }
 
+
+    /**
+     * Requests the user to select an option from a menu.
+     *
+     * @param maxSize The maximum valid option number.
+     * @return int The validated user-selected option.
+     */
+    private int requestTeamOption(int maxSize) {
+        int option;
+
+        do {
+            System.out.print("\nChoose an option: ");
+            option = Integer.parseInt(scanner.nextLine());
+
+            if (option >= 0 && option <= maxSize) {
+                return option;
+            }
+            else {
+                System.out.println("(ERROR) Invalid option. Please select a valid number.");
+            }
+
+        } while (option <= maxSize && option >= 0);
+
+        return 0;
+    }
+
+    /**
+     * Displays an error message if a team name is not found in the system.
+     *
+     * @param name The name of the team that was not found.
+     */
     public void errorCreateTeam(String name){
-        System.out.println("\nWe are sorry '" + name + "' is not in the system.");
+        System.out.println("We are sorry, team" + name + "could not be created.");
+    }
+
+    /**
+     * Displays the details of a selected team, including its members and their strategies.
+     *
+     * @param selectedTeam The team whose details are to be displayed.
+     */
+    public void displayTeamDetails(Team selectedTeam) {
+        System.out.println("\n\tTeam name: " + selectedTeam.getName() + "\n");
+
+        int i = 0;
+        int width = 30;
+
+        for (Member member : selectedTeam.getMembers()) {
+            String newName = String.format("%-" + width + "s", member.getName());
+            System.out.println("\tCharacter #" + (i + 1) + ": " + newName + "(" + member.getStrategy().toUpperCase() + ")");
+            i++;
+        }
+    }
+
+    /**
+     * Asks the user for confirmation before removing a team.
+     *
+     * @param name The name of the team to be removed.
+     * @return boolean True if the user confirms removal, false otherwise.
+     */
+    public boolean sure(String name) {
+        System.out.print("\nAre you sure you want to remove \"" + name + "\" ?");
+        Scanner input = new Scanner(System.in);
+        String userInput = input.nextLine();
+        return userInput.equalsIgnoreCase("Yes");
+    }
+
+    /**
+     * Displays a confirmation message based on the user's decision to remove a team.
+     *
+     * @param name The name of the team.
+     * @param sure Boolean indicating whether the team was removed.
+     */
+    public void confirmationMessage(String name, boolean sure) {
+        if (sure) {
+            System.out.println("\n\""+name+"\" has been removed from the system.");
+        }
+        else {
+            System.out.println("\n\""+name+"\" will not be removed from the system.");
+        }
+    }
+
+    /**
+     * Displays a list of available teams and allows the user to select one.
+     *
+     * @param teams A list of available team names.
+     * @return int The selected team option (0 if no teams are available or the user chooses to go back).
+     */
+    public int displayTeamOptionList(List<String> teams) {
+        if (teams.isEmpty() ) {
+            System.out.println("No teams available.");
+            return 0;
+        } else {
+            for (int i = 0; i < teams.size(); i++) {
+                System.out.println("\t" + (i + 1) + ") " + teams.get(i));
+            }
+            System.out.println("\n\t0) Back");
+
+            return requestTeamOption(teams.size());
+        }
+
     }
 
     //*************************************************
-    //********Functions for 1) List Characters ********
+    //*********** Functions for Characters ************
     //*************************************************
 
+    /**
+     * Requests the user to select a character option from the list.
+     * Ensures that the selected option is within the valid range.
+     *
+     * @param optionThreshold The maximum valid option number.
+     * @return int The validated user-selected option.
+     */
     public int requestCharacterOption(int optionThreshold) {
         int option;
 
@@ -212,7 +393,67 @@ public class UI {
         return 0;
     }
 
+    /**
+     * Displays a list of available characters and prompts the user to select one.
+     *
+     * @param characters A list of character names.
+     * @return int The selected character option (0 if no characters are available or the user chooses to go back).
+     */
+    public int displayCharactersList(List<String> characters) {
+            if (characters.isEmpty()) {
+                System.out.println("No characters available.");
+                return 0; // Return 0 to go back
+            }
+            else {
+                for (int i = 0; i < characters.size(); i++) {
+                    System.out.println((i + 1) + ") " + characters.get(i));
+                }
+                System.out.println("\n0) Back");
 
+                // Ask the user to select an option
+                return requestCharacterOption(characters.size());
+            }
+        }
+
+    /**
+     * Displays detailed information about a selected character, including ID, name, weight, and teams.
+     *
+     * @param character The character object containing character details.
+     * @param teams A list of team names associated with the character.
+     */
+    public void displayCharacterDetails(Character character, List<String> teams) {
+            System.out.println("\n\tID: " + "\t " + character.getId());
+            System.out.println("\tNAME:    " + character.getName());
+            System.out.println("\tWEIGHT:  " + character.getWeight() + " kg");
+
+            // Display teams
+            System.out.println("\tTEAMS:");
+
+            int exist=0;
+            if (teams.isEmpty()) {
+                System.out.println("\t\tNo teams related.");
+            } else {
+                for (String teamName : teams) {
+                    System.out.println("\t\t- " + teamName);
+                }
+            }
+
+            System.out.print("\n<Press any key to continue...>");
+            scanner.nextLine();
+    }
+
+
+    //*************************************************
+    //************* Functions for Items ***************
+    //*************************************************
+
+    /**
+     * Requests the user to select an item option from the list.
+     * Ensures that the selected option is within the valid range.
+     *
+     * @param optionThreshold The maximum valid option number.
+     * @return int The validated user-selected option.
+     */
     public int requestItemOption(int optionThreshold) {
         int option;
 
@@ -232,6 +473,12 @@ public class UI {
         return 0;
     }
 
+    /**
+     * Displays a list of available items and prompts the user to select one.
+     *
+     * @param items A list of item names.
+     * @return int The selected item option (0 if no items are available or the user chooses to go back).
+     */
     public int displayItemsList(List<String> items) {
         if (items.isEmpty()) {
             System.out.println("No items available.");
@@ -246,6 +493,11 @@ public class UI {
         }
     }
 
+    /**
+     * Displays detailed information about a selected item, including ID, name, class type, power, and durability.
+     *
+     * @param item The item object containing item details.
+     */
     public void displayItemDetails(Item item) {
         System.out.println("\n\tID :" + "\t\t" + item.getId());
         System.out.println("\tNAME:\t\t" + item.getName());
@@ -258,43 +510,21 @@ public class UI {
         scanner.nextLine();
     }
 
-    public int displayCharactersList(List<String> characters) {
-        if (characters.isEmpty()) {
-            System.out.println("No characters available.");
-            return 0; // Return 0 to go back
-        }
-        else {
-            for (int i = 0; i < characters.size(); i++) {
-                System.out.println((i + 1) + ") " + characters.get(i));
-            }
-            System.out.println("\n0) Back");
 
-            // Ask the user to select an option
-            return requestCharacterOption(characters.size());
-        }
-    }
 
-    public void displayCharacterDetails(Character character, List<String> teams) {
-        System.out.println("\n\tID: " + "\t " + character.getId());
-        System.out.println("\tNAME:    " + character.getName());
-        System.out.println("\tWEIGHT:  " + character.getWeight() + " kg");
+    //*************************************************
+    //************* Functions for Combat **************
+    //*************************************************
 
-        // Display teams
-        System.out.println("\tTEAMS:");
 
-        int exist=0;
-        if (teams.isEmpty()) {
-            System.out.println("\t\tNo teams related.");
-        } else {
-            for (String teamName : teams) {
-                System.out.println("\t\t- " + teamName);
-            }
-        }
-
-        System.out.print("\n<Press any key to continue...>");
-        scanner.nextLine();
-    }
-
+    /**
+     * Requests the user to select a team for combat.
+     * Ensures the selected team number is within the valid range.
+     *
+     * @param teamNumber The number assigned to the team in selection order (e.g., Team #1, Team #2).
+     * @param maxTeams The maximum number of available teams.
+     * @return int The selected team option.
+     */
     public int requestTeamForCombat(int teamNumber, int maxTeams) {
         int option = -1;
         boolean valid = false;
@@ -317,6 +547,11 @@ public class UI {
         return option;
     }
 
+    /**
+     * Displays a list of available teams.
+     *
+     * @param teams A list of team names.
+     */
     public void displayTeamsAvailable(List<String> teams) {
         System.out.println("Looking for available teams...\n");
         if (teams.isEmpty()) {
@@ -330,7 +565,12 @@ public class UI {
         System.out.println();
     }
 
-
+    /**
+     * Displays team initialization details, including assigned weapons and armor.
+     *
+     * @param team The team being initialized.
+     * @param teamNumber The number assigned to the team (e.g., Team #1, Team #2).
+     */
     public void displayTeamInitialization(Team team, int teamNumber) {
         System.out.println("\tTeam #" + teamNumber + " - " + team.getName());
 
@@ -347,6 +587,12 @@ public class UI {
         System.out.println();
     }
 
+    /**
+     * Displays team stats during combat, including character damage taken and equipment.
+     *
+     * @param team The team whose stats are displayed.
+     * @param teamNumber The number assigned to the team.
+     */
     public void displayTeamStats(Team team, int teamNumber) {
         System.out.println("Team #" + teamNumber + " - " + team.getName());
 
@@ -364,27 +610,64 @@ public class UI {
         System.out.println();
     }
 
+    /**
+     * Displays the execution of an attack turn, including damage dealt and received.
+     *
+     * @param attacker The name of the attacking character.
+     * @param damageAttack The amount of damage dealt by the attacker.
+     * @param weapon The weapon used in the attack.
+     * @param damageReceived The amount of damage received by the defender.
+     * @param defender The name of the defending character.
+     */
     public void displayExecutionTurn(String attacker, double damageAttack, String weapon, double damageReceived, String defender) {
         System.out.println(attacker + " ATTACKS " + defender + " WITH " + weapon + " FOR " + String.format("%.1f", damageAttack) + " DAMAGE!");
         System.out.println("\t" + defender + " RECEIVES " + String.format("%.2f", damageReceived) + " DAMAGE.\n");
     }
 
+    /**
+     * Displays a message when an item breaks due to durability depletion.
+     *
+     * @param memberName The name of the character whose item broke.
+     * @param itemName The name of the broken item.
+     */
     public void displayItemDurabilityBreak(String memberName, String itemName) {
         System.out.println("Oh no! " + memberName + "’s " + itemName + " breaks!\n");
     }
 
+    /**
+     * Displays a generic message.
+     *
+     * @param message The message to be displayed.
+     */
     public void displayMessage(String message) {
         System.out.println(message);
     }
 
+    /**
+     * Displays the message for the start of a new combat round.
+     *
+     * @param round The current round number.
+     */
     public void displayRoundMessage(int round) {
         System.out.println("--- ROUND " + round + "! ---\n");
     }
 
+    /**
+     * Displays a message when a character is knocked out.
+     *
+     * @param memberName The name of the character who was knocked out.
+     */
     public void displayKOMember(String memberName) {
         System.out.println(memberName + " flies away! It’s a KO!\n");
     }
 
+    /**
+     * Displays the combat result, showing the winning team and remaining character stats.
+     *
+     * @param teamWinner The winning team (null if it's a tie).
+     * @param team1 The first team that participated in the combat.
+     * @param team2 The second team that participated in the combat.
+     */
     public void displayCombatResult(Team teamWinner, Team team1,Team team2) {
         System.out.println("\n--- END OF COMBAT ---\n");
 
@@ -418,54 +701,11 @@ public class UI {
 
     }
 
-    public int displayTeamOptionList(List<String> teams) {
-        if (teams.isEmpty() ) {
-            System.out.println("No teams available.");
-            return 0;
-        } else {
-            for (int i = 0; i < teams.size(); i++) {
-                System.out.println("\t" + (i + 1) + ") " + teams.get(i));
-            }
-            System.out.println("\n\t0) Back");
-
-            return requestTeamOption(teams.size());
-        }
-
-    }
-
-    private int requestTeamOption(int maxSize) {
-        int option;
-
-        do {
-            System.out.print("\nChoose an option: ");
-            option = Integer.parseInt(scanner.nextLine());
-
-            if (option >= 0 && option <= maxSize) {
-                return option;
-            }
-            else {
-                System.out.println("(ERROR) Invalid option. Please select a valid number.");
-            }
-
-        } while (option <= maxSize && option >= 0);
-
-        return 0;
-    }
-
-    public void displayTeamDetails(Team selectedTeam) {
-        System.out.println("\n\tTeam name: " + selectedTeam.getName() + "\n");
-
-        int i = 0;
-        int width = 30;
-
-        for (Member member : selectedTeam.getMembers()) {
-            String newName = String.format("%-" + width + "s", member.getName());
-            System.out.println("\tCharacter #" + (i + 1) + ": " + newName + "(" + member.getStrategy().toUpperCase() + ")");
-            i++;
-        }
-    }
-
-
+    /**
+     * Displays the overall statistics of a team, including matches played, won, and KOs.
+     *
+     * @param stats The statistics object containing team performance data.
+     */
     public void printStatistics(Statistics stats) {
         int won = stats.getGames_won();
         int played = stats.getGames_played();
@@ -481,22 +721,9 @@ public class UI {
         scanner.nextLine();
     }
 
-    public boolean sure(String name) {
-        System.out.print("\nAre you sure you want to remove \"" + name + "\" ?");
-        Scanner input = new Scanner(System.in);
-        String userInput = input.nextLine();
-        return userInput.equalsIgnoreCase("Yes");
-    }
-
-    public void confirmationMessage(String name, boolean sure) {
-        if (sure) {
-            System.out.println("\n\""+name+"\" has been removed from the system.");
-        }
-        else {
-            System.out.println("\n\""+name+"\" will not be removed from the system.");
-        }
-    }
-
+    /**
+     * Displays a message indicating the end of a combat round.
+     */
     public void displayEndRoundMessage() {
         System.out.println("Combat ready!");
         System.out.println("<Press any key to continue...>");
