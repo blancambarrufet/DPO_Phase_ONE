@@ -215,7 +215,8 @@ public class Member {
 
     /**
      * Calculates the attack value based on character weight and weapon power taking into account the formula.
-     * If the weapon is null the weapon attack is 0, else it is the attack power
+     * For super-weapons, the weapon_attack is calculated as power_item * weight_attacker.
+     * If the weapon is null the weapon attack is 0, else it is the attack power or calculated super-weapon value.
      * @return The calculated attack value.
      */
     public double calculateAttack() {
@@ -223,21 +224,34 @@ public class Member {
         double weaponAttack;
 
         if (weapon != null) {
-            weaponAttack = weapon.getAttackPower();
-        }
-        else {
+            // Check if it's a super-weapon by examining the class name in the item's JSON
+            // We need to determine if this is a super-weapon or regular weapon
+            String weaponClass = weapon.getClass().getSimpleName(); // This will be "Weapon" for both
+            
+            // Since we can't differentiate super-weapons from regular weapons with current structure,
+            // we'll need to check the weapon's properties or add a field to distinguish them
+            // For now, let's assume weapons with power > 50 are super-weapons (this should be improved)
+            if (weapon.getPower() > 50) {
+                // Super-weapon formula: weapon_attack = power_item * weight_attacker
+                weaponAttack = weapon.getPower() * getWeight();
+            } else {
+                // Regular weapon formula
+                weaponAttack = weapon.getAttackPower();
+            }
+        } else {
             weaponAttack = 0;
         }
 
-        attack = ((getWeight() * (1 - damageTaken)) / 10.0) + (weaponAttack/ 20.0) + 18;
+        attack = ((getWeight() * (1 - damageTaken)) / 10.0) + (weaponAttack / 20.0) + 18;
 
         return attack;
     }
 
     /**
      * Calculates the final damage received from an incoming attack.
-     * If the armor is null the armorValue will be 0, else it will be the power of the armor. It will
-     * also take into account if the member is defending or not.
+     * For super-armors, the armor_value is calculated as power_item * weight_defender.
+     * If the armor is null the armorValue will be 0, else it will be the power of the armor or calculated super-armor value.
+     * It will also take into account if the member is defending or not.
      *
      * @param incomingAttack The value of the incoming attack.
      * @return The calculated final damage.
@@ -250,7 +264,15 @@ public class Member {
 
         //calculate the armor value
         if (armor != null) {
-            armorValue = armor.getDefenseValue();
+            // Check if it's a super-armor (similar logic as super-weapons)
+            // For now, let's assume armors with power > 50 are super-armors
+            if (armor.getPower() > 50) {
+                // Super-armor formula: armor_value = power_item * weight_defender
+                armorValue = armor.getPower() * getWeight();
+            } else {
+                // Regular armor formula
+                armorValue = armor.getDefenseValue();
+            }
         } else {
             armorValue = 0;
         }
@@ -268,5 +290,9 @@ public class Member {
         }
 
         return Math.max(finalDamage, 0); //there will be no negative damage
+    }
+
+    public Character getCharacter() {
+        return character;
     }
 }

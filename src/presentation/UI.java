@@ -59,11 +59,11 @@ public class UI {
 
         // Check errors
         if (!charactersOk && !itemsOk) {
-            System.out.println("Error: The characters.json and items.json files can’t be accessed.");
+            System.out.println("Error: The characters.json and items.json files can't be accessed.");
         } else if (!charactersOk) {
-            System.out.println("Error: The characters.json file can’t be accessed.");
+            System.out.println("Error: The characters.json file can't be accessed.");
         } else if (!itemsOk) {
-            System.out.println("Error: The items.json file can’t be accessed.");
+            System.out.println("Error: The items.json file can't be accessed.");
         } else {
             System.out.println("Files OK.");
         }
@@ -87,7 +87,7 @@ public class UI {
     }
 
     /**
-     * Displays the main menu and retrieves the user’s selection.
+     * Displays the main menu and retrieves the user's selection.
      * The menu provides options for character listing, team management, item listing, and combat simulation.
      *
      * @return MainMenu The selected option mapped to an enumeration value.
@@ -167,7 +167,7 @@ public class UI {
 
 
     /**
-     * Displays the team management menu and retrieves the user’s selection.
+     * Displays the team management menu and retrieves the user's selection.
      * Options include creating, listing, and deleting teams, as well as returning to the main menu.
      *
      * @return TeamManagementMenu The selected option mapped to an enumeration value.
@@ -626,7 +626,7 @@ public class UI {
      * @param itemName The name of the broken item.
      */
     public void displayItemDurabilityBreak(String memberName, String itemName) {
-        System.out.println("Oh no! " + memberName + "’s " + itemName + " breaks!\n");
+        System.out.println("Oh no! " + memberName + "'s " + itemName + " breaks!\n");
     }
 
     /**
@@ -653,7 +653,7 @@ public class UI {
      * @param memberName The name of the character who was knocked out.
      */
     public void displayKOMember(String memberName) {
-        System.out.println(memberName + " flies away! It’s a KO!\n");
+        System.out.println(memberName + " flies away! It's a KO!\n");
     }
 
     /**
@@ -702,9 +702,16 @@ public class UI {
      * @param stats The statistics object containing team performance data.
      */
     public void printStatistics(Statistics stats) {
+        if (stats == null) {
+            System.out.println("\n\tNo statistics available for this team.");
+            System.out.print("\n\t<Press any key to continue...>");
+            scanner.nextLine();
+            return;
+        }
+        
         int won = stats.getGames_won();
         int played = stats.getGames_played();
-        float winRate = (float) (100 * won) /played;
+        float winRate = played > 0 ? (float) (100 * won) / played : 0;
 
         System.out.println("\n\tCombats played: \t" + played);
         System.out.println("\tCombats won: \t\t" + won);

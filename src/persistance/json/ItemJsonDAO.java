@@ -69,9 +69,10 @@ public class ItemJsonDAO implements ItemDAO {
      * Retrieves a random weapon from the JSON file.
      *
      * @return Weapon A randomly selected weapon object.
+     * @throws PersistanceException If an error occurs during retrieval.
      */
     @Override
-    public Weapon getRandomWeapon() {
+    public Weapon getRandomWeapon() throws PersistanceException {
         return (Weapon) getRandomItem("Weapon");
     }
 
@@ -79,9 +80,10 @@ public class ItemJsonDAO implements ItemDAO {
      * Retrieves a random armor from the JSON file.
      *
      * @return Armor A randomly selected armor object.
+     * @throws PersistanceException If an error occurs during retrieval.
      */
     @Override
-    public Armor getRandomArmor() {
+    public Armor getRandomArmor() throws PersistanceException {
         return (Armor) getRandomItem("Armor");
     }
 
@@ -126,7 +128,8 @@ public class ItemJsonDAO implements ItemDAO {
      * @return {@code List<String>}. A list containing the names of all available items.
      * @throws PersistanceException If the JSON file cannot be read.
      */
-    public List<String> getItemNames() {
+    @Override
+    public List<String> getItemNames() throws PersistanceException {
         List<String> itemNames = new ArrayList<>();
 
         try (JsonReader reader = new JsonReader(new FileReader(PATH))) {
@@ -153,7 +156,8 @@ public class ItemJsonDAO implements ItemDAO {
      * @return Item The corresponding item object if found, otherwise null.
      * @throws PersistanceException If the JSON file cannot be read.
      */
-    public Item getItemByName(String name) {
+    @Override
+    public Item getItemByName(String name) throws PersistanceException {
         try (JsonReader reader = new JsonReader(new FileReader(PATH))) {
             JsonArray jsonArray = JsonParser.parseReader(reader).getAsJsonArray();
 

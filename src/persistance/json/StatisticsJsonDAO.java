@@ -71,7 +71,7 @@ public class StatisticsJsonDAO implements StatisticsDAO {
      * @throws PersistanceException If an error occurs while writing to the file.
      */
     @Override
-    public void saveStatistics(List<Statistics> statistics) {
+    public void saveStatistics(List<Statistics> statistics) throws PersistanceException {
         try (FileWriter writer = new FileWriter(PATH)) {
             Gson gson = new GsonBuilder().setPrettyPrinting().create();
             gson.toJson(statistics, writer);

@@ -79,7 +79,7 @@ public class TeamJsonDAO implements TeamDAO {
     }
 
 
-    private ArrayList<Team> matchCharacterTeam() {
+    private ArrayList<Team> matchCharacterTeam() throws PersistanceException {
         ArrayList<Team> teams = loadTeams();
 
         if (teams == null) return new ArrayList<>(); // Ensure it's not null
@@ -165,7 +165,8 @@ public class TeamJsonDAO implements TeamDAO {
      * @param teamName The name of the team to be deleted.
      * @throws PersistanceException If the team is not found or an error occurs while writing to the file.
      */
-    public void deleteTeam(String teamName) {
+    @Override
+    public void deleteTeam(String teamName) throws PersistanceException {
 
         List<TeamPrint> teams = loadTeamsPrint();
 
@@ -193,7 +194,7 @@ public class TeamJsonDAO implements TeamDAO {
      * @throws PersistanceException If the file cannot be read.
      */
     @Override
-    public Team getTeamByName(String name) {
+    public Team getTeamByName(String name) throws PersistanceException {
         try (JsonReader reader = new JsonReader(new FileReader(PATH))) {
             Team[] teamsArray = gson.fromJson(reader, Team[].class);
             for (Team team : teamsArray) {
@@ -202,7 +203,7 @@ public class TeamJsonDAO implements TeamDAO {
                 }
             }
             return null;
-        } catch (IOException e) {
+        } catch (IOException | JsonSyntaxException e) {
             throw new PersistanceException("Couldn't read teams file: " + PATH, e);
         }
     }
@@ -242,8 +243,10 @@ public class TeamJsonDAO implements TeamDAO {
      *
      * @param teamName The name of the team to search for.
      * @return boolean True if the team exists, otherwise false.
+     * @throws PersistanceException If an error occurs during the check.
      */
-    public boolean exists(String teamName) {
+    @Override
+    public boolean exists(String teamName) throws PersistanceException {
         List<Team> teams = matchCharacterTeam();
 
         for (Team team : teams) {
@@ -259,8 +262,10 @@ public class TeamJsonDAO implements TeamDAO {
      * Loads the names of all teams in the system.
      *
      * @return {@code List<String>} A list of all available team names.
+     * @throws PersistanceException If an error occurs during loading.
      */
-    public List<String> loadTeamNames() {
+    @Override
+    public List<String> loadTeamNames() throws PersistanceException {
         List<Team> teams = matchCharacterTeam();
 
         List<String> teamNames = new ArrayList<>();
@@ -278,11 +283,12 @@ public class TeamJsonDAO implements TeamDAO {
      *
      * @param index The index (0-based) of the team in the list.
      * @return Team The corresponding team object.
-     * @throws IndexOutOfBoundsException If the provided index is out of range.
+     * @throws PersistanceException If an error occurs during retrieval.
      */
-    public Team findTeamByIndex(int index){
+    @Override
+    public Team findTeamByIndex(int index) throws PersistanceException {
         List<Team> teams = matchCharacterTeam();
-        return teams.get(index );
+        return teams.get(index);
     }
 
 

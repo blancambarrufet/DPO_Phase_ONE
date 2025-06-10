@@ -53,7 +53,6 @@ public class Controller {
             if (!persistenceValid) {
                 return; // Exit if persistence check fails
             }
-
             // Main Menu Loop
             while (true) {
                 switch (ui.printMainMenu()) {
@@ -89,10 +88,17 @@ public class Controller {
             boolean teamsOk = teamManager.validatePersistence();
             boolean statsOk = statisticsManager.validatePersistance();
 
+            System.out.println("Controller validation results:");
+            System.out.println("  charactersOk: " + charactersOk);
+            System.out.println("  itemsOk: " + itemsOk);
+            System.out.println("  teamsOk: " + teamsOk);
+            System.out.println("  statsOk: " + statsOk);
+
             // Check and return based on UI validation
             return ui.validatePersistence(charactersOk, itemsOk, teamsOk, statsOk);
 
         } catch (Exception e) {
+            System.out.println("Controller validation caught exception: " + e.getMessage());
             return ui.validatePersistence(false, false, false, false); // Graceful shutdown
         }
     }
@@ -108,12 +114,9 @@ public class Controller {
         ui.displayMessage(message);
     }
 
-
-
     //*************************************************
     //************** Functions for Team  **************
     //*************************************************
-
 
     private void createTeam() {
         try {
@@ -183,6 +186,7 @@ public class Controller {
 
             Team selectedTeam = teamManager.findTeamByIndex(selectedOption);
 
+            System.out.println("team found");
             ui.displayTeamDetails(selectedTeam);
 
             Statistics statistics = statisticsManager.getStaticByName(selectedTeam.getName());

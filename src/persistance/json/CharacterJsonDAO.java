@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+
 /**
  * Implementation of CharacterDAO for managing character data using JSON files.
  * Provides methods for validating, loading, and searching character data stored in a JSON file.
@@ -90,7 +91,7 @@ public class CharacterJsonDAO implements CharacterDAO {
      * @throws PersistanceException If the file cannot be read.
      */
     @Override
-    public Character getCharacterById(long id) {
+    public Character getCharacterById(long id) throws PersistanceException {
         try (JsonReader reader = new JsonReader(new FileReader(PATH))) {
             Character[] charactersArray = gson.fromJson(reader, Character[].class);
             for (Character character : charactersArray) {
@@ -112,7 +113,7 @@ public class CharacterJsonDAO implements CharacterDAO {
      * @throws PersistanceException If the file cannot be read.
      */
     @Override
-    public Character getCharacterByName(String name) {
+    public Character getCharacterByName(String name) throws PersistanceException {
         try (JsonReader reader = new JsonReader(new FileReader(PATH))) {
             Character[] charactersArray = gson.fromJson(reader, Character[].class);
             for (Character character : charactersArray) {
@@ -133,7 +134,7 @@ public class CharacterJsonDAO implements CharacterDAO {
      * @throws PersistanceException If the file cannot be read.
      */
     @Override
-    public List<String> getCharactersByNames() {
+    public List<String> getCharactersByNames() throws PersistanceException {
         try (JsonReader reader = new JsonReader(new FileReader(PATH))) {
             Character[] charactersArray = gson.fromJson(reader, Character[].class);
             List<String> names = new ArrayList<>();

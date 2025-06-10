@@ -1,10 +1,13 @@
 package business;
 
 import business.entities.Character;
+import edu.salle.url.api.exception.ApiException;
+import persistance.API.CharacterApiDAO;
 import persistance.CharacterDAO;
 import persistance.exceptions.PersistanceException;
 import persistance.json.CharacterJsonDAO;
 import java.util.*;
+
 
 /**
  * Manages character-related operations in the system.
@@ -12,24 +15,42 @@ import java.util.*;
  * It interacts with the persistence layer to retrieve and validate character data.
  */
 public class CharacterManager {
-    private final CharacterDAO characterDAO;
+    private CharacterDAO characterDAO;
 
     /**
      * Default constructor that initializes the CharacterManager with a JSON-based DAO.
      *
      * @throws PersistanceException If an error occurs while initializing the DAO.
      */
-    public CharacterManager() throws PersistanceException {
-        this.characterDAO = new CharacterJsonDAO();
+    public CharacterManager() {
+        try {
+            CharacterApiDAO.validateUsage(); // Check API availability
+            this.characterDAO = new CharacterApiDAO();
+            System.out.println("CharacterManager: Using API DAO");
+        } catch (PersistanceException e) {
+            System.err.println("API is unavailable, falling back to JSON files: " + e.getMessage());
+            this.characterDAO = new CharacterJsonDAO();
+            System.out.println("CharacterManager: Using JSON DAO");
+        }
     }
 
     /**
-     * Validates the persistence source to ensure the characters JSON file exists and is correctly formatted.
+     * Validates the persistence source to ensure the data source is accessible.
      *
-     * @return boolean True if the file is valid and accessible; otherwise, false.
+     * @return boolean True if the data source is valid and accessible; otherwise, false.
      */
     public boolean validatePersistenceSource() {
-        return characterDAO.validateFile();
+        try {
+            System.out.println("CharacterManager: Validating persistence source...");
+            // Try to load a small amount of data to validate connectivity
+            List<String> names = characterDAO.getCharactersByNames();
+            boolean valid = names != null && !names.isEmpty();
+            System.out.println("CharacterManager: Validation result = " + valid + " (found " + (names != null ? names.size() : 0) + " characters)");
+            return valid;
+        } catch (PersistanceException e) {
+            System.out.println("CharacterManager: Validation failed with exception: " + e.getMessage());
+            return false;
+        }
     }
 
     /**
@@ -47,8 +68,9 @@ public class CharacterManager {
      * Retrieves a list of all character names stored in the system.
      *
      * @return {@code List<String>}. A list containing the names of all available characters.
+     * @throws PersistanceException If an error occurs during retrieval.
      */
-    public List<String> getCharacterNames() {
+    public List<String> getCharacterNames() throws PersistanceException {
         return characterDAO.getCharactersByNames();
     }
 
@@ -57,8 +79,9 @@ public class CharacterManager {
      *
      * @param index The index (1-based) of the character in the list.
      * @return Character The character object if found, otherwise null.
+     * @throws PersistanceException If an error occurs during retrieval.
      */
-    public Character findCharacterByIndex(int index){
-        return characterDAO.findCharacterByIndex(index);
+    public Character findCharacterByIndex(int index) throws PersistanceException {
+        return characterDAO.findCharacterByIndex(index-1);
     }
 }
