@@ -162,36 +162,8 @@ public class TeamApiDAO implements TeamDAO {
 
     @Override
     public Team findTeamByIndex(int index) throws PersistanceException {
-        System.out.println("matching teams and characters");
         List<Team> teams = matchCharacterTeam();
-        System.out.println("team found" + teams.get(index).getName());
-        System.out.println("characters in team" + teams.get(index).getMembers().size());
         return teams.get(index);
-
-
-        /*try {
-            ApiHelper apiHelper = new ApiHelper();
-            String url = BASE_URL + "/" + index;
-            String json = apiHelper.getFromUrl(url);
-            Team team = gson.fromJson(json, Team.class);
-
-            // For each team member, fetch and set the complete Character.
-            CharacterApiDAO characterDAO = new CharacterApiDAO();
-            for (Member member : team.getMembers()) {
-                if (member.getCharacter() == null) {
-                    business.entities.Character character = characterDAO.getCharacterById(member.getCharacterId());
-                    member.setCharacter(character);
-                }
-            }
-            return team;
-        } catch (IncorrectRequestException e) {
-            if (e.getStatusCode() == 404) {
-                return null;
-            }
-            throw new PersistanceException("Failed to get team by index: " + e.getMessage(), e);
-        } catch (ApiException e) {
-            throw new PersistanceException("Error fetching team by index from API", e);
-        }*/
     }
 
     @Override

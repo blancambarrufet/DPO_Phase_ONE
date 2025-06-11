@@ -113,8 +113,8 @@ public class CombatManager {
         int koTeam1 = numberOfKO(team1.getMembers());
         int koTeam2 = numberOfKO(team2.getMembers());
 
-        String winnerName = " ";
-        if (winner!=null) {
+        String winnerName = "";
+        if (winner != null) {
              winnerName = winner.getName();
         }
 

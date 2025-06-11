@@ -125,7 +125,6 @@ public class TeamManager {
      * @throws PersistanceException If an error occurs during retrieval.
      */
     public Team findTeamByIndex(int selectedOption) throws PersistanceException {
-        System.out.println("searching Team");
         return teamDAO.findTeamByIndex(selectedOption - 1);
     }
 

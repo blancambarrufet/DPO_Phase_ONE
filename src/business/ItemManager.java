@@ -21,25 +21,20 @@ public class ItemManager {
         try {
             ItemApiDAO.validateUsage();
             this.itemDAO = new ItemApiDAO();
-            System.out.println("ItemManager: Using API DAO");
         } catch (PersistanceException e) {
             System.err.println("API unavailable, switching to JSON persistence: " + e.getMessage());
             this.itemDAO = new ItemJsonDAO();
-            System.out.println("ItemManager: Using JSON DAO");
         }
     }
 
 
     public boolean validatePersistenceSource() {
         try {
-            System.out.println("ItemManager: Validating persistence source...");
             // Try to load a small amount of data to validate connectivity
             List<String> names = itemDAO.getItemNames();
             boolean valid = names != null && !names.isEmpty();
-            System.out.println("ItemManager: Validation result = " + valid + " (found " + (names != null ? names.size() : 0) + " items)");
             return valid;
         } catch (PersistanceException e) {
-            System.out.println("ItemManager: Validation failed with exception: " + e.getMessage());
             return false;
         }
     }

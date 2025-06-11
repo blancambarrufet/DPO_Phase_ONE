@@ -593,7 +593,7 @@ public class UI {
 
         for (Member member : team.getMembers()) {
             // Check if the weapon is null before calling getName()
-            String status = member.isKO() ? "KO" : (int) (member.getDamageTaken() * 100) + " %";
+            String status = member.isKO() ? "KO" : Math.round(member.getDamageTaken() * 100) + " %";
 
             String weaponName = (member.getWeapon() != null) ? member.getWeapon().getName() : "no Weapon";
             // Check if the armor is null before calling getName()
@@ -676,7 +676,7 @@ public class UI {
 
         for (Member member : team1.getMembers()) {
 
-            String status = member.isKO() ? "KO" : (int) (member.getDamageTaken() * 100) + " %";
+            String status = member.isKO() ? "KO" : Math.round(member.getDamageTaken() * 100) + " %";
 
             System.out.println(" - " + member.getName() + " (" + status + ")");
         }
@@ -685,7 +685,7 @@ public class UI {
 
         for (Member member : team2.getMembers()) {
 
-            String status = member.isKO() ? "KO" : (int) (member.getDamageTaken() * 100) + " %";
+            String status = member.isKO() ? "KO" : Math.round(member.getDamageTaken() * 100) + " %";
 
             System.out.println(" - " + member.getName() + " (" + status + ")");
         }

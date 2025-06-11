@@ -57,6 +57,11 @@ public class CharacterApiDAO implements CharacterDAO {
             String url = BASE_URL + "?id=" + id;
             String json = apiHelper.getFromUrl(url);
             
+            // Handle null or empty response
+            if (json == null || json.trim().isEmpty()) {
+                return null;
+            }
+            
             // Handle both array and single object responses
             if (json.trim().startsWith("[")) {
                 // API returned an array
@@ -72,6 +77,8 @@ public class CharacterApiDAO implements CharacterDAO {
             }
             throw new PersistanceException("Failed to get character by id: " + e.getMessage(), e);
 
+        } catch (com.google.gson.JsonSyntaxException e) {
+            throw new PersistanceException("Invalid JSON response when fetching character by id: " + id, e);
         } catch (ApiException e) {
             throw new PersistanceException("Error fetching character by id from API", e);
         }
@@ -79,10 +86,22 @@ public class CharacterApiDAO implements CharacterDAO {
 
     @Override
     public Character getCharacterByName(String name) throws PersistanceException {
+        // Validate input
+        if (name == null || name.trim().isEmpty()) {
+            return null;
+        }
+        
         try {
             ApiHelper apiHelper = new ApiHelper();
-            String url = BASE_URL + "?name=" + name;
+            // Properly encode the name parameter for URL
+            String encodedName = java.net.URLEncoder.encode(name.trim(), "UTF-8");
+            String url = BASE_URL + "?name=" + encodedName;
             String json = apiHelper.getFromUrl(url);
+            
+            // Handle null or empty response
+            if (json == null || json.trim().isEmpty()) {
+                return null;
+            }
             
             // Handle both array and single object responses
             if (json.trim().startsWith("[")) {
@@ -100,6 +119,10 @@ public class CharacterApiDAO implements CharacterDAO {
             }
             throw new PersistanceException("Failed to get character by name: " + e.getMessage(), e);
 
+        } catch (com.google.gson.JsonSyntaxException e) {
+            throw new PersistanceException("Invalid JSON response when fetching character by name: " + name, e);
+        } catch (java.io.UnsupportedEncodingException e) {
+            throw new PersistanceException("Error encoding character name: " + name, e);
         } catch (ApiException e) {
             throw new PersistanceException("Error fetching character by name from API", e);
         }

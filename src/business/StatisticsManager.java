@@ -39,30 +39,61 @@ public class StatisticsManager {
 
     public void recordCombatResult(String Team1, String Team2, int koTeam1, int koTeam2, String winner) throws PersistanceException {
         List<Statistics> statistics = statisticsDAO.loadStatistics();
-        for (Statistics stat : statistics) {
-            if (stat.getName().equalsIgnoreCase(Team1)) {
-                stat.incrementGamesPlayed();
-                if (winner.equalsIgnoreCase(Team1)) {
-                    stat.incrementGamesWon();
-                }
-                stat.incrementKOMade(koTeam2);
-                stat.incrementKOReceived(koTeam1);
-            }
-            if (stat.getName().equalsIgnoreCase(Team2)) {
-                stat.incrementGamesPlayed();
-                if (winner.equalsIgnoreCase(Team2)) {
-                    stat.incrementGamesWon();
-                }
-                stat.incrementKOMade(koTeam1);
-                stat.incrementKOReceived(koTeam2);
-            }
+        
+        // Find or create statistics for Team1
+        Statistics stat1 = statistics.stream()
+                .filter(stat -> stat.getName().equalsIgnoreCase(Team1))
+                .findFirst()
+                .orElse(null);
+        
+        if (stat1 == null) {
+            stat1 = new Statistics(Team1);
+            statistics.add(stat1);
         }
+        
+        // Find or create statistics for Team2
+        Statistics stat2 = statistics.stream()
+                .filter(stat -> stat.getName().equalsIgnoreCase(Team2))
+                .findFirst()
+                .orElse(null);
+        
+        if (stat2 == null) {
+            stat2 = new Statistics(Team2);
+            statistics.add(stat2);
+        }
+        
+        // Update Team1 statistics
+        stat1.incrementGamesPlayed();
+        if (winner.equalsIgnoreCase(Team1)) {
+            stat1.incrementGamesWon();
+        }
+        stat1.incrementKOMade(koTeam2);
+        stat1.incrementKOReceived(koTeam1);
+        
+        // Update Team2 statistics
+        stat2.incrementGamesPlayed();
+        if (winner.equalsIgnoreCase(Team2)) {
+            stat2.incrementGamesWon();
+        }
+        stat2.incrementKOMade(koTeam1);
+        stat2.incrementKOReceived(koTeam2);
+        
         statisticsDAO.saveStatistics(statistics);
     }
 
     public Statistics getStaticByName(String name) throws PersistanceException {
+        System.out.println("DEBUG: Loading statistics for: " + name);
         List<Statistics> statistics = statisticsDAO.loadStatistics();
-        return statistics.stream().filter(stat -> stat.getName().equalsIgnoreCase(name)).findFirst().orElse(null);
+        System.out.println("DEBUG: Loaded " + statistics.size() + " statistics from " + statisticsDAO.getClass().getSimpleName());
+        
+        for (Statistics stat : statistics) {
+            System.out.println("  - " + stat.getName() + ": games=" + stat.getGames_played() + ", won=" + stat.getGames_won());
+        }
+        
+        Statistics result = statistics.stream().filter(stat -> stat.getName().equalsIgnoreCase(name)).findFirst().orElse(null);
+        System.out.println("DEBUG: Found match for '" + name + "': " + (result != null));
+        
+        return result;
     }
 
     public void createNewStats(String name, boolean add) throws PersistanceException {

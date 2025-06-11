@@ -30,6 +30,7 @@ public class StatisticsApiDAO implements StatisticsDAO {
             }
 
             // Custom parsing to handle nested array structure
+            // Since API appends all saves, we need to get the LATEST occurrence of each team
             ArrayList<Statistics> allStats = new ArrayList<>();
             try {
                 // First try to parse as a regular array of Statistics
@@ -39,18 +40,14 @@ public class StatisticsApiDAO implements StatisticsDAO {
                     if (element.isJsonObject()) {
                         // Direct Statistics object
                         Statistics stat = gson.fromJson(element, Statistics.class);
-                        if (!containsStatWithName(allStats, stat.getName())) {
-                            allStats.add(stat);
-                        }
+                        updateOrAddStatistics(allStats, stat);
                     } else if (element.isJsonArray()) {
                         // Nested array of Statistics
                         com.google.gson.JsonArray nestedArray = element.getAsJsonArray();
                         for (com.google.gson.JsonElement nestedElement : nestedArray) {
                             if (nestedElement.isJsonObject()) {
                                 Statistics stat = gson.fromJson(nestedElement, Statistics.class);
-                                if (!containsStatWithName(allStats, stat.getName())) {
-                                    allStats.add(stat);
-                                }
+                                updateOrAddStatistics(allStats, stat);
                             }
                         }
                     }
@@ -64,6 +61,22 @@ public class StatisticsApiDAO implements StatisticsDAO {
         } catch (ApiException e) {
             throw new PersistanceException("Error fetching statistics from API", e);
         }
+    }
+
+    /**
+     * Updates existing statistics or adds new ones. Always keeps the latest data.
+     */
+    private void updateOrAddStatistics(ArrayList<Statistics> allStats, Statistics newStat) {
+        // Find existing statistics for this team
+        for (int i = 0; i < allStats.size(); i++) {
+            if (allStats.get(i).getName().equals(newStat.getName())) {
+                // Replace with newer statistics
+                allStats.set(i, newStat);
+                return;
+            }
+        }
+        // If not found, add new statistics
+        allStats.add(newStat);
     }
 
     private boolean containsStatWithName(ArrayList<Statistics> stats, String name) {

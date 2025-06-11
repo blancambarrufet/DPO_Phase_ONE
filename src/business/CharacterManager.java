@@ -26,11 +26,9 @@ public class CharacterManager {
         try {
             CharacterApiDAO.validateUsage(); // Check API availability
             this.characterDAO = new CharacterApiDAO();
-            System.out.println("CharacterManager: Using API DAO");
         } catch (PersistanceException e) {
             System.err.println("API is unavailable, falling back to JSON files: " + e.getMessage());
             this.characterDAO = new CharacterJsonDAO();
-            System.out.println("CharacterManager: Using JSON DAO");
         }
     }
 
@@ -41,14 +39,11 @@ public class CharacterManager {
      */
     public boolean validatePersistenceSource() {
         try {
-            System.out.println("CharacterManager: Validating persistence source...");
             // Try to load a small amount of data to validate connectivity
             List<String> names = characterDAO.getCharactersByNames();
             boolean valid = names != null && !names.isEmpty();
-            System.out.println("CharacterManager: Validation result = " + valid + " (found " + (names != null ? names.size() : 0) + " characters)");
             return valid;
         } catch (PersistanceException e) {
-            System.out.println("CharacterManager: Validation failed with exception: " + e.getMessage());
             return false;
         }
     }
