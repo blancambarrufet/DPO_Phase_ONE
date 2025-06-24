@@ -33,6 +33,13 @@ public class TeamPrint {
         return name;
     }
 
-
+    /**
+     * Retrieves the members of the team.
+     *
+     * @return List members of the team.
+     */
+    public List<MemberPrint> getMembers() {
+        return members;
+    }
 }
 

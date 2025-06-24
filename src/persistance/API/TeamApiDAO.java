@@ -1,5 +1,7 @@
 package persistance.API;
 
+import business.CombatStrategy;
+import business.StrategyFactory;
 import business.entities.Character;
 import business.entities.Member;
 import business.entities.MemberPrint;
@@ -67,16 +69,30 @@ public class TeamApiDAO implements TeamDAO {
             ApiHelper apiHelper = new ApiHelper();
 
             String json = apiHelper.getFromUrl(BASE_URL + "?name=" + name);
+            Team team;
 
             // Handle both array and single object responses
             if (json.trim().startsWith("[")) {
                 // API returned an array
                 List<Team> teams = gson.fromJson(json, new TypeToken<List<Team>>() {}.getType());
-                return teams.isEmpty() ? null : teams.get(0);
+                if (teams.isEmpty()) return null;
+                team = teams.get(0);
             } else {
                 // API returned a single object
-                return gson.fromJson(json, Team.class);
+                team = gson.fromJson(json, Team.class);
             }
+
+            CharacterApiDAO characterApiDAO = new CharacterApiDAO();
+            List<Member> finalMembers = new ArrayList<>();
+
+            for(Member member : team.getMembers()) {
+                Character character = characterApiDAO.getCharacterById(member.getCharacterId());
+                CombatStrategy strategy = StrategyFactory.getStrategy(member.getStrategyName());
+                finalMembers.add(new Member(member.getCharacterId(), character, strategy));
+            }
+
+            team.setMembers(finalMembers);
+            return team;
 
         } catch (IncorrectRequestException e) {
             if (e.getStatusCode() == 404) {
@@ -110,7 +126,7 @@ public class TeamApiDAO implements TeamDAO {
     public TeamPrint convertToTeamPrint(Team team) {
         List<MemberPrint> memberPrints = new ArrayList<>();
         for (Member member : team.getMembers()) {
-            memberPrints.add(new MemberPrint(member.getCharacterId(), member.getStrategy()));
+            memberPrints.add(new MemberPrint(member.getCharacterId(), member.getStrategyName()));
         }
         return new TeamPrint(team.getName(), memberPrints);
     }
@@ -144,6 +160,8 @@ public class TeamApiDAO implements TeamDAO {
 
         // For each team, update its members with full Character information
         for (Team team : teams) {
+            List<Member> finalMembers = new ArrayList<>();
+
             for (Member member : team.getMembers()) {
                 // If no character is linked, skip this member
                 if (member.getCharacterId() == 0) {
@@ -151,10 +169,17 @@ public class TeamApiDAO implements TeamDAO {
                 }
                 // Retrieve the character via the API
                 Character character = characterApiDAO.getCharacterById(member.getCharacterId());
-                if (character != null) {
-                    member.setCharacter(character);
+                if (character == null) {
+                    continue;
                 }
+
+                CombatStrategy strategy = StrategyFactory.getStrategy(member.getStrategyName());
+
+                Member newMember = new Member(member.getCharacterId(), character, strategy);
+                finalMembers.add(newMember);
             }
+
+            team.setMembers(finalMembers);
         }
         return teams;
     }

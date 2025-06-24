@@ -20,4 +20,24 @@ public class MemberPrint {
         this.id = id;
         this.strategy = strategy;
     }
+
+    /**
+     * Get the member id
+     *
+     * @return The ID of the character.
+     */
+    public long getId() {
+        return id;
+    }
+
+    /**
+     * Get the member combat strategy.
+     *
+     * @return The strategy name.
+     */
+    public String getStrategy() {
+        return strategy;
+    }
+
 }
+

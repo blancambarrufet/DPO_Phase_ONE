@@ -1,5 +1,7 @@
 package business.entities;
 
+import business.CombatStrategy;
+
 /**
  * Represents a team member participating in the game in the combat simulation or for extracting information.
  * Each member has an associated character to extract the name, weight and id. It also has a
@@ -10,7 +12,7 @@ public class Member {
     private final long id;
 
     //name of the strategy
-    private final String strategy;
+    private final CombatStrategy strategy;
 
     //the character associated to the member
     private Character character;
@@ -43,7 +45,7 @@ public class Member {
      * @param character the character associated with the member
      * @param strategy  the combat strategy of the member
      */
-    public Member(long id, Character character, String strategy) {
+    public Member(long id, Character character, CombatStrategy strategy) {
         this.id = id;
         this.character = character;
         this.strategy = strategy;
@@ -79,9 +81,19 @@ public class Member {
      *
      * @return The strategy name.
      */
-    public String getStrategy() {
+    public CombatStrategy getStrategy() {
         return strategy;
     }
+
+    /**
+     * Get the member combat strategy String format.
+     *
+     * @return The strategy name.
+     */
+    public String getStrategyName() {
+        return strategy.getStrategyName();
+    }
+
 
     /**
      * Get the name of the associated character.

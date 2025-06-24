@@ -47,15 +47,18 @@ public class CharacterJsonDAO implements CharacterDAO {
         try {
             // Check if the file exists
             if (!Files.exists(Path.of(PATH))) {
+                System.out.println("DEBUG: File not found");
                 return false; // File is missing
             }
 
-            // Validate JSON structure
-            JsonReader reader = new JsonReader(new FileReader(PATH));
-            gson.fromJson(reader, Character[].class); // Attempt parsing
-            return true; // If no exception, file is valid
+            try (JsonReader reader = new JsonReader(new FileReader(PATH))) {
+                gson.fromJson(reader, Character[].class);
+            }
+
+            return true;
 
         } catch (JsonSyntaxException | IOException e) {
+            System.out.println("DEBUG: JSON Exception → " + e.getMessage());
             return false; // File is invalid or unreadable
         }
     }

@@ -52,6 +52,16 @@ public class Team {
     }
 
     /**
+     * Replaces the current list of members with a new list.
+     *
+     * @param newMembers The new list of team members.
+     */
+    public void setMembers(List<Member> newMembers) {
+        members.clear();
+        members.addAll(newMembers);
+    }
+
+    /**
      * Adds a member to the team only if the team has fewer than four members.
      *
      * @param member The member to add.

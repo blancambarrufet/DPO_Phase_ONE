@@ -81,19 +81,41 @@ public class Controller {
 
 
     private boolean validatePersistence() {
+        boolean charactersOk = false;
+        boolean itemsOk = false;
+        boolean teamsOk = false;
+        boolean statsOk = false;
+
         try {
-            // Validate critical files
-            boolean charactersOk = characterManager.validatePersistenceSource(); // Characters.json
-            boolean itemsOk = itemManager.validatePersistenceSource();          // Items.json
-            boolean teamsOk = teamManager.validatePersistence();
-            boolean statsOk = statisticsManager.validatePersistance();
-
-            // Check and return based on UI validation
-            return ui.validatePersistence(charactersOk, itemsOk, teamsOk, statsOk);
-
+            charactersOk = characterManager.validatePersistenceSource();
+            System.out.println("DEBUG: charactersOk is : " + charactersOk);
         } catch (Exception e) {
-            return ui.validatePersistence(false, false, false, false); // Graceful shutdown
+            System.out.println("DEBUG: charactersOk EXCEPTION: " + e.getMessage());
         }
+
+        try {
+            itemsOk = itemManager.validatePersistenceSource();
+            System.out.println("DEBUG: itemsOk is : " + itemsOk);
+        } catch (Exception e) {
+            System.out.println("DEBUG: itemsOk EXCEPTION: " + e.getMessage());
+        }
+
+        try {
+            teamsOk = teamManager.validatePersistence();
+            System.out.println("DEBUG: teamsOk is : " + teamsOk);
+        } catch (Exception e) {
+            System.out.println("DEBUG: teamsOk EXCEPTION: " + e.getMessage());
+        }
+
+        try {
+            statsOk = statisticsManager.validatePersistance();
+            System.out.println("DEBUG: statsOk is : " + statsOk);
+        } catch (Exception e) {
+            System.out.println("DEBUG: statsOk EXCEPTION: " + e.getMessage());
+        }
+
+        ui.displayValidatePersistence(charactersOk, itemsOk, teamsOk, statsOk);
+        return charactersOk && itemsOk;
     }
 
 
@@ -131,7 +153,8 @@ public class Controller {
                     return;
                 }
 
-                String strategy = ui.requestStrategy(i);
+                String strategyName = ui.requestStrategy(i);
+                CombatStrategy strategy = StrategyFactory.getStrategy(strategyName);
 
                 Member member = new Member(character.getId(), character, strategy);
                 newTeam.addMember(member);

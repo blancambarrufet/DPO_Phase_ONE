@@ -2,7 +2,6 @@ package persistance.API;
 
 import business.entities.Statistics;
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import edu.salle.url.api.ApiHelper;
 import edu.salle.url.api.exception.ApiException;
 import persistance.StatisticsDAO;
