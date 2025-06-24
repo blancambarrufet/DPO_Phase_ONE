@@ -27,7 +27,7 @@ public class TeamJsonDAO implements TeamDAO {
 
     private static final String PATH = "data/teams.json";
     private final Gson gson;
-    CharacterJsonDAO characterJsonDAO;
+    private CharacterJsonDAO characterJsonDAO;
 
     /**
      * Constructor for TeamJsonDAO.
@@ -79,7 +79,7 @@ public class TeamJsonDAO implements TeamDAO {
                 List<Member> members = new ArrayList<>();
                 for (MemberPrint m : teamPrint.getMembers()) {
                     Character c = characterJsonDAO.getCharacterById(m.getId());
-                    CombatStrategy strategy = StrategyFactory.getStrategy(m.getStrategy());
+                    CombatStrategy strategy = StrategyFactory.createStrategyByName(m.getStrategy());
                     members.add(new Member(m.getId(), c, strategy));
                 }
                 Team t = new Team(teamPrint.getName());
@@ -113,7 +113,7 @@ public class TeamJsonDAO implements TeamDAO {
                 Character character = characterJsonDAO.getCharacterById(member.getCharacterId());
                 if (character == null) continue;
 
-                CombatStrategy strategy = StrategyFactory.getStrategy(member.getStrategyName());
+                CombatStrategy strategy = StrategyFactory.createStrategyByName(member.getStrategyName());
 
                 //Create a new Member with the strategy
                 Member finalMember = new Member(member.getCharacterId(), character, strategy);
@@ -225,7 +225,7 @@ public class TeamJsonDAO implements TeamDAO {
                     List<Member> finalMembers = new ArrayList<>();
                     for (Member member : team.getMembers()) {
                         Character character = characterJsonDAO.getCharacterById(member.getCharacterId());
-                        CombatStrategy strategy = StrategyFactory.getStrategy(member.getStrategyName());
+                        CombatStrategy strategy = StrategyFactory.createStrategyByName(member.getStrategyName());
                         finalMembers.add(new Member(member.getCharacterId(), character, strategy));
                     }
                     team.setMembers(finalMembers);

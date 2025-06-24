@@ -29,7 +29,7 @@ import java.util.Scanner;
 
 public class UI {
 
-    Scanner scanner = new Scanner(System.in);
+    private Scanner scanner = new Scanner(System.in);
 
     //*************************************************
     //************ General functionalities ************
@@ -569,8 +569,8 @@ public class UI {
 
         for (Member member : team.getMembers()) {
             // Ensure no null pointer exception occurs
-            String weaponName = (member.getWeapon() != null) ? member.getWeapon().getName() : "No Weapon";
-            String armorName = (member.getArmor() != null) ? member.getArmor().getName() : "No Armor";
+            String weaponName = member.getWeaponName();
+            String armorName = member.getArmorName();
 
             System.out.println("\t- " + member.getName());
             System.out.println("\t\t   Weapon: " + weaponName);
@@ -592,9 +592,9 @@ public class UI {
             // Check if the weapon is null before calling getName()
             String status = member.isKO() ? "KO" : Math.round(member.getDamageTaken() * 100) + " %";
 
-            String weaponName = (member.getWeapon() != null) ? member.getWeapon().getName() : "no Weapon";
+            String weaponName = member.getWeaponName();
             // Check if the armor is null before calling getName()
-            String armorName = (member.getArmor() != null) ? member.getArmor().getName() : "no Armor";
+            String armorName = member.getArmorName();
 
 
             System.out.println("\t- " + member.getName() + " (" + status + ") " + weaponName + " - " + armorName);

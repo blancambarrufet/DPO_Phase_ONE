@@ -2,7 +2,7 @@ package business;
 
 public class StrategyFactory {
 
-    public static CombatStrategy getStrategy(String name) {
+    public static CombatStrategy createStrategyByName(String name) {
         StrategyType type = switch (name.toLowerCase()) {
             case "balanced"  -> StrategyType.BALANCED;
             case "offensive" -> StrategyType.OFFENSIVE;
@@ -11,10 +11,10 @@ public class StrategyFactory {
             default -> throw new IllegalArgumentException("Invalid strategy: " + name);
         };
 
-        return fromType(type);
+        return createStrategyByType(type);
     }
 
-    public static CombatStrategy fromType(StrategyType type) {
+    public static CombatStrategy createStrategyByType(StrategyType type) {
         return switch (type) {
             case BALANCED  -> new BalancedStrategy("balanced");
             case OFFENSIVE -> new OffensiveStrategy("offensive");

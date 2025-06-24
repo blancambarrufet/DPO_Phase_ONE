@@ -154,7 +154,7 @@ public class Controller {
                 }
 
                 String strategyName = ui.requestStrategy(i);
-                CombatStrategy strategy = StrategyFactory.getStrategy(strategyName);
+                CombatStrategy strategy = StrategyFactory.createStrategyByName(strategyName);
 
                 Member member = new Member(character.getId(), character, strategy);
                 newTeam.addMember(member);
