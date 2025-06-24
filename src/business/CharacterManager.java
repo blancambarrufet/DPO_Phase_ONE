@@ -1,7 +1,6 @@
 package business;
 
 import business.entities.Character;
-import edu.salle.url.api.exception.ApiException;
 import persistance.API.CharacterApiDAO;
 import persistance.CharacterDAO;
 import persistance.exceptions.PersistanceException;
@@ -27,7 +26,7 @@ public class CharacterManager {
             CharacterApiDAO.validateUsage(); // Check API availability
             this.characterDAO = new CharacterApiDAO();
         } catch (PersistanceException e) {
-            System.err.println("API is unavailable, falling back to JSON files: " + e.getMessage());
+            System.err.println("API unavailable, switching to JSON persistence: " + e.getMessage());
             this.characterDAO = new CharacterJsonDAO();
         }
     }

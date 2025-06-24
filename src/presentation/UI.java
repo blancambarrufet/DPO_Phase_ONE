@@ -36,7 +36,7 @@ public class UI {
     //*************************************************
 
     /**
-     * Validates the persistence of required JSON files before running the program.
+     * Display the validation of the persistence of required JSON files before running the program.
      * The method checks for the existence of characters.json, items.json, teams.json, and stats.json files.
      * If characters.json or items.json is missing, the program shuts down.
      *
@@ -44,9 +44,8 @@ public class UI {
      * @param itemsOk Boolean flag indicating if items.json is accessible.
      * @param teamsOk Boolean flag indicating if teams.json is accessible.
      * @param statsOk Boolean flag indicating if stats.json is accessible.
-     * @return boolean Returns true if the required files are available; otherwise, false.
      */
-    public boolean validatePersistence(boolean charactersOk, boolean itemsOk, boolean teamsOk, boolean statsOk) {
+    public void displayValidatePersistence(boolean charactersOk, boolean itemsOk, boolean teamsOk, boolean statsOk) {
         System.out.println("  ___                      _    ___     ___         _ ");
         System.out.println(" / __|_  _ _ __  ___ _ _  | |  / __|   | _ )_ _ ___| |");
         System.out.println(" \\__ \\ || | '_ \\/ -_) '_| | |__\\__ \\_  | _ \\ '_/ _ \\_|");
@@ -79,11 +78,9 @@ public class UI {
 
         if (!charactersOk || !itemsOk) {
             System.out.println("Shutting down...");
-            return false; // Stop execution if required files are missing
+        } else {
+            System.out.println("Starting program... \n");
         }
-
-        System.out.println("Starting program... \n");
-        return true; // Continue if files are OK
     }
 
     /**

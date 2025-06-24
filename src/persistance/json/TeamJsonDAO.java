@@ -72,8 +72,22 @@ public class TeamJsonDAO implements TeamDAO {
 
         //loading existing teams
         try (JsonReader reader = new JsonReader(new FileReader(PATH))) {
-            Team[] teamsArray = gson.fromJson(reader, Team[].class);
-            return new ArrayList<>(Arrays.asList(teamsArray)); // Convert array to ArrayList
+            TeamPrint[] teamPrints = gson.fromJson(reader, TeamPrint[].class);
+            ArrayList<Team> fullTeams = new ArrayList<>();
+
+            for (TeamPrint teamPrint : teamPrints) {
+                List<Member> members = new ArrayList<>();
+                for (MemberPrint m : teamPrint.getMembers()) {
+                    Character c = characterJsonDAO.getCharacterById(m.getId());
+                    CombatStrategy strategy = StrategyFactory.getStrategy(m.getStrategy());
+                    members.add(new Member(m.getId(), c, strategy));
+                }
+                Team t = new Team(teamPrint.getName());
+                t.setMembers(members);
+                fullTeams.add(t);
+            }
+
+            return fullTeams; // Convert array to ArrayList
 
         } catch (JsonSyntaxException | IOException e) {
             throw new PersistanceException("Couldn't read teams file: " + PATH, e);
