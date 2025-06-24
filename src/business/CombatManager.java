@@ -144,18 +144,28 @@ public class CombatManager {
                 continue;
             }
 
-            switch (attacker.getStrategy()) {
-                case "balanced":
-                    executeBalancedStrategy(attacker, defendingTeam);
+            CombatStrategy strategy = attacker.getStrategy();
+            CombatAction action = strategy.decideAction(attacker);
+
+            switch (action) {
+                case REQUEST_WEAPON:
+                    requestWeapon(attacker);
+                    controller.displayMessage("\n" + attacker.getName() + " picks " + attacker.getWeapon().getName() + " as a random weapon!\n");
                     break;
-                case "offensive":
-                    executeOffensiveStrategy(attacker, defendingTeam);
+                case DEFEND:
+                    attacker.defendNextTurn();
+                    controller.displayMessage("\n" + attacker.getName() + " will defend in the next turn.\n");
                     break;
-                case "defensive":
-                    executeDefensiveStrategy(attacker, defendingTeam);
-                    break;
-                case "sniper":
-                    executeSniperStrategy(attacker, defendingTeam);
+                case ATTACK:
+                    Member target;
+                    if (attacker.getStrategy() instanceof SniperStrategy) {
+                        target = selectTargetWithMostDamage(defendingTeam);
+                    } else {
+                        target = selectTarget(defendingTeam);
+                    }
+                    if (target != null) {
+                        performAttack(attacker, target);
+                    }
                     break;
             }
         }

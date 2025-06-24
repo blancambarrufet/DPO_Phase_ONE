@@ -304,7 +304,7 @@ public class UI {
 
         for (Member member : selectedTeam.getMembers()) {
             String newName = String.format("%-" + width + "s", member.getName());
-            System.out.println("\tCharacter #" + (i + 1) + ": " + newName + "(" + member.getStrategy().toUpperCase() + ")");
+            System.out.println("\tCharacter #" + (i + 1) + ": " + newName + "(" + member.getStrategyName().toUpperCase() + ")");
             i++;
         }
     }

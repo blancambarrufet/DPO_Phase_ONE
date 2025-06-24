@@ -1,5 +1,7 @@
 package persistance.json;
 
+import business.CombatStrategy;
+import business.StrategyFactory;
 import business.entities.Character;
 import business.entities.Member;
 import business.entities.MemberPrint;
@@ -85,6 +87,8 @@ public class TeamJsonDAO implements TeamDAO {
         if (teams == null) return new ArrayList<>(); // Ensure it's not null
 
         for (Team team : teams) {
+            List<Member> finalMembers = new ArrayList<>();
+
             for (Member member : team.getMembers()) {
                 if (member.getCharacterId() == 0) continue;
 
@@ -93,10 +97,15 @@ public class TeamJsonDAO implements TeamDAO {
                 }
 
                 Character character = characterJsonDAO.getCharacterById(member.getCharacterId());
-                if (character != null) {
-                    member.setCharacter(character); // Assign character properly
-                }
+                if (character == null) continue;
+
+                CombatStrategy strategy = StrategyFactory.getStrategy(member.getStrategyName());
+
+                //Create a new Member with the strategy
+                Member finalMember = new Member(member.getCharacterId(), character, strategy);
+                finalMembers.add(finalMember);
             }
+            team.setMembers(finalMembers);
         }
         return teams;
     }
@@ -121,7 +130,7 @@ public class TeamJsonDAO implements TeamDAO {
         List<MemberPrint> memberPrints = new ArrayList<>();
 
         for (Member member : team.getMembers()) {
-            memberPrints.add(new MemberPrint(member.getCharacterId(), member.getStrategy()));
+            memberPrints.add(new MemberPrint(member.getCharacterId(), member.getStrategyName()));
         }
 
         return new TeamPrint(team.getName(), memberPrints);
@@ -199,6 +208,13 @@ public class TeamJsonDAO implements TeamDAO {
             Team[] teamsArray = gson.fromJson(reader, Team[].class);
             for (Team team : teamsArray) {
                 if (team.getName().equalsIgnoreCase(name)) {
+                    List<Member> finalMembers = new ArrayList<>();
+                    for (Member member : team.getMembers()) {
+                        Character character = characterJsonDAO.getCharacterById(member.getCharacterId());
+                        CombatStrategy strategy = StrategyFactory.getStrategy(member.getStrategyName());
+                        finalMembers.add(new Member(member.getCharacterId(), character, strategy));
+                    }
+                    team.setMembers(finalMembers);
                     return team;
                 }
             }
