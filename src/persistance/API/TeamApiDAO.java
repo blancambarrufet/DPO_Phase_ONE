@@ -40,10 +40,24 @@ public class TeamApiDAO implements TeamDAO {
             ApiHelper apiHelper = new ApiHelper();
             String json = apiHelper.getFromUrl(BASE_URL);
 
-            return gson.fromJson(
-                    json,
-                    new TypeToken<ArrayList<Team>>() {}.getType()
-            );
+            TeamPrint[] teamPrints = gson.fromJson(json, TeamPrint[].class);
+            CharacterApiDAO characterApiDAO = new CharacterApiDAO();
+            ArrayList<Team> finalTeams = new ArrayList<>();
+
+            for (TeamPrint teamPrint : teamPrints) {
+                List<Member> members = new ArrayList<>();
+                for (MemberPrint m : teamPrint.getMembers()) {
+                    Character character = characterApiDAO.getCharacterById(m.getId());
+                    CombatStrategy strategy = StrategyFactory.createStrategyByName(m.getStrategy());
+                    members.add(new Member(m.getId(), character, strategy));
+                }
+                Team t = new Team(teamPrint.getName());
+                t.setMembers(members);
+                finalTeams.add(t);
+            }
+
+            return finalTeams;
+
         } catch (ApiException e) {
             throw new PersistanceException("Error fetching teams from API", e);
         }
@@ -87,7 +101,7 @@ public class TeamApiDAO implements TeamDAO {
 
             for(Member member : team.getMembers()) {
                 Character character = characterApiDAO.getCharacterById(member.getCharacterId());
-                CombatStrategy strategy = StrategyFactory.getStrategy(member.getStrategyName());
+                CombatStrategy strategy = StrategyFactory.createStrategyByName(member.getStrategyName());
                 finalMembers.add(new Member(member.getCharacterId(), character, strategy));
             }
 
@@ -173,7 +187,7 @@ public class TeamApiDAO implements TeamDAO {
                     continue;
                 }
 
-                CombatStrategy strategy = StrategyFactory.getStrategy(member.getStrategyName());
+                CombatStrategy strategy = StrategyFactory.createStrategyByName(member.getStrategyName());
 
                 Member newMember = new Member(member.getCharacterId(), character, strategy);
                 finalMembers.add(newMember);

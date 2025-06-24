@@ -1,8 +1,6 @@
 package persistance.json;
 
-import business.entities.Item;
-import business.entities.Weapon;
-import business.entities.Armor;
+import business.entities.*;
 import com.google.gson.*;
 import com.google.gson.stream.JsonReader;
 import persistance.ItemDAO;
@@ -73,7 +71,7 @@ public class ItemJsonDAO implements ItemDAO {
      */
     @Override
     public Weapon getRandomWeapon() throws PersistanceException {
-        return (Weapon) getRandomItem("Weapon");
+        return (Weapon) getRandomItem(List.of("Weapon", "Superweapon"));
     }
 
     /**
@@ -84,11 +82,11 @@ public class ItemJsonDAO implements ItemDAO {
      */
     @Override
     public Armor getRandomArmor() throws PersistanceException {
-        return (Armor) getRandomItem("Armor");
+        return (Armor) getRandomItem(List.of("Armor", "Superarmor"));
     }
 
 
-    private Item getRandomItem(String type) {
+    private Item getRandomItem(List<String> types) {
         try (JsonReader reader = new JsonReader(new FileReader(PATH))) {
             reader.beginArray();
             Item selectedItem = null;
@@ -96,13 +94,16 @@ public class ItemJsonDAO implements ItemDAO {
 
             while (reader.hasNext()) {
                 JsonObject jsonObject = JsonParser.parseReader(reader).getAsJsonObject();
-                if (jsonObject.get("class").getAsString().equals(type)) {
+                String itemClass = jsonObject.get("class").getAsString();
+
+                if (types.contains(itemClass)) {
                     count++;
                     if (random.nextInt(count) == 0) {
                         selectedItem = parseItem(jsonObject);
                     }
                 }
             }
+
             reader.endArray();
             return selectedItem;
         } catch (IOException e) {
@@ -118,8 +119,13 @@ public class ItemJsonDAO implements ItemDAO {
         int durability = jsonObject.get("durability").getAsInt();
         String itemType = jsonObject.get("class").getAsString();
 
-        return itemType.equals("Weapon") ? new Weapon(id, name, power, durability)
-                : new Armor(id, name, power, durability);
+        return switch (itemType) {
+            case "Weapon" -> new Weapon(id, name, power, durability);
+            case "Superweapon" -> new SuperWeapon(id, name, power, durability);
+            case "Armor" -> new Armor(id, name, power, durability);
+            case "Superarmor" -> new SuperArmor(id, name, power, durability);
+            default -> throw new PersistanceException("Invalid item type: " + itemType);
+        };
     }
 
     /**

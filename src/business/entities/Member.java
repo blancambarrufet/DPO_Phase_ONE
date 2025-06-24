@@ -236,20 +236,7 @@ public class Member {
         double weaponAttack;
 
         if (weapon != null) {
-            // Check if it's a super-weapon by examining the class name in the item's JSON
-            // We need to determine if this is a super-weapon or regular weapon
-            String weaponClass = weapon.getClass().getSimpleName(); // This will be "Weapon" for both
-            
-            // Since we can't differentiate super-weapons from regular weapons with current structure,
-            // we'll need to check the weapon's properties or add a field to distinguish them
-            // For now, let's assume weapons with power > 50 are super-weapons (this should be improved)
-            if (weapon.getPower() > 50) {
-                // Super-weapon formula: weapon_attack = power_item * weight_attacker
-                weaponAttack = weapon.getPower() * getWeight();
-            } else {
-                // Regular weapon formula
-                weaponAttack = weapon.getAttackPower();
-            }
+            weaponAttack = weapon.getEffectValue(getWeight()); //polymorphism
         } else {
             weaponAttack = 0;
         }
@@ -276,15 +263,7 @@ public class Member {
 
         //calculate the armor value
         if (armor != null) {
-            // Check if it's a super-armor (similar logic as super-weapons)
-            // For now, let's assume armors with power > 50 are super-armors
-            if (armor.getPower() > 50) {
-                // Super-armor formula: armor_value = power_item * weight_defender
-                armorValue = armor.getPower() * getWeight();
-            } else {
-                // Regular armor formula
-                armorValue = armor.getDefenseValue();
-            }
+            armorValue = armor.getEffectValue(getWeight()); //Polymorphism
         } else {
             armorValue = 0;
         }
@@ -306,5 +285,19 @@ public class Member {
 
     public Character getCharacter() {
         return character;
+    }
+
+    public String getWeaponName() {
+        if (weapon != null) {
+            return weapon.getName();
+        }
+        return "no Weapon";
+    }
+
+    public String getArmorName() {
+        if (armor != null) {
+            return  armor.getName();
+        }
+        return "no Armor";
     }
 }

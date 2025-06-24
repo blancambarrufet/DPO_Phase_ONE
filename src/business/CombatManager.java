@@ -150,7 +150,11 @@ public class CombatManager {
             switch (action) {
                 case REQUEST_WEAPON:
                     requestWeapon(attacker);
-                    controller.displayMessage("\n" + attacker.getName() + " picks " + attacker.getWeapon().getName() + " as a random weapon!\n");
+                    if (attacker.getWeapon() != null) {
+                        controller.displayMessage("\n" + attacker.getName() + " picks " + attacker.getWeaponName() + " as a random weapon!\n");
+                    } else {
+                        controller.displayMessage("\n" + attacker.getName() + " couldn't pick a weapon!\n");
+                    }
                     break;
                 case DEFEND:
                     attacker.defendNextTurn();
@@ -168,95 +172,6 @@ public class CombatManager {
                     }
                     break;
             }
-        }
-    }
-
-    private void executeBalancedStrategy(Member attacker, Team defendingTeam) {
-        // Balanced strategy implementation
-        if (attacker.getWeapon() == null) {
-            // If no weapon, request a weapon
-            requestWeapon(attacker);
-            controller.displayMessage("\n" + attacker.getName() + " picks " + attacker.getWeapon().getName() + " as a random weapon!\n");
-        } else {
-            // If has weapon equipped
-            if (attacker.getArmor() != null) {
-                // If has armor equipped and damage between 0.5 and 1.0, defend
-                if (attacker.getDamageTaken() >= 0.5 && attacker.getDamageTaken() <= 1.0) {
-                    attacker.defendNextTurn();
-                    controller.displayMessage("\n" + attacker.getName() + " will defend in the next turn.\n");
-                } else {
-                    // Otherwise, attack
-                    Member defender = selectTarget(defendingTeam);
-                    if (defender != null) {
-                        performAttack(attacker, defender);
-                    }
-                }
-            } else {
-                // If no armor, attack
-                Member defender = selectTarget(defendingTeam);
-                if (defender != null) {
-                    performAttack(attacker, defender);
-                }
-            }
-        }
-    }
-
-    private void executeOffensiveStrategy(Member attacker, Team defendingTeam) {
-        // Offensive strategy implementation
-        if (attacker.getWeapon() == null) {
-            // If no weapon, request a weapon
-            requestWeapon(attacker);
-            controller.displayMessage("\n" + attacker.getName() + " picks " + attacker.getWeapon().getName() + " as a random weapon!\n");
-        }
-        // If has weapon, always attack
-        Member defender = selectTarget(defendingTeam);
-        if (defender != null) {
-            performAttack(attacker, defender);
-        }
-    }
-
-    private void executeDefensiveStrategy(Member attacker, Team defendingTeam) {
-        // Defensive strategy implementation
-        if (attacker.getArmor() != null) {
-            // If has armor equipped
-            if (attacker.getDamageTaken() < 1.0) {
-                // If damage less than 1.0, defend
-                attacker.defendNextTurn();
-                controller.displayMessage("\n" + attacker.getName() + " will defend in the next turn.\n");
-            } else {
-                // Otherwise, attack (but check for weapon first)
-                if (attacker.getWeapon() == null) {
-                    requestWeapon(attacker);
-                    controller.displayMessage("\n" + attacker.getName() + " picks " + attacker.getWeapon().getName() + " as a random weapon!\n");
-                }
-                Member defender = selectTarget(defendingTeam);
-                if (defender != null) {
-                    performAttack(attacker, defender);
-                }
-            }
-        } else {
-            // If no armor, attack (but check for weapon first)
-            if (attacker.getWeapon() == null) {
-                requestWeapon(attacker);
-                controller.displayMessage("\n" + attacker.getName() + " picks " + attacker.getWeapon().getName() + " as a random weapon!\n");
-            }
-            Member defender = selectTarget(defendingTeam);
-            if (defender != null) {
-                performAttack(attacker, defender);
-            }
-        }
-    }
-
-    private void executeSniperStrategy(Member attacker, Team defendingTeam) {
-        // Sniper strategy implementation
-        // Always attack the rival character with the most accumulated damage
-        if (attacker.getWeapon() == null) {
-            requestWeapon(attacker);
-            controller.displayMessage("\n" + attacker.getName() + " picks " + attacker.getWeapon().getName() + " as a random weapon!\n");
-        }
-        Member defender = selectTargetWithMostDamage(defendingTeam);
-        if (defender != null) {
-            performAttack(attacker, defender);
         }
     }
 
@@ -303,17 +218,14 @@ public class CombatManager {
 
 
     private void performAttack(Member attacker, Member defender) {
-        // Safety check - ensure attacker has a weapon
-        if (attacker.getWeapon() == null) {
-            controller.displayMessage("Error: " + attacker.getName() + " tried to attack without a weapon!");
-            return;
-        }
-
         // Calculate attack and defense values
         double attackDamage = attacker.calculateAttack();
         double finalDamage = defender.calculateFinalDamage(attackDamage);
 
-        controller.displayExecutionTurn(attacker.getName(), attackDamage, attacker.getWeapon().getName(),finalDamage, defender.getName());
+        String weaponName = attacker.getWeapon() != null ? attacker.getWeaponName() : "no Weapon (Bare hands)";
+
+
+        controller.displayExecutionTurn(attacker.getName(), attackDamage, weaponName,finalDamage, defender.getName());
 
         //Store the damage
         defender.accumulateDamage(finalDamage);
@@ -324,24 +236,26 @@ public class CombatManager {
 
     private void degradeEquipment(Member attacker, Member defender) {
         //Reduce attacker's weapon durability
-        if (attacker.getWeapon() != null) {
+        Weapon weapon = attacker.getWeapon();
+        Armor armor = defender.getArmor();
+        if (weapon != null) {
 
             //reduce the durability by 1 because it has been used
-            attacker.getWeapon().reduceDurability();
+            weapon.reduceDurability();
 
-            if (attacker.getWeapon().isBroken()) {
-                controller.displayItemDurabilityBreak(attacker.getName(), attacker.getWeapon().getName());
+            if (weapon.isBroken()) {
+                controller.displayItemDurabilityBreak(attacker.getName(), attacker.getWeaponName());
                 attacker.equipWeapon(null); // Remove broken weapon
             }
         }
 
         //Reduce defender's armor durability
-        if (defender.getArmor() != null) {
+        if (armor != null) {
             //reduce the durability of the armor by 1
-            defender.getArmor().reduceDurability();
+            armor.reduceDurability();
 
-            if (defender.getArmor().isBroken()) {
-                controller.displayItemDurabilityBreak(defender.getName(), defender.getArmor().getName());
+            if (armor.isBroken()) {
+                controller.displayItemDurabilityBreak(defender.getName(), defender.getArmorName());
                 defender.equipArmor(null); // Remove broken armor
             }
         }
