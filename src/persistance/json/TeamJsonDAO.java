@@ -218,24 +218,25 @@ public class TeamJsonDAO implements TeamDAO {
      */
     @Override
     public Team getTeamByName(String name) throws PersistanceException {
-        try (JsonReader reader = new JsonReader(new FileReader(PATH))) {
-            Team[] teamsArray = gson.fromJson(reader, Team[].class);
-            for (Team team : teamsArray) {
-                if (team.getName().equalsIgnoreCase(name)) {
-                    List<Member> finalMembers = new ArrayList<>();
-                    for (Member member : team.getMembers()) {
-                        Character character = characterJsonDAO.getCharacterById(member.getCharacterId());
-                        CombatStrategy strategy = StrategyFactory.createStrategyByName(member.getStrategyName());
-                        finalMembers.add(new Member(member.getCharacterId(), character, strategy));
-                    }
-                    team.setMembers(finalMembers);
-                    return team;
+        List<TeamPrint> teams = loadTeamsPrint();
+
+        for (TeamPrint teamPrint : teams) {
+            if (teamPrint.getName().equalsIgnoreCase(name)) {
+                List<Member> finalMembers = new ArrayList<>();
+
+                for (MemberPrint memberPrint : teamPrint.getMembers()) {
+                    Character character = characterJsonDAO.getCharacterById(memberPrint.getId());
+                    CombatStrategy strategy = StrategyFactory.createStrategyByName(memberPrint.getStrategy());
+                    finalMembers.add(new Member(memberPrint.getId(), character, strategy));
                 }
+
+                Team team = new Team(teamPrint.getName());
+                team.setMembers(finalMembers);
+                return team;
             }
-            return null;
-        } catch (IOException | JsonSyntaxException e) {
-            throw new PersistanceException("Couldn't read teams file: " + PATH, e);
         }
+
+        return null;
     }
 
     /**
@@ -249,19 +250,18 @@ public class TeamJsonDAO implements TeamDAO {
     public List<String> getTeamsNamesWithCharacter(long characterId) throws PersistanceException {
         List<String> teamNames = new ArrayList<>();
 
-        try (JsonReader reader = new JsonReader(new FileReader(PATH))) {
-            Team[] teamsArray = gson.fromJson(reader, Team[].class);
-            if (teamsArray == null) return teamNames;
-
-            for (Team team : teamsArray) {
-                for (Member member : team.getMembers()) {
-                    if (member.getCharacterId() == characterId) {
-                        teamNames.add(team.getName());
+        try {
+            List<TeamPrint> teamPrints = loadTeamsPrint();  // ✅ Usa la versión segura
+            for (TeamPrint teamPrint : teamPrints) {
+                for (MemberPrint member : teamPrint.getMembers()) {
+                    if (member.getId() == characterId) {
+                        teamNames.add(teamPrint.getName());
                         break;
                     }
                 }
             }
-        } catch (IOException | JsonSyntaxException e) {
+
+        } catch (Exception e) {
             throw new PersistanceException("Error loading teams from " + PATH + ": " + e.getMessage(), e);
         }
 

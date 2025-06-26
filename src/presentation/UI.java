@@ -12,7 +12,6 @@ import java.util.Scanner;
  * This class is responsible for displaying menus, retrieving user input,
  * and showing relevant information such as character details, team management,
  * combat simulation, and game statistics.
- *
  * Key functionalities include:
  * - Displaying and handling the main menu.
  * - Managing teams (creating, listing, and deleting).
@@ -20,7 +19,6 @@ import java.util.Scanner;
  * - Listing items and showing item details.
  * - Simulating combat between teams.
  * - Displaying team and combat statistics.
- *
  * This class interacts with the user via the console and ensures that
  * valid input is collected before proceeding with game operations.
  */
@@ -29,7 +27,7 @@ import java.util.Scanner;
 
 public class UI {
 
-    private Scanner scanner = new Scanner(System.in);
+    private final Scanner scanner = new Scanner(System.in);
 
     //*************************************************
     //************ General functionalities ************
@@ -90,7 +88,7 @@ public class UI {
      * @return MainMenu The selected option mapped to an enumeration value.
      */
     public MainMenu printMainMenu() {
-        int option = 0 ;
+        int option;
         do {
             System.out.println("\t1) List Characters");
             System.out.println("\t2) Manage Teams");
@@ -105,28 +103,24 @@ public class UI {
             select = scanner.nextLine();
             option = Integer.parseInt(select);
 
-            try {
-                switch (option) {
-                    case 1:
-                        return MainMenu.LIST_CHARACTERS;
-                    case 2:
-                        return MainMenu.MANAGE_TEAMS;
-                    case 3:
-                        return MainMenu.LIST_ITEMS;
-                    case 4:
-                        return MainMenu.SIMULATE_COMBAT;
-                    case 5:
-                        return MainMenu.EXIT;
-                    default:
-                        System.out.println("(ERROR) The option is not a valid.");
-                }
-            } catch (NumberFormatException e) {
-                System.out.println("(ERROR) Invalid input. Please enter a number.");
+
+            switch (option) {
+                case 1:
+                    return MainMenu.LIST_CHARACTERS;
+                case 2:
+                    return MainMenu.MANAGE_TEAMS;
+                case 3:
+                    return MainMenu.LIST_ITEMS;
+                case 4:
+                    return MainMenu.SIMULATE_COMBAT;
+                case 5:
+                    return MainMenu.EXIT;
+                default:
+                    System.out.println("(ERROR) The option is not a valid.");
             }
 
-        } while (option != 5);
+        } while (true);
 
-        return null;
     }
 
     /**
@@ -170,7 +164,7 @@ public class UI {
      * @return TeamManagementMenu The selected option mapped to an enumeration value.
      */
     public TeamManagementMenu printTeamMenu() {
-        int option = 0;
+        int option;
         do {
             System.out.println("\nTeam management.");
             System.out.println("\t1) Create a Team");
@@ -181,24 +175,22 @@ public class UI {
 
             option = inputScanner(1, 4, "Team Management");
 
-            try {
-                switch (option) {
-                    case 1:
-                        return TeamManagementMenu.CREATE_TEAM;
-                    case 2:
-                        return TeamManagementMenu.LIST_TEAM;
-                    case 3:
-                        return TeamManagementMenu.DELETE_TEAM;
-                    case 4:
-                        return TeamManagementMenu.BACK;
-                    default:
-                        System.out.println("(ERROR) Invalid option.");
-                }
-            } catch (NumberFormatException e) {
-                System.out.println("(ERROR) Invalid input. Please enter a number.");
+
+            switch (option) {
+                case 1:
+                    return TeamManagementMenu.CREATE_TEAM;
+                case 2:
+                    return TeamManagementMenu.LIST_TEAM;
+                case 3:
+                    return TeamManagementMenu.DELETE_TEAM;
+                case 4:
+                    return TeamManagementMenu.BACK;
+                default:
+                    System.out.println("(ERROR) Invalid option.");
             }
-        } while (option != 4);
-        return null;
+
+        } while (true);
+
     }
 
     /**
@@ -259,26 +251,6 @@ public class UI {
     }
 
 
-
-    private int requestTeamOption(int maxSize) {
-        int option;
-
-        do {
-            System.out.print("\nChoose an option: ");
-            option = Integer.parseInt(scanner.nextLine());
-
-            if (option >= 0 && option <= maxSize) {
-                return option;
-            }
-            else {
-                System.out.println("(ERROR) Invalid option. Please select a valid number.");
-            }
-
-        } while (option <= maxSize && option >= 0);
-
-        return 0;
-    }
-
     /**
      * Displays an error message if a team name is not found in the system.
      *
@@ -291,19 +263,13 @@ public class UI {
     /**
      * Displays the details of a selected team, including its members and their strategies.
      *
-     * @param selectedTeam The team whose details are to be displayed.
+     * @param lines The formatted lines with the team name and member details.
      */
-    public void displayTeamDetails(Team selectedTeam) {
-        System.out.println("\n\tTeam name: " + selectedTeam.getName() + "\n");
-
-        int i = 0;
-        int width = 30;
-
-        for (Member member : selectedTeam.getMembers()) {
-            String newName = String.format("%-" + width + "s", member.getName());
-            System.out.println("\tCharacter #" + (i + 1) + ": " + newName + "(" + member.getStrategyName().toUpperCase() + ")");
-            i++;
+    public void displayTeamDetails(List<String> lines) {
+        for (String line : lines) {
+            System.out.println(line);
         }
+
     }
 
     /**
@@ -350,7 +316,7 @@ public class UI {
             }
             System.out.println("\n\t0) Back");
 
-            return requestTeamOption(teams.size());
+            return requestOption(teams.size());
         }
 
     }
@@ -360,29 +326,29 @@ public class UI {
     //*************************************************
 
     /**
-     * Requests the user to select a character option from the list.
+     * Requests the user to select an option from the list.
      * Ensures that the selected option is within the valid range.
      *
      * @param optionThreshold The maximum valid option number.
      * @return int The validated user-selected option.
      */
-    public int requestCharacterOption(int optionThreshold) {
+    public int requestOption(int optionThreshold) {
         int option;
 
-        do {
+        while (true) {
             System.out.print("\nChoose an option: ");
-            option = Integer.parseInt(scanner.nextLine());
+            try {
+                option = Integer.parseInt(scanner.nextLine());
 
-            if (option >= 0 && option <= optionThreshold) {
-                return option;
+                if (option >= 0 && option <= optionThreshold) {
+                    return option;
+                } else {
+                    System.out.println("(ERROR) Invalid option. Please select a number between 0 and " + optionThreshold + ".");
+                }
+            } catch (NumberFormatException e) {
+                System.out.println("(ERROR) Please enter a valid number.");
             }
-            else {
-                System.out.println("(ERROR) Invalid option. Please select a valid number.");
-            }
-
-        } while (option <= optionThreshold && option >= 0);
-
-        return 0;
+        }
     }
 
     /**
@@ -403,7 +369,7 @@ public class UI {
                 System.out.println("\n0) Back");
 
                 // Ask the user to select an option
-                return requestCharacterOption(characters.size());
+                return requestOption(characters.size());
             }
         }
 
@@ -421,7 +387,7 @@ public class UI {
             // Display teams
             System.out.println("\tTEAMS:");
 
-            int exist=0;
+
             if (teams.isEmpty()) {
                 System.out.println("\t\tNo teams related.");
             } else {
@@ -440,32 +406,6 @@ public class UI {
     //*************************************************
 
     /**
-     * Requests the user to select an item option from the list.
-     * Ensures that the selected option is within the valid range.
-     *
-     * @param optionThreshold The maximum valid option number.
-     * @return int The validated user-selected option.
-     */
-    public int requestItemOption(int optionThreshold) {
-        int option;
-
-        do {
-            System.out.print("\nChoose an option: ");
-            option = Integer.parseInt(scanner.nextLine());
-
-            if (option >= 0 && option <= optionThreshold) {
-                return option;
-            }
-            else {
-                System.out.println("(ERROR) Invalid option. Please select a valid number.");
-            }
-
-        } while (option <= optionThreshold && option >= 0);
-
-        return 0;
-    }
-
-    /**
      * Displays a list of available items and prompts the user to select one.
      *
      * @param items A list of item names.
@@ -481,7 +421,7 @@ public class UI {
             }
             System.out.println("\n0) Back");
 
-            return requestItemOption(items.size());
+            return requestOption(items.size());
         }
     }
 
@@ -582,22 +522,11 @@ public class UI {
     /**
      * Displays team stats during combat, including character damage taken and equipment.
      *
-     * @param team The team whose stats are displayed.
-     * @param teamNumber The number assigned to the team.
+     * @param lines The team whose stats are displayed.
      */
-    public void displayTeamStats(Team team, int teamNumber) {
-        System.out.println("Team #" + teamNumber + " - " + team.getName());
-
-        for (Member member : team.getMembers()) {
-            // Check if the weapon is null before calling getName()
-            String status = member.isKO() ? "KO" : Math.round(member.getDamageTaken() * 100) + " %";
-
-            String weaponName = member.getWeaponName();
-            // Check if the armor is null before calling getName()
-            String armorName = member.getArmorName();
-
-
-            System.out.println("\t- " + member.getName() + " (" + status + ") " + weaponName + " - " + armorName);
+    public void displayTeamStats(List<String> lines) {
+        for (String line : lines) {
+            System.out.println(line);
         }
         System.out.println();
     }

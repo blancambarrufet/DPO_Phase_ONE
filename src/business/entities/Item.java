@@ -17,8 +17,8 @@ public abstract class Item {
     //durability of the item
     private int durability;
 
-    //type of th item (armor or weapon)
-    private String type;
+
+
 
     /**
      * Constructor of the item with the specific attributes

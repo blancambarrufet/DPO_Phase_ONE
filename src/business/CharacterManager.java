@@ -40,8 +40,7 @@ public class CharacterManager {
         try {
             // Try to load a small amount of data to validate connectivity
             List<String> names = characterDAO.getCharactersByNames();
-            boolean valid = names != null && !names.isEmpty();
-            return valid;
+            return names != null && !names.isEmpty();
         } catch (PersistanceException e) {
             return false;
         }
@@ -76,6 +75,6 @@ public class CharacterManager {
      * @throws PersistanceException If an error occurs during retrieval.
      */
     public Character findCharacterByIndex(int index) throws PersistanceException {
-        return characterDAO.findCharacterByIndex(index-1);
+        return characterDAO.findCharacterByIndex(index);
     }
 }

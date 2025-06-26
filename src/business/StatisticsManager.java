@@ -98,11 +98,13 @@ public class StatisticsManager {
 
     public void createNewStats(String name, boolean add) throws PersistanceException {
         List<Statistics> statistics = statisticsDAO.loadStatistics();
+
+        statistics.removeIf(stat -> stat.getName().equalsIgnoreCase(name));
+
         if (add) {
             statistics.add(new Statistics(name));
-        } else {
-            statistics.removeIf(stat -> stat.getName().equalsIgnoreCase(name));
         }
+
         statisticsDAO.saveStatistics(statistics);
     }
 }
