@@ -27,7 +27,7 @@ import java.util.Scanner;
 
 public class UI {
 
-    private Scanner scanner = new Scanner(System.in);
+    private final Scanner scanner = new Scanner(System.in);
 
     //*************************************************
     //************ General functionalities ************

@@ -10,14 +10,13 @@ import persistance.ItemDAO;
 import persistance.exceptions.PersistanceException;
 
 import java.lang.reflect.Type;
-import java.net.http.HttpClient;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
 public class ItemApiDAO implements ItemDAO {
     private static final String BASE_URL = "https://balandrau.salle.url.edu/dpoo/shared/items";
-    private static final HttpClient client = HttpClient.newHttpClient();
+
     private final Gson gson;
     private final Random random = new Random();
 
@@ -147,7 +146,7 @@ public class ItemApiDAO implements ItemDAO {
                 if (json.trim().startsWith("[")) {
                     // API returned an array
                     List<Item> items = gson.fromJson(json, new TypeToken<List<Item>>() {}.getType());
-                    return items.isEmpty() ? null : items.get(0);
+                    return items.isEmpty() ? null : items.getFirst();
                 } else {
                     // API returned a single object
                     return gson.fromJson(json, Item.class);

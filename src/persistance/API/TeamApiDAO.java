@@ -88,7 +88,7 @@ public class TeamApiDAO implements TeamDAO {
             if (json.trim().startsWith("[")) {
                 List<TeamPrint> teamPrints = gson.fromJson(json, new TypeToken<List<TeamPrint>>() {}.getType());
                 if (teamPrints.isEmpty()) return null;
-                teamPrint = teamPrints.get(0);
+                teamPrint = teamPrints.getFirst();
             } else {
                 teamPrint = gson.fromJson(json, TeamPrint.class);
             }

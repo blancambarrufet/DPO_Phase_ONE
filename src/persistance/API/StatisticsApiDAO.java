@@ -8,12 +8,10 @@ import edu.salle.url.api.exception.ApiException;
 import persistance.StatisticsDAO;
 import persistance.exceptions.PersistanceException;
 
-import java.net.http.HttpClient;
 import java.util.*;
 
 public class StatisticsApiDAO implements StatisticsDAO {
     private static final String BASE_URL = "https://balandrau.salle.url.edu/dpoo/S1-Project-13/stats";
-    private static final HttpClient client = HttpClient.newHttpClient();
     private final Gson gson = new Gson();
 
     @Override

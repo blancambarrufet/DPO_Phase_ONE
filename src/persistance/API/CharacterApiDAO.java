@@ -9,12 +9,10 @@ import edu.salle.url.api.exception.status.IncorrectRequestException;
 import persistance.CharacterDAO;
 import persistance.exceptions.PersistanceException;
 
-import java.net.http.HttpClient;
 import java.util.List;
 
 public class CharacterApiDAO implements CharacterDAO {
     private static final String BASE_URL = "https://balandrau.salle.url.edu/dpoo/shared/characters";
-    private static final HttpClient client = HttpClient.newHttpClient();
     private final Gson gson = new Gson();
 
     @Override
@@ -36,6 +34,9 @@ public class CharacterApiDAO implements CharacterDAO {
         try {
             ApiHelper apiHelper = new ApiHelper();
             String check = apiHelper.getFromUrl(BASE_URL);
+            if (check == null || check.isBlank()) {
+                throw new PersistanceException("API is reachable but returned an empty response.");
+            }
         } catch (ApiException e){
             throw new PersistanceException(e.getMessage());
         }
@@ -66,7 +67,7 @@ public class CharacterApiDAO implements CharacterDAO {
             if (json.trim().startsWith("[")) {
                 // API returned an array
                 List<Character> characters = gson.fromJson(json, new TypeToken<List<Character>>() {}.getType());
-                return characters.isEmpty() ? null : characters.get(0);
+                return characters.isEmpty() ? null : characters.getFirst();
             } else {
                 // API returned a single object
                 return gson.fromJson(json, Character.class);
@@ -107,7 +108,7 @@ public class CharacterApiDAO implements CharacterDAO {
             if (json.trim().startsWith("[")) {
                 // API returned an array
                 List<Character> characters = gson.fromJson(json, new TypeToken<List<Character>>() {}.getType());
-                return characters.isEmpty() ? null : characters.get(0);
+                return characters.isEmpty() ? null : characters.getFirst();
             } else {
                 // API returned a single object
                 return gson.fromJson(json, Character.class);

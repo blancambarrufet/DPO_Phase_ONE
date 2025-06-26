@@ -9,7 +9,7 @@ import java.util.List;
  */
 public class Team {
     //the name of the Team
-    private String name;
+    private final String name;
 
     //a list of members that composes a team
     private final List<Member> members;

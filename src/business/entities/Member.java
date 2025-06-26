@@ -117,10 +117,9 @@ public class Member {
      * Sets the KO status of the member.
      *
      * @param status The KO status to set (true or false)
-     * @return The updated KO status
      */
-    public boolean setKO(boolean status) {
-        return isKO = status;
+    public void setKO(boolean status) {
+        isKO = status;
     }
 
     /**
