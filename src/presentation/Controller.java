@@ -5,6 +5,7 @@ import business.entities.*;
 import business.entities.Character;
 import persistance.exceptions.PersistanceException;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -88,30 +89,30 @@ public class Controller {
 
         try {
             charactersOk = characterManager.validatePersistenceSource();
-            System.out.println("DEBUG: charactersOk is : " + charactersOk);
+            displayMessage("DEBUG: charactersOk is : " + charactersOk);
         } catch (Exception e) {
-            System.out.println("DEBUG: charactersOk EXCEPTION: " + e.getMessage());
+            displayMessage("DEBUG: charactersOk EXCEPTION: " + e.getMessage());
         }
 
         try {
             itemsOk = itemManager.validatePersistenceSource();
-            System.out.println("DEBUG: itemsOk is : " + itemsOk);
+            displayMessage("DEBUG: itemsOk is : " + itemsOk);
         } catch (Exception e) {
-            System.out.println("DEBUG: itemsOk EXCEPTION: " + e.getMessage());
+            displayMessage("DEBUG: itemsOk EXCEPTION: " + e.getMessage());
         }
 
         try {
             teamsOk = teamManager.validatePersistence();
-            System.out.println("DEBUG: teamsOk is : " + teamsOk);
+            displayMessage("DEBUG: teamsOk is : " + teamsOk);
         } catch (Exception e) {
-            System.out.println("DEBUG: teamsOk EXCEPTION: " + e.getMessage());
+            displayMessage("DEBUG: teamsOk EXCEPTION: " + e.getMessage());
         }
 
         try {
             statsOk = statisticsManager.validatePersistance();
-            System.out.println("DEBUG: statsOk is : " + statsOk);
+            displayMessage("DEBUG: statsOk is : " + statsOk);
         } catch (Exception e) {
-            System.out.println("DEBUG: statsOk EXCEPTION: " + e.getMessage());
+            displayMessage("DEBUG: statsOk EXCEPTION: " + e.getMessage());
         }
 
         ui.displayValidatePersistence(charactersOk, itemsOk, teamsOk, statsOk);
@@ -165,6 +166,7 @@ public class Controller {
 
             //create team statistics
             statisticsManager.createNewStats(teamName, true);
+            displayMessage("Created new team " + teamName + " successfully!");
         } catch (PersistanceException e) {
             displayMessage("Error creating team: " + e.getMessage());
         }
@@ -202,7 +204,8 @@ public class Controller {
 
             Team selectedTeam = teamManager.findTeamByIndex(selectedOption);
 
-            ui.displayTeamDetails(selectedTeam);
+            List<String> teamDetails = formatTeamDetails(selectedTeam);
+            ui.displayTeamDetails(teamDetails);
 
             Statistics statistics = statisticsManager.getStaticByName(selectedTeam.getName());
 
@@ -211,6 +214,23 @@ public class Controller {
             displayMessage("Error retrieving teams: " + e.getMessage());
         }
     }
+
+    private List<String> formatTeamDetails(Team team) {
+        List<String> lines = new ArrayList<>();
+        lines.add("\n\tTeam name: " + team.getName() + "\n");
+
+        int i = 1;
+        int width = 30;
+
+        for (Member member : team.getMembers()) {
+            String paddedName = String.format("%-" + width + "s", member.getName());
+            lines.add("\tCharacter #" + i + ": " + paddedName + "(" + member.getStrategyName().toUpperCase() + ")");
+            i++;
+        }
+
+        return lines;
+    }
+
 
     private void deleteTeam() {
         try {
@@ -349,7 +369,28 @@ public class Controller {
      * @param teamNumber The number assigned to the team (e.g., Team #1, Team #2).
      */
     public void displayTeamStats(Team team, int teamNumber) {
-        ui.displayTeamStats(team, teamNumber);
+        List<String> lines = formatTeamStats(team, teamNumber);
+        ui.displayTeamStats(lines);
+    }
+
+    /**
+     * Converts a team's combat data into formatted display lines.
+     *
+     * @param team The team that it will display and to be formatted to lines
+     * @param teamNumber Number assigned to the team
+     */
+    private List<String> formatTeamStats(Team team, int teamNumber) {
+        List<String> lines = new ArrayList<>();
+        lines.add("Team #" + teamNumber + " - " + team.getName());
+
+        for (Member member : team.getMembers())  {
+            String status = member.isKO() ? "KO" : Math.round(member.getDamageTaken() * 100) + " %";
+            String weapon = member.getWeaponName();  // Handles nulls inside Member class if needed
+            String armor = member.getArmorName();
+            lines.add("\t- " + member.getName() + " (" + status + ") " + weapon + " - " + armor);
+        }
+
+        return lines;
     }
 
     /**

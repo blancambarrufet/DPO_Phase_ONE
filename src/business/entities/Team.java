@@ -33,14 +33,6 @@ public class Team {
         return name;
     }
 
-    /**
-     * Sets the name of the team.
-     *
-     * @param name The new name of the team.
-     */
-    public void setName(String name) {
-        this.name = name;
-    }
 
     /**
      * Get a list of team members.

@@ -2,14 +2,14 @@ package persistance.API;
 
 import business.entities.Statistics;
 import com.google.gson.Gson;
+import com.google.gson.JsonElement;
 import edu.salle.url.api.ApiHelper;
 import edu.salle.url.api.exception.ApiException;
 import persistance.StatisticsDAO;
 import persistance.exceptions.PersistanceException;
 
 import java.net.http.HttpClient;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class StatisticsApiDAO implements StatisticsDAO {
     private static final String BASE_URL = "https://balandrau.salle.url.edu/dpoo/S1-Project-13/stats";
@@ -22,43 +22,39 @@ public class StatisticsApiDAO implements StatisticsDAO {
             ApiHelper apiHelper = new ApiHelper();
             String json = apiHelper.getFromUrl(BASE_URL);
 
-            // Check if JSON is empty or null
             if (json == null || json.trim().isEmpty()) {
                 System.err.println("Warning: Empty response from statistics API");
                 return new ArrayList<>();
             }
 
-            // Custom parsing to handle nested array structure
-            // Since API appends all saves, we need to get the LATEST occurrence of each team
-            ArrayList<Statistics> allStats = new ArrayList<>();
-            try {
-                // First try to parse as a regular array of Statistics
-                com.google.gson.JsonArray jsonArray = gson.fromJson(json, com.google.gson.JsonArray.class);
-                
-                for (com.google.gson.JsonElement element : jsonArray) {
-                    if (element.isJsonObject()) {
-                        // Direct Statistics object
-                        Statistics stat = gson.fromJson(element, Statistics.class);
-                        updateOrAddStatistics(allStats, stat);
-                    } else if (element.isJsonArray()) {
-                        // Nested array of Statistics
-                        com.google.gson.JsonArray nestedArray = element.getAsJsonArray();
-                        for (com.google.gson.JsonElement nestedElement : nestedArray) {
-                            if (nestedElement.isJsonObject()) {
-                                Statistics stat = gson.fromJson(nestedElement, Statistics.class);
-                                updateOrAddStatistics(allStats, stat);
-                            }
-                        }
-                    }
-                }
-                return allStats;
-            } catch (com.google.gson.JsonSyntaxException e) {
-                System.err.println("Warning: Malformed statistics JSON from API: " + e.getMessage());
+            // Parse the root JSON array (which contains multiple snapshots)
+            com.google.gson.JsonArray rootArray = gson.fromJson(json, com.google.gson.JsonArray.class);
+
+            if (rootArray.size() == 0) {
                 return new ArrayList<>();
             }
 
+            // Get the LAST snapshot (the latest one)
+            JsonElement lastSnapshot = rootArray.get(rootArray.size() - 1);
+            ArrayList<Statistics> result = new ArrayList<>();
+
+            if (lastSnapshot.isJsonArray()) {
+                for (JsonElement element : lastSnapshot.getAsJsonArray()) {
+                    if (element.isJsonObject()) {
+                        Statistics stat = gson.fromJson(element, Statistics.class);
+                        result.add(stat);
+                    }
+                }
+            } else {
+                System.err.println("Warning: Last snapshot is not a JSON array");
+            }
+
+            return result;
+
         } catch (ApiException e) {
             throw new PersistanceException("Error fetching statistics from API", e);
+        } catch (com.google.gson.JsonSyntaxException e) {
+            throw new PersistanceException("Malformed JSON while loading statistics", e);
         }
     }
 
@@ -98,13 +94,22 @@ public class StatisticsApiDAO implements StatisticsDAO {
     public void saveStatistics(List<Statistics> statistics) throws PersistanceException {
         try {
             ApiHelper apiHelper = new ApiHelper();
+
+            // Step 1: Delete the only snapshot (index 0), if it exists
+            try {
+                apiHelper.deleteFromUrl(BASE_URL + "/0");
+            } catch (ApiException e) {
+                System.err.println("Warning: Could not delete existing statistics snapshot: " + e.getMessage());
+                // You may ignore this if it's a 404 (nothing to delete)
+            }
+
+            // Step 2: Post the new statistics snapshot
             String jsonBody = gson.toJson(statistics);
-            String response = apiHelper.postToUrl(BASE_URL, jsonBody);
+            apiHelper.postToUrl(BASE_URL, jsonBody);
         } catch (ApiException e) {
             throw new PersistanceException("Error saving statistics to API: " + e.getMessage(), e);
         }
     }
-
 
 
 }

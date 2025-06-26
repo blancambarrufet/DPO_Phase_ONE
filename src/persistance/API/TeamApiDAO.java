@@ -83,28 +83,27 @@ public class TeamApiDAO implements TeamDAO {
             ApiHelper apiHelper = new ApiHelper();
 
             String json = apiHelper.getFromUrl(BASE_URL + "?name=" + name);
-            Team team;
-
-            // Handle both array and single object responses
+            TeamPrint teamPrint;
+            // Parse JSON response
             if (json.trim().startsWith("[")) {
-                // API returned an array
-                List<Team> teams = gson.fromJson(json, new TypeToken<List<Team>>() {}.getType());
-                if (teams.isEmpty()) return null;
-                team = teams.get(0);
+                List<TeamPrint> teamPrints = gson.fromJson(json, new TypeToken<List<TeamPrint>>() {}.getType());
+                if (teamPrints.isEmpty()) return null;
+                teamPrint = teamPrints.get(0);
             } else {
-                // API returned a single object
-                team = gson.fromJson(json, Team.class);
+                teamPrint = gson.fromJson(json, TeamPrint.class);
             }
 
+            // Convert to Team object with characters and strategies
             CharacterApiDAO characterApiDAO = new CharacterApiDAO();
             List<Member> finalMembers = new ArrayList<>();
 
-            for(Member member : team.getMembers()) {
-                Character character = characterApiDAO.getCharacterById(member.getCharacterId());
-                CombatStrategy strategy = StrategyFactory.createStrategyByName(member.getStrategyName());
-                finalMembers.add(new Member(member.getCharacterId(), character, strategy));
+            for (MemberPrint memberPrint : teamPrint.getMembers()) {
+                Character character = characterApiDAO.getCharacterById(memberPrint.getId());
+                CombatStrategy strategy = StrategyFactory.createStrategyByName(memberPrint.getStrategy());
+                finalMembers.add(new Member(memberPrint.getId(), character, strategy));
             }
 
+            Team team = new Team(teamPrint.getName());
             team.setMembers(finalMembers);
             return team;
 

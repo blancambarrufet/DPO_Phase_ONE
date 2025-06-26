@@ -147,7 +147,7 @@ public class CharacterApiDAO implements CharacterDAO {
         try {
             ApiHelper apiHelper = new ApiHelper();
 
-            String url = BASE_URL + "/" + index;
+            String url = BASE_URL + "/" + (index - 1);
 
             String json = apiHelper.getFromUrl(url);
 
