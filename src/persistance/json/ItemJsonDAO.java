@@ -34,36 +34,6 @@ public class ItemJsonDAO implements ItemDAO {
     }
 
     /**
-     * Validates the existence and structure of the items JSON file.
-     * Ensures all items have a valid "class" field specifying whether they are weapons or armor.
-     *
-     * @return boolean True if the file exists and contains valid data; otherwise, false.
-     */
-    @Override
-    public boolean validateFile() {
-        try {
-            if (!Files.exists(Path.of(PATH))) {
-                return false; // File does not exist
-            }
-
-            JsonArray jsonArray = JsonParser.parseReader(new FileReader(PATH)).getAsJsonArray();
-
-            // Ensure all items have a valid "class" field
-            for (JsonElement element : jsonArray) {
-                JsonObject jsonObject = element.getAsJsonObject();
-                if (!jsonObject.has("class") || (!jsonObject.get("class").getAsString().equals("Weapon") &&
-                        !jsonObject.get("class").getAsString().equals("Armor"))) {
-                    return false; // Invalid class field
-                }
-            }
-
-            return true; // File is valid
-        } catch (JsonSyntaxException | IOException e) {
-            return false; // Invalid file structure
-        }
-    }
-
-    /**
      * Retrieves a random weapon from the JSON file.
      *
      * @return Weapon A randomly selected weapon object.

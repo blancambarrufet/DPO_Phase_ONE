@@ -18,12 +18,6 @@ public interface CharacterDAO {
      */
     List<Character> loadAllCharacters() throws PersistanceException;
 
-    /**
-     * Validates the existence and structure of the character data file.
-     *
-     * @return boolean True if the file is valid and accessible, otherwise false.
-     */
-    boolean validateFile();
 
     /**
      * Retrieves a character by its unique ID.
