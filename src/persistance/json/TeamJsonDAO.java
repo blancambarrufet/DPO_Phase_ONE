@@ -1,5 +1,7 @@
 package persistance.json;
 
+import business.CombatStrategy;
+import business.StrategyFactory;
 import business.entities.Character;
 import business.entities.Member;
 import business.entities.MemberPrint;
@@ -25,7 +27,7 @@ public class TeamJsonDAO implements TeamDAO {
 
     private static final String PATH = "data/teams.json";
     private final Gson gson;
-    CharacterJsonDAO characterJsonDAO;
+    private CharacterJsonDAO characterJsonDAO;
 
     /**
      * Constructor for TeamJsonDAO.
@@ -70,8 +72,22 @@ public class TeamJsonDAO implements TeamDAO {
 
         //loading existing teams
         try (JsonReader reader = new JsonReader(new FileReader(PATH))) {
-            Team[] teamsArray = gson.fromJson(reader, Team[].class);
-            return new ArrayList<>(Arrays.asList(teamsArray)); // Convert array to ArrayList
+            TeamPrint[] teamPrints = gson.fromJson(reader, TeamPrint[].class);
+            ArrayList<Team> fullTeams = new ArrayList<>();
+
+            for (TeamPrint teamPrint : teamPrints) {
+                List<Member> members = new ArrayList<>();
+                for (MemberPrint m : teamPrint.getMembers()) {
+                    Character c = characterJsonDAO.getCharacterById(m.getId());
+                    CombatStrategy strategy = StrategyFactory.createStrategyByName(m.getStrategy());
+                    members.add(new Member(m.getId(), c, strategy));
+                }
+                Team t = new Team(teamPrint.getName());
+                t.setMembers(members);
+                fullTeams.add(t);
+            }
+
+            return fullTeams; // Convert array to ArrayList
 
         } catch (JsonSyntaxException | IOException e) {
             throw new PersistanceException("Couldn't read teams file: " + PATH, e);
@@ -85,6 +101,8 @@ public class TeamJsonDAO implements TeamDAO {
         if (teams == null) return new ArrayList<>(); // Ensure it's not null
 
         for (Team team : teams) {
+            List<Member> finalMembers = new ArrayList<>();
+
             for (Member member : team.getMembers()) {
                 if (member.getCharacterId() == 0) continue;
 
@@ -93,10 +111,15 @@ public class TeamJsonDAO implements TeamDAO {
                 }
 
                 Character character = characterJsonDAO.getCharacterById(member.getCharacterId());
-                if (character != null) {
-                    member.setCharacter(character); // Assign character properly
-                }
+                if (character == null) continue;
+
+                CombatStrategy strategy = StrategyFactory.createStrategyByName(member.getStrategyName());
+
+                //Create a new Member with the strategy
+                Member finalMember = new Member(member.getCharacterId(), character, strategy);
+                finalMembers.add(finalMember);
             }
+            team.setMembers(finalMembers);
         }
         return teams;
     }
@@ -121,7 +144,7 @@ public class TeamJsonDAO implements TeamDAO {
         List<MemberPrint> memberPrints = new ArrayList<>();
 
         for (Member member : team.getMembers()) {
-            memberPrints.add(new MemberPrint(member.getCharacterId(), member.getStrategy()));
+            memberPrints.add(new MemberPrint(member.getCharacterId(), member.getStrategyName()));
         }
 
         return new TeamPrint(team.getName(), memberPrints);
@@ -195,17 +218,25 @@ public class TeamJsonDAO implements TeamDAO {
      */
     @Override
     public Team getTeamByName(String name) throws PersistanceException {
-        try (JsonReader reader = new JsonReader(new FileReader(PATH))) {
-            Team[] teamsArray = gson.fromJson(reader, Team[].class);
-            for (Team team : teamsArray) {
-                if (team.getName().equalsIgnoreCase(name)) {
-                    return team;
+        List<TeamPrint> teams = loadTeamsPrint();
+
+        for (TeamPrint teamPrint : teams) {
+            if (teamPrint.getName().equalsIgnoreCase(name)) {
+                List<Member> finalMembers = new ArrayList<>();
+
+                for (MemberPrint memberPrint : teamPrint.getMembers()) {
+                    Character character = characterJsonDAO.getCharacterById(memberPrint.getId());
+                    CombatStrategy strategy = StrategyFactory.createStrategyByName(memberPrint.getStrategy());
+                    finalMembers.add(new Member(memberPrint.getId(), character, strategy));
                 }
+
+                Team team = new Team(teamPrint.getName());
+                team.setMembers(finalMembers);
+                return team;
             }
-            return null;
-        } catch (IOException | JsonSyntaxException e) {
-            throw new PersistanceException("Couldn't read teams file: " + PATH, e);
         }
+
+        return null;
     }
 
     /**
@@ -219,19 +250,18 @@ public class TeamJsonDAO implements TeamDAO {
     public List<String> getTeamsNamesWithCharacter(long characterId) throws PersistanceException {
         List<String> teamNames = new ArrayList<>();
 
-        try (JsonReader reader = new JsonReader(new FileReader(PATH))) {
-            Team[] teamsArray = gson.fromJson(reader, Team[].class);
-            if (teamsArray == null) return teamNames;
-
-            for (Team team : teamsArray) {
-                for (Member member : team.getMembers()) {
-                    if (member.getCharacterId() == characterId) {
-                        teamNames.add(team.getName());
+        try {
+            List<TeamPrint> teamPrints = loadTeamsPrint();  // ✅ Usa la versión segura
+            for (TeamPrint teamPrint : teamPrints) {
+                for (MemberPrint member : teamPrint.getMembers()) {
+                    if (member.getId() == characterId) {
+                        teamNames.add(teamPrint.getName());
                         break;
                     }
                 }
             }
-        } catch (IOException | JsonSyntaxException e) {
+
+        } catch (Exception e) {
             throw new PersistanceException("Error loading teams from " + PATH + ": " + e.getMessage(), e);
         }
 

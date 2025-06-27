@@ -1,7 +1,6 @@
 package business;
 
 import business.entities.Character;
-import edu.salle.url.api.exception.ApiException;
 import persistance.API.CharacterApiDAO;
 import persistance.CharacterDAO;
 import persistance.exceptions.PersistanceException;
@@ -27,7 +26,7 @@ public class CharacterManager {
             CharacterApiDAO.validateUsage(); // Check API availability
             this.characterDAO = new CharacterApiDAO();
         } catch (PersistanceException e) {
-            System.err.println("API is unavailable, falling back to JSON files: " + e.getMessage());
+            System.err.println("API unavailable, switching to JSON persistence: " + e.getMessage());
             this.characterDAO = new CharacterJsonDAO();
         }
     }
@@ -41,8 +40,7 @@ public class CharacterManager {
         try {
             // Try to load a small amount of data to validate connectivity
             List<String> names = characterDAO.getCharactersByNames();
-            boolean valid = names != null && !names.isEmpty();
-            return valid;
+            return names != null && !names.isEmpty();
         } catch (PersistanceException e) {
             return false;
         }
@@ -77,6 +75,6 @@ public class CharacterManager {
      * @throws PersistanceException If an error occurs during retrieval.
      */
     public Character findCharacterByIndex(int index) throws PersistanceException {
-        return characterDAO.findCharacterByIndex(index-1);
+        return characterDAO.findCharacterByIndex(index);
     }
 }

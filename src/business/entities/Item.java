@@ -17,8 +17,8 @@ public abstract class Item {
     //durability of the item
     private int durability;
 
-    //type of th item (armor or weapon)
-    private String type;
+
+
 
     /**
      * Constructor of the item with the specific attributes
@@ -98,4 +98,12 @@ public abstract class Item {
     public boolean isBroken() {
         return durability <= 0;
     }
+
+    /**
+     * Polymorphic method: each item returns its effect value based on the user's weight
+     *
+     * @param characterWeight The weight of the character using the item
+     * @return The effective value (used in attack or defense formulas)
+     */
+    public abstract double getEffectValue(int characterWeight);
 }

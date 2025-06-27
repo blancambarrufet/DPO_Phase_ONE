@@ -18,12 +18,15 @@ public class Weapon extends Item {
         super(name, id, power, durability);
     }
 
+
     /**
-     * Retrieves the attack power of the weapon.
+     * Polymorphic method: each item returns its effect value based on the user's weight
      *
-     * @return int The attack power of the weapon.
+     * @param characterWeight The weight of the character using the item
+     * @return The effective value (used in attack or defense formulas)
      */
-    public int getAttackPower() {
-        return getPower();
+    @Override
+    public double getEffectValue(int characterWeight) {
+        return getPower(); //Normal weapon returns power
     }
 }

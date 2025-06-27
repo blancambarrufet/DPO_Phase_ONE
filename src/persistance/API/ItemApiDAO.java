@@ -1,8 +1,6 @@
 package persistance.API;
 
-import business.entities.Armor;
-import business.entities.Item;
-import business.entities.Weapon;
+import business.entities.*;
 import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
 import edu.salle.url.api.ApiHelper;
@@ -12,13 +10,13 @@ import persistance.ItemDAO;
 import persistance.exceptions.PersistanceException;
 
 import java.lang.reflect.Type;
-import java.net.http.HttpClient;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
 public class ItemApiDAO implements ItemDAO {
     private static final String BASE_URL = "https://balandrau.salle.url.edu/dpoo/shared/items";
-    private static final HttpClient client = HttpClient.newHttpClient();
+
     private final Gson gson;
     private final Random random = new Random();
 
@@ -36,29 +34,20 @@ public class ItemApiDAO implements ItemDAO {
         @Override
         public Item deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
             JsonObject jsonObject = json.getAsJsonObject();
-            
+
             long id = jsonObject.get("id").getAsLong();
             String name = jsonObject.get("name").getAsString();
             int power = jsonObject.get("power").getAsInt();
             int durability = jsonObject.get("durability").getAsInt();
             String itemClass = jsonObject.get("class").getAsString();
-            
-            if ("Weapon".equals(itemClass) || "Superweapon".equals(itemClass)) {
-                return new Weapon(id, name, power, durability);
-            } else if ("Armor".equals(itemClass) || "Superarmor".equals(itemClass)) {
-                return new Armor(id, name, power, durability);
-            } else {
-                throw new JsonParseException("Unknown item class: " + itemClass);
-            }
-        }
-    }
 
-    @Override
-    public boolean validateFile() {
-        try {
-            return !getItemNames().isEmpty();
-        } catch (PersistanceException e) {
-            return false;
+            return switch (itemClass.toLowerCase()) {
+                case "weapon" -> new Weapon(id, name, power, durability);
+                case "superweapon" -> new SuperWeapon(id, name, power, durability);
+                case "armor" -> new Armor(id, name, power, durability);
+                case "superarmor" -> new SuperArmor(id, name, power, durability);
+                default -> throw new JsonParseException("Unknown item class: " + itemClass);
+            };
         }
     }
 
@@ -72,29 +61,33 @@ public class ItemApiDAO implements ItemDAO {
     }
     @Override
     public Weapon getRandomWeapon() throws PersistanceException {
-        return (Weapon) getRandomItem("Weapon");
+        return (Weapon) getRandomItem(List.of("Weapon", "Superweapon"));
     }
 
     @Override
     public Armor getRandomArmor() throws PersistanceException {
-        return (Armor) getRandomItem("Armor");
+        return (Armor) getRandomItem(List.of("Armor", "Superarmor"));
     }
 
-    private Item getRandomItem(String type) throws PersistanceException {
+    private Item getRandomItem(List<String> acceptedTypes) throws PersistanceException {
         try {
             ApiHelper apiHelper = new ApiHelper();
 
             String json = apiHelper.getFromUrl(BASE_URL);
 
-            List<Item> items = gson.fromJson(json, new TypeToken<List<Item>>() {}.getType());
+            List<Item> filteredItems = new ArrayList<>();
+            JsonArray array = JsonParser.parseString(json).getAsJsonArray();
 
-            List<Item> filteredItems = items.stream()
-                    .filter(item -> item.getClass().getSimpleName().equals(type))
-                    .toList();
+            for (JsonElement element : array) {
+                JsonObject obj = element.getAsJsonObject();
+                String itemClass = obj.get("class").getAsString();
 
-            if (filteredItems.isEmpty()) {
-                return null;
+                if (acceptedTypes.contains(itemClass)) {
+                    filteredItems.add(gson.fromJson(obj, Item.class));
+                }
             }
+
+            if (filteredItems.isEmpty()) return null;
 
             int randomIndex = random.nextInt(filteredItems.size());
             return filteredItems.get(randomIndex);
@@ -144,7 +137,7 @@ public class ItemApiDAO implements ItemDAO {
                 if (json.trim().startsWith("[")) {
                     // API returned an array
                     List<Item> items = gson.fromJson(json, new TypeToken<List<Item>>() {}.getType());
-                    return items.isEmpty() ? null : items.get(0);
+                    return items.isEmpty() ? null : items.getFirst();
                 } else {
                     // API returned a single object
                     return gson.fromJson(json, Item.class);

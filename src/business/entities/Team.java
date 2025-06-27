@@ -9,7 +9,7 @@ import java.util.List;
  */
 public class Team {
     //the name of the Team
-    private String name;
+    private final String name;
 
     //a list of members that composes a team
     private final List<Member> members;
@@ -33,14 +33,6 @@ public class Team {
         return name;
     }
 
-    /**
-     * Sets the name of the team.
-     *
-     * @param name The new name of the team.
-     */
-    public void setName(String name) {
-        this.name = name;
-    }
 
     /**
      * Get a list of team members.
@@ -49,6 +41,16 @@ public class Team {
      */
     public List<Member> getMembers() {
         return members;
+    }
+
+    /**
+     * Replaces the current list of members with a new list.
+     *
+     * @param newMembers The new list of team members.
+     */
+    public void setMembers(List<Member> newMembers) {
+        members.clear();
+        members.addAll(newMembers);
     }
 
     /**

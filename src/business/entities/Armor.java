@@ -16,14 +16,16 @@ public class Armor extends Item {
     public Armor(long id, String name, int power, int durability) {
         super(name, id, power, durability);
     }
+    
 
     /**
-     * gets the defense value of the armor
+     * Polymorphic method: each item returns its effect value based on the user's weight
      *
-     * @return the defensive value of the armor
+     * @param characterWeight The weight of the character using the item
+     * @return The effective value (used in attack or defense formulas)
      */
-    public int getDefenseValue() {
+    @Override
+    public double getEffectValue(int characterWeight) {
         return getPower();
     }
-
 }

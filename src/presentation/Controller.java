@@ -5,6 +5,7 @@ import business.entities.*;
 import business.entities.Character;
 import persistance.exceptions.PersistanceException;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -81,19 +82,41 @@ public class Controller {
 
 
     private boolean validatePersistence() {
+        boolean charactersOk = false;
+        boolean itemsOk = false;
+        boolean teamsOk = false;
+        boolean statsOk = false;
+
         try {
-            // Validate critical files
-            boolean charactersOk = characterManager.validatePersistenceSource(); // Characters.json
-            boolean itemsOk = itemManager.validatePersistenceSource();          // Items.json
-            boolean teamsOk = teamManager.validatePersistence();
-            boolean statsOk = statisticsManager.validatePersistance();
-
-            // Check and return based on UI validation
-            return ui.validatePersistence(charactersOk, itemsOk, teamsOk, statsOk);
-
+            charactersOk = characterManager.validatePersistenceSource();
+            displayMessage("DEBUG: charactersOk is : " + charactersOk);
         } catch (Exception e) {
-            return ui.validatePersistence(false, false, false, false); // Graceful shutdown
+            displayMessage("DEBUG: charactersOk EXCEPTION: " + e.getMessage());
         }
+
+        try {
+            itemsOk = itemManager.validatePersistenceSource();
+            displayMessage("DEBUG: itemsOk is : " + itemsOk);
+        } catch (Exception e) {
+            displayMessage("DEBUG: itemsOk EXCEPTION: " + e.getMessage());
+        }
+
+        try {
+            teamsOk = teamManager.validatePersistence();
+            displayMessage("DEBUG: teamsOk is : " + teamsOk);
+        } catch (Exception e) {
+            displayMessage("DEBUG: teamsOk EXCEPTION: " + e.getMessage());
+        }
+
+        try {
+            statsOk = statisticsManager.validatePersistance();
+            displayMessage("DEBUG: statsOk is : " + statsOk);
+        } catch (Exception e) {
+            displayMessage("DEBUG: statsOk EXCEPTION: " + e.getMessage());
+        }
+
+        ui.displayValidatePersistence(charactersOk, itemsOk, teamsOk, statsOk);
+        return charactersOk && itemsOk;
     }
 
 
@@ -131,7 +154,8 @@ public class Controller {
                     return;
                 }
 
-                String strategy = ui.requestStrategy(i);
+                String strategyName = ui.requestStrategy(i);
+                CombatStrategy strategy = StrategyFactory.createStrategyByName(strategyName);
 
                 Member member = new Member(character.getId(), character, strategy);
                 newTeam.addMember(member);
@@ -142,6 +166,7 @@ public class Controller {
 
             //create team statistics
             statisticsManager.createNewStats(teamName, true);
+            displayMessage("Created new team " + teamName + " successfully!");
         } catch (PersistanceException e) {
             displayMessage("Error creating team: " + e.getMessage());
         }
@@ -179,7 +204,8 @@ public class Controller {
 
             Team selectedTeam = teamManager.findTeamByIndex(selectedOption);
 
-            ui.displayTeamDetails(selectedTeam);
+            List<String> teamDetails = formatTeamDetails(selectedTeam);
+            ui.displayTeamDetails(teamDetails);
 
             Statistics statistics = statisticsManager.getStaticByName(selectedTeam.getName());
 
@@ -188,6 +214,23 @@ public class Controller {
             displayMessage("Error retrieving teams: " + e.getMessage());
         }
     }
+
+    private List<String> formatTeamDetails(Team team) {
+        List<String> lines = new ArrayList<>();
+        lines.add("\n\tTeam name: " + team.getName() + "\n");
+
+        int i = 1;
+        int width = 30;
+
+        for (Member member : team.getMembers()) {
+            String paddedName = String.format("%-" + width + "s", member.getName());
+            lines.add("\tCharacter #" + i + ": " + paddedName + "(" + member.getStrategyName().toUpperCase() + ")");
+            i++;
+        }
+
+        return lines;
+    }
+
 
     private void deleteTeam() {
         try {
@@ -326,7 +369,28 @@ public class Controller {
      * @param teamNumber The number assigned to the team (e.g., Team #1, Team #2).
      */
     public void displayTeamStats(Team team, int teamNumber) {
-        ui.displayTeamStats(team, teamNumber);
+        List<String> lines = formatTeamStats(team, teamNumber);
+        ui.displayTeamStats(lines);
+    }
+
+    /**
+     * Converts a team's combat data into formatted display lines.
+     *
+     * @param team The team that it will display and to be formatted to lines
+     * @param teamNumber Number assigned to the team
+     */
+    private List<String> formatTeamStats(Team team, int teamNumber) {
+        List<String> lines = new ArrayList<>();
+        lines.add("Team #" + teamNumber + " - " + team.getName());
+
+        for (Member member : team.getMembers())  {
+            String status = member.isKO() ? "KO" : Math.round(member.getDamageTaken() * 100) + " %";
+            String weapon = member.getWeaponName();  // Handles nulls inside Member class if needed
+            String armor = member.getArmorName();
+            lines.add("\t- " + member.getName() + " (" + status + ") " + weapon + " - " + armor);
+        }
+
+        return lines;
     }
 
     /**

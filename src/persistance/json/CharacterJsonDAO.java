@@ -37,28 +37,6 @@ public class CharacterJsonDAO implements CharacterDAO {
         this.gson = new Gson();
     }
 
-    /**
-     * Validates the existence and structure of the characters JSON file.
-     *
-     * @return boolean True if the file exists and contains valid JSON data; otherwise, false.
-     */
-    @Override
-    public boolean validateFile() {
-        try {
-            // Check if the file exists
-            if (!Files.exists(Path.of(PATH))) {
-                return false; // File is missing
-            }
-
-            // Validate JSON structure
-            JsonReader reader = new JsonReader(new FileReader(PATH));
-            gson.fromJson(reader, Character[].class); // Attempt parsing
-            return true; // If no exception, file is valid
-
-        } catch (JsonSyntaxException | IOException e) {
-            return false; // File is invalid or unreadable
-        }
-    }
 
     /**
      * Loads all characters from the JSON file.
