@@ -65,7 +65,12 @@ public class CombatManager {
         }
     }
 
-
+    /**
+     * Executes the combat between two teams until one is defeated.
+     *
+     * @param team1 The first team
+     * @param team2 The second team
+     */
     private void executeCombat(Team team1, Team team2) {
         int round = 1;
 
@@ -125,7 +130,12 @@ public class CombatManager {
         }
     }
 
-
+    /**
+     * Counts the number of KO members in a team.
+     *
+     * @param team1Members The list of team members to check
+     * @return The number of KO members
+     */
     private int numberOfKO(List<Member> team1Members) {
         int count = 0;
         for (Member member : team1Members) {
@@ -137,7 +147,12 @@ public class CombatManager {
         return count;
     }
 
-
+    /**
+     * Executes a turn for the attacking team against the defending team.
+     *
+     * @param attackingTeam The team taking the turn
+     * @param defendingTeam The team being attacked
+     */
     private void executeTurn(Team attackingTeam, Team defendingTeam) {
         for (Member attacker : attackingTeam.getMembers()) {
             if (attacker.isKO()) {
@@ -175,6 +190,12 @@ public class CombatManager {
         }
     }
 
+    /**
+     * Selects a target with the most damage taken (used by SniperStrategy).
+     *
+     * @param defendingTeam The team to select a target from
+     * @return The member with the most damage taken, or null if no valid targets
+     */
     private Member selectTargetWithMostDamage(Team defendingTeam) {
         Member targetWithMostDamage = null;
         double maxDamage = -1;
@@ -189,6 +210,11 @@ public class CombatManager {
         return targetWithMostDamage;
     }
 
+    /**
+     * Requests a random weapon for a member.
+     *
+     * @param member The member to equip with a weapon
+     */
     private void requestWeapon(Member member) {
         try {
             itemManager.assignRandomWeapon(member);
@@ -199,7 +225,12 @@ public class CombatManager {
 
     }
 
-
+    /**
+     * Selects a random target from the defending team.
+     *
+     * @param defendingTeam The team to select a target from
+     * @return A random non-KO member, or null if no valid targets
+     */
     private Member selectTarget(Team defendingTeam) {
         List<Member> availableDefenders = new ArrayList<>();
 
@@ -216,7 +247,12 @@ public class CombatManager {
         return availableDefenders.get(index);
     }
 
-
+    /**
+     * Performs an attack from attacker to defender.
+     *
+     * @param attacker The member performing the attack
+     * @param defender The member being attacked
+     */
     private void performAttack(Member attacker, Member defender) {
         // Calculate attack and defense values
         double attackDamage = attacker.calculateAttack();
@@ -233,7 +269,12 @@ public class CombatManager {
         degradeEquipment(attacker, defender);
     }
 
-
+    /**
+     * Degrades equipment (weapons and armor) after an attack.
+     *
+     * @param attacker The member who performed the attack
+     * @param defender The member who was attacked
+     */
     private void degradeEquipment(Member attacker, Member defender) {
         //Reduce attacker's weapon durability
         Weapon weapon = attacker.getWeapon();
@@ -261,7 +302,12 @@ public class CombatManager {
         }
     }
 
-
+    /**
+     * Checks for KO status for all members in both teams.
+     *
+     * @param team1 The first team to check
+     * @param team2 The second team to check
+     */
     private void KOChecking(Team team1, Team team2) {
         Random random = new Random();
 
@@ -274,7 +320,12 @@ public class CombatManager {
         }
     }
 
-
+    /**
+     * Checks if a member should be knocked out based on damage taken.
+     *
+     * @param member The member to check for KO
+     * @param random Random number generator for KO calculation
+     */
     private void checkForKO(Member member, Random random) {
         if (!member.isKO()) {
             double damageTaken = member.getDamageTaken();

@@ -14,12 +14,19 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+/**
+ * API-based implementation of ItemDAO for managing item data.
+ * Uses REST API calls to fetch item information from external sources.
+ */
 public class ItemApiDAO implements ItemDAO {
     private static final String BASE_URL = "https://balandrau.salle.url.edu/dpoo/shared/items";
 
     private final Gson gson;
     private final Random random = new Random();
 
+    /**
+     * Constructor that initializes the ItemApiDAO with a custom Gson deserializer.
+     */
     public ItemApiDAO() {
         // Create a custom deserializer for Item class
         this.gson = new GsonBuilder()
@@ -51,6 +58,11 @@ public class ItemApiDAO implements ItemDAO {
         }
     }
 
+    /**
+     * Validates that the API is accessible and working.
+     *
+     * @throws PersistanceException if the API is not reachable
+     */
     public static void validateUsage() throws PersistanceException {
         try {
             ApiHelper apiHelper = new ApiHelper();
@@ -59,16 +71,36 @@ public class ItemApiDAO implements ItemDAO {
             throw new PersistanceException(e.getMessage());
         }
     }
+
+    /**
+     * Retrieves a random weapon from the API.
+     *
+     * @return A random Weapon object
+     * @throws PersistanceException if there's an error fetching weapons from the API
+     */
     @Override
     public Weapon getRandomWeapon() throws PersistanceException {
         return (Weapon) getRandomItem(List.of("Weapon", "Superweapon"));
     }
 
+    /**
+     * Retrieves a random armor from the API.
+     *
+     * @return A random Armor object
+     * @throws PersistanceException if there's an error fetching armor from the API
+     */
     @Override
     public Armor getRandomArmor() throws PersistanceException {
         return (Armor) getRandomItem(List.of("Armor", "Superarmor"));
     }
 
+    /**
+     * Retrieves a random item of the specified types from the API.
+     *
+     * @param acceptedTypes List of accepted item types
+     * @return A random Item object of the specified types
+     * @throws PersistanceException if there's an error fetching items from the API
+     */
     private Item getRandomItem(List<String> acceptedTypes) throws PersistanceException {
         try {
             ApiHelper apiHelper = new ApiHelper();
@@ -97,7 +129,12 @@ public class ItemApiDAO implements ItemDAO {
         }
     }
 
-
+    /**
+     * Retrieves a list of all item names from the API.
+     *
+     * @return A list of item names
+     * @throws PersistanceException if there's an error fetching item names from the API
+     */
     @Override
     public List<String> getItemNames() throws PersistanceException {
         try {
@@ -116,7 +153,13 @@ public class ItemApiDAO implements ItemDAO {
         }
     }
 
-
+    /**
+     * Retrieves an item by its name from the API.
+     *
+     * @param name The name of the item to retrieve
+     * @return The Item object if found, null otherwise
+     * @throws PersistanceException if there's an error fetching the item from the API
+     */
     @Override
     public Item getItemByName(String name) throws PersistanceException {
         try {
@@ -157,6 +200,5 @@ public class ItemApiDAO implements ItemDAO {
             throw new PersistanceException("Unexpected error while fetching item: " + e.getMessage(), e);
         }
     }
-
 
 }

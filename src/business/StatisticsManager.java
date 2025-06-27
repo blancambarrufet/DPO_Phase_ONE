@@ -15,18 +15,24 @@ public class StatisticsManager {
 
     private StatisticsDAO statisticsDAO;
 
+    /**
+     * Constructor that initializes the statistics manager with the appropriate DAO.
+     * Attempts to use API persistence first, falls back to JSON if API is unavailable.
+     */
     public StatisticsManager() {
         try {
             StatisticsApiDAO.validateUsage();
             this.statisticsDAO = new StatisticsApiDAO();
         } catch (PersistanceException e) {
-            System.err.println("API unavailable, switching to JSON persistence.");
             this.statisticsDAO = new StatisticsJsonDAO();
         }
     }
 
-
-
+    /**
+     * Validates the persistence layer by attempting to load statistics.
+     *
+     * @return true if persistence is working, false otherwise
+     */
     public boolean validatePersistance() {
         try {
             // Try to load statistics to validate connectivity
@@ -37,6 +43,16 @@ public class StatisticsManager {
         }
     }
 
+    /**
+     * Records the result of a combat between two teams.
+     *
+     * @param Team1 The name of the first team
+     * @param Team2 The name of the second team
+     * @param koTeam1 Number of KOs made by team 1
+     * @param koTeam2 Number of KOs made by team 2
+     * @param winner The name of the winning team
+     * @throws PersistanceException if there's an error saving the statistics
+     */
     public void recordCombatResult(String Team1, String Team2, int koTeam1, int koTeam2, String winner) throws PersistanceException {
         List<Statistics> statistics = statisticsDAO.loadStatistics();
         
@@ -81,21 +97,28 @@ public class StatisticsManager {
         statisticsDAO.saveStatistics(statistics);
     }
 
+    /**
+     * Retrieves statistics for a team by name.
+     *
+     * @param name The name of the team
+     * @return Statistics object for the team, or null if not found
+     * @throws PersistanceException if there's an error loading the statistics
+     */
     public Statistics getStaticByName(String name) throws PersistanceException {
-        System.out.println("DEBUG: Loading statistics for: " + name);
         List<Statistics> statistics = statisticsDAO.loadStatistics();
-        System.out.println("DEBUG: Loaded " + statistics.size() + " statistics from " + statisticsDAO.getClass().getSimpleName());
-        
-        for (Statistics stat : statistics) {
-            System.out.println("  - " + stat.getName() + ": games=" + stat.getGames_played() + ", won=" + stat.getGames_won());
-        }
         
         Statistics result = statistics.stream().filter(stat -> stat.getName().equalsIgnoreCase(name)).findFirst().orElse(null);
-        System.out.println("DEBUG: Found match for '" + name + "': " + (result != null));
         
         return result;
     }
 
+    /**
+     * Creates or removes statistics for a team.
+     *
+     * @param name The name of the team
+     * @param add true to add new statistics, false to remove existing ones
+     * @throws PersistanceException if there's an error saving the statistics
+     */
     public void createNewStats(String name, boolean add) throws PersistanceException {
         List<Statistics> statistics = statisticsDAO.loadStatistics();
 

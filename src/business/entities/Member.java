@@ -282,10 +282,20 @@ public class Member {
         return Math.max(finalDamage, 0); //there will be no negative damage
     }
 
+    /**
+     * Gets the character associated with this member.
+     *
+     * @return The character object
+     */
     public Character getCharacter() {
         return character;
     }
 
+    /**
+     * Gets the name of the equipped weapon.
+     *
+     * @return The weapon name, or "no Weapon" if no weapon is equipped
+     */
     public String getWeaponName() {
         if (weapon != null) {
             return weapon.getName();
@@ -293,6 +303,11 @@ public class Member {
         return "no Weapon";
     }
 
+    /**
+     * Gets the name of the equipped armor.
+     *
+     * @return The armor name, or "no Armor" if no armor is equipped
+     */
     public String getArmorName() {
         if (armor != null) {
             return  armor.getName();

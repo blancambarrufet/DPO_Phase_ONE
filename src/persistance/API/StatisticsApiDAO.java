@@ -10,10 +10,20 @@ import persistance.exceptions.PersistanceException;
 
 import java.util.*;
 
+/**
+ * API-based implementation of StatisticsDAO for managing statistics data.
+ * Uses REST API calls to fetch and save statistics information from external sources.
+ */
 public class StatisticsApiDAO implements StatisticsDAO {
     private static final String BASE_URL = "https://balandrau.salle.url.edu/dpoo/S1-Project-13/stats";
     private final Gson gson = new Gson();
 
+    /**
+     * Loads statistics from the API.
+     *
+     * @return An ArrayList of Statistics objects
+     * @throws PersistanceException if there's an error fetching statistics from the API
+     */
     @Override
     public ArrayList<Statistics> loadStatistics() throws PersistanceException {
         try {
@@ -21,7 +31,6 @@ public class StatisticsApiDAO implements StatisticsDAO {
             String json = apiHelper.getFromUrl(BASE_URL);
 
             if (json == null || json.trim().isEmpty()) {
-                System.err.println("Warning: Empty response from statistics API");
                 return new ArrayList<>();
             }
 
@@ -43,8 +52,6 @@ public class StatisticsApiDAO implements StatisticsDAO {
                         result.add(stat);
                     }
                 }
-            } else {
-                System.err.println("Warning: Last snapshot is not a JSON array");
             }
 
             return result;
@@ -56,28 +63,12 @@ public class StatisticsApiDAO implements StatisticsDAO {
         }
     }
 
-    /**
-     * Updates existing statistics or adds new ones. Always keeps the latest data.
-     */
-    private void updateOrAddStatistics(ArrayList<Statistics> allStats, Statistics newStat) {
-        // Find existing statistics for this team
-        for (int i = 0; i < allStats.size(); i++) {
-            if (allStats.get(i).getName().equals(newStat.getName())) {
-                // Replace with newer statistics
-                allStats.set(i, newStat);
-                return;
-            }
-        }
-        // If not found, add new statistics
-        allStats.add(newStat);
-    }
-
-    private boolean containsStatWithName(ArrayList<Statistics> stats, String name) {
-        return stats.stream().anyMatch(s -> s.getName().equals(name));
-    }
-
+    
+   
     /**
      * Validates if the API is available.
+     *
+     * @throws PersistanceException if the API is not reachable
      */
     public static void validateUsage() throws PersistanceException {
         try {
@@ -88,6 +79,12 @@ public class StatisticsApiDAO implements StatisticsDAO {
         }
     }
 
+    /**
+     * Saves statistics to the API.
+     *
+     * @param statistics The list of statistics to save
+     * @throws PersistanceException if there's an error saving statistics to the API
+     */
     @Override
     public void saveStatistics(List<Statistics> statistics) throws PersistanceException {
         try {
@@ -97,7 +94,6 @@ public class StatisticsApiDAO implements StatisticsDAO {
             try {
                 apiHelper.deleteFromUrl(BASE_URL + "/0");
             } catch (ApiException e) {
-                System.err.println("Warning: Could not delete existing statistics snapshot: " + e.getMessage());
                 // You may ignore this if it's a 404 (nothing to delete)
             }
 
@@ -108,6 +104,5 @@ public class StatisticsApiDAO implements StatisticsDAO {
             throw new PersistanceException("Error saving statistics to API: " + e.getMessage(), e);
         }
     }
-
 
 }

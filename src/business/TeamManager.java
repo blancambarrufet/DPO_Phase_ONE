@@ -26,7 +26,6 @@ public class TeamManager {
             TeamApiDAO.validateUsage();
             this.teamDAO = new TeamApiDAO();
         } catch (PersistanceException e) {
-            System.err.println("API unavailable, switching to JSON persistence.");
             this.teamDAO = new TeamJsonDAO();
         }
         this.itemManager = itemManager;

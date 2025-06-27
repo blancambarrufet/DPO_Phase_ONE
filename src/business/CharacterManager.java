@@ -26,7 +26,6 @@ public class CharacterManager {
             CharacterApiDAO.validateUsage(); // Check API availability
             this.characterDAO = new CharacterApiDAO();
         } catch (PersistanceException e) {
-            System.err.println("API unavailable, switching to JSON persistence: " + e.getMessage());
             this.characterDAO = new CharacterJsonDAO();
         }
     }

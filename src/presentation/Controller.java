@@ -81,6 +81,11 @@ public class Controller {
     }
 
 
+    /**
+     * Validates all persistence sources and displays the results.
+     *
+     * @return true if all persistence sources are valid, false otherwise
+     */
     private boolean validatePersistence() {
         boolean charactersOk = false;
         boolean itemsOk = false;
@@ -134,6 +139,9 @@ public class Controller {
     //************** Functions for Team  **************
     //*************************************************
 
+    /**
+     * Creates a new team with user input for team name, characters, and strategies.
+     */
     private void createTeam() {
         try {
             String teamName = ui.requestTeamInfo();
@@ -173,6 +181,9 @@ public class Controller {
     }
 
 
+    /**
+     * Manages team operations through the team menu.
+     */
     private void manageTeams() {
         while (true) {
             switch (ui.printTeamMenu()) {
@@ -192,6 +203,9 @@ public class Controller {
     }
 
 
+    /**
+     * Lists all teams and allows user to view team details.
+     */
     private void listTeams() {
         try {
             List<String> teams =  teamManager.loadTeamNames();
@@ -215,6 +229,12 @@ public class Controller {
         }
     }
 
+    /**
+     * Formats team details into a list of display strings.
+     *
+     * @param team The team to format
+     * @return A list of formatted strings for display
+     */
     private List<String> formatTeamDetails(Team team) {
         List<String> lines = new ArrayList<>();
         lines.add("\n\tTeam name: " + team.getName() + "\n");
@@ -232,6 +252,9 @@ public class Controller {
     }
 
 
+    /**
+     * Deletes a team after user confirmation.
+     */
     private void deleteTeam() {
         try {
             String teamName = ui.requestTeamInfo();
@@ -256,6 +279,9 @@ public class Controller {
     //*************************************************
 
 
+    /**
+     * Lists all characters and allows user to view character details.
+     */
     private void listCharacters() {
         try {
             List<String> characterNames = characterManager.getCharacterNames();
@@ -289,6 +315,9 @@ public class Controller {
     //*************************************************
 
 
+    /**
+     * Lists all items and allows user to view item details.
+     */
     private void listItems() {
         try {
             List<String> items = itemManager.getItemNames();

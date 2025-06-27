@@ -13,10 +13,20 @@ import persistance.exceptions.PersistanceException;
 import java.io.UnsupportedEncodingException;
 import java.util.List;
 
+/**
+ * API-based implementation of CharacterDAO for managing character data.
+ * Uses REST API calls to fetch character information from external sources.
+ */
 public class CharacterApiDAO implements CharacterDAO {
     private static final String BASE_URL = "https://balandrau.salle.url.edu/dpoo/shared/characters";
     private final Gson gson = new Gson();
 
+    /**
+     * Loads all characters from the API.
+     *
+     * @return A list of all available characters
+     * @throws PersistanceException if there's an error fetching characters from the API
+     */
     @Override
     public List<Character> loadAllCharacters() throws PersistanceException {
         try {
@@ -31,7 +41,11 @@ public class CharacterApiDAO implements CharacterDAO {
         }
     }
 
-
+    /**
+     * Validates that the API is accessible and working.
+     *
+     * @throws PersistanceException if the API is not reachable or returns empty response
+     */
     public static void validateUsage() throws PersistanceException {
         try {
             ApiHelper apiHelper = new ApiHelper();
@@ -44,11 +58,25 @@ public class CharacterApiDAO implements CharacterDAO {
         }
     }
 
+    /**
+     * Retrieves a character by its ID from the API.
+     *
+     * @param id The ID of the character to retrieve
+     * @return The character object if found, null otherwise
+     * @throws PersistanceException if there's an error fetching the character
+     */
     @Override
     public Character getCharacterById(long id) throws PersistanceException {
         return fetchCharacter("id", String.valueOf(id), "id");
     }
 
+    /**
+     * Retrieves a character by its name from the API.
+     *
+     * @param name The name of the character to retrieve
+     * @return The character object if found, null otherwise
+     * @throws PersistanceException if there's an error fetching the character
+     */
     @Override
     public Character getCharacterByName(String name) throws PersistanceException {
         if (name == null || name.trim().isEmpty()) return null;
@@ -61,6 +89,15 @@ public class CharacterApiDAO implements CharacterDAO {
         }
     }
 
+    /**
+     * Fetches a character from the API using the specified query parameter.
+     *
+     * @param queryParam The query parameter name (e.g., "id", "name")
+     * @param value The value to search for
+     * @param errorContext The context for error messages
+     * @return The character object if found, null otherwise
+     * @throws PersistanceException if there's an error fetching the character
+     */
     private Character fetchCharacter(String queryParam, String value, String errorContext) throws PersistanceException {
         try {
             ApiHelper apiHelper = new ApiHelper();
@@ -88,12 +125,24 @@ public class CharacterApiDAO implements CharacterDAO {
         }
     }
 
-
+    /**
+     * Retrieves a list of all character names from the API.
+     *
+     * @return A list of character names
+     * @throws PersistanceException if there's an error fetching the character names
+     */
     @Override
     public List<String> getCharactersByNames() throws PersistanceException {
         return loadAllCharacters().stream().map(Character::getName).toList();
     }
 
+    /**
+     * Finds a character by either ID or name from the API.
+     *
+     * @param input The ID (numeric) or name of the character to find
+     * @return The character object if found, null otherwise
+     * @throws PersistanceException if there's an error fetching the character
+     */
     @Override
     public Character findCharacter(String input) throws PersistanceException {
         if (input.matches("\\d+")) {
@@ -103,6 +152,13 @@ public class CharacterApiDAO implements CharacterDAO {
         }
     }
 
+    /**
+     * Retrieves a character by its index position from the API.
+     *
+     * @param index The 1-based index of the character in the list
+     * @return The character object if found, null otherwise
+     * @throws PersistanceException if there's an error fetching the character
+     */
     @Override
     public Character findCharacterByIndex(int index) throws PersistanceException {
         try {
