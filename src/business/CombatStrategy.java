@@ -33,6 +33,7 @@ public abstract class CombatStrategy {
      * Decides the combat action to be taken by a given member based on the strategy's logic.
      *
      * @param attacker The member whose turn it is to perform
+     * @return CombatAction of the attack
      */
     public abstract CombatAction decideAction(Member attacker);
 
