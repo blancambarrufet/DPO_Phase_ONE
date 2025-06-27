@@ -14,13 +14,6 @@ import java.util.List;
 public interface ItemDAO {
 
     /**
-     * Validates the existence and structure of the item data file.
-     *
-     * @return boolean True if the file is valid and accessible, otherwise false.
-     */
-    boolean validateFile();
-
-    /**
      * Retrieves a random weapon from the persistence source.
      *
      * @return Weapon A randomly selected weapon object.

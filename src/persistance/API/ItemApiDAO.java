@@ -34,7 +34,7 @@ public class ItemApiDAO implements ItemDAO {
         @Override
         public Item deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
             JsonObject jsonObject = json.getAsJsonObject();
-            
+
             long id = jsonObject.get("id").getAsLong();
             String name = jsonObject.get("name").getAsString();
             int power = jsonObject.get("power").getAsInt();
@@ -48,15 +48,6 @@ public class ItemApiDAO implements ItemDAO {
                 case "superarmor" -> new SuperArmor(id, name, power, durability);
                 default -> throw new JsonParseException("Unknown item class: " + itemClass);
             };
-        }
-    }
-
-    @Override
-    public boolean validateFile() {
-        try {
-            return !getItemNames().isEmpty();
-        } catch (PersistanceException e) {
-            return false;
         }
     }
 
