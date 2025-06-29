@@ -1,10 +1,10 @@
 [
   {
     "name": "Salle Fest Bois",
-    "games_played": 6,
-    "games_won": 4,
-    "KO_done": 19,
-    "KO_received": 17
+    "games_played": 8,
+    "games_won": 5,
+    "KO_done": 27,
+    "KO_received": 21
   },
   {
     "name": "Technova",
@@ -15,9 +15,9 @@
   },
   {
     "name": "DPOO All-star",
-    "games_played": 4,
+    "games_played": 6,
     "games_won": 2,
-    "KO_done": 14,
-    "KO_received": 9
+    "KO_done": 18,
+    "KO_received": 17
   }
 ]

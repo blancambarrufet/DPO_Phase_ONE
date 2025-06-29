@@ -59,15 +59,6 @@ public class Member {
     }
 
     /**
-     * Sets the character for this member
-     *
-     * @param character The character to be associated
-     */
-    public void setCharacter(Character character) {
-        this.character = character;
-    }
-
-    /**
      * Get the member id
      *
      * @return The ID of the character.
@@ -282,14 +273,7 @@ public class Member {
         return Math.max(finalDamage, 0); //there will be no negative damage
     }
 
-    /**
-     * Gets the character associated with this member.
-     *
-     * @return The character object
-     */
-    public Character getCharacter() {
-        return character;
-    }
+
 
     /**
      * Gets the name of the equipped weapon.

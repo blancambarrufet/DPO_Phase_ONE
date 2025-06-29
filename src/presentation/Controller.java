@@ -3,7 +3,6 @@ package presentation;
 import business.*;
 import business.entities.*;
 import business.entities.Character;
-import persistance.exceptions.PersistanceException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -94,30 +93,27 @@ public class Controller {
 
         try {
             charactersOk = characterManager.validatePersistenceSource();
-            displayMessage("DEBUG: charactersOk is : " + charactersOk);
+
         } catch (Exception e) {
-            displayMessage("DEBUG: charactersOk EXCEPTION: " + e.getMessage());
+            displayMessage("charactersOk EXCEPTION: " + e.getMessage());
         }
 
         try {
             itemsOk = itemManager.validatePersistenceSource();
-            displayMessage("DEBUG: itemsOk is : " + itemsOk);
         } catch (Exception e) {
-            displayMessage("DEBUG: itemsOk EXCEPTION: " + e.getMessage());
+            displayMessage("itemsOk EXCEPTION: " + e.getMessage());
         }
 
         try {
             teamsOk = teamManager.validatePersistence();
-            displayMessage("DEBUG: teamsOk is : " + teamsOk);
         } catch (Exception e) {
-            displayMessage("DEBUG: teamsOk EXCEPTION: " + e.getMessage());
+            displayMessage("teamsOk EXCEPTION: " + e.getMessage());
         }
 
         try {
             statsOk = statisticsManager.validatePersistance();
-            displayMessage("DEBUG: statsOk is : " + statsOk);
         } catch (Exception e) {
-            displayMessage("DEBUG: statsOk EXCEPTION: " + e.getMessage());
+            displayMessage("statsOk EXCEPTION: " + e.getMessage());
         }
 
         ui.displayValidatePersistence(charactersOk, itemsOk, teamsOk, statsOk);
@@ -175,7 +171,7 @@ public class Controller {
             //create team statistics
             statisticsManager.createNewStats(teamName, true);
             displayMessage("Created new team " + teamName + " successfully!");
-        } catch (PersistanceException e) {
+        } catch (Exception e) {
             displayMessage("Error creating team: " + e.getMessage());
         }
     }
@@ -224,7 +220,7 @@ public class Controller {
             Statistics statistics = statisticsManager.getStaticByName(selectedTeam.getName());
 
             ui.printStatistics(statistics);
-        } catch (PersistanceException e) {
+        } catch (Exception e) {
             displayMessage("Error retrieving teams: " + e.getMessage());
         }
     }
@@ -268,7 +264,7 @@ public class Controller {
             }
             ui.confirmationMessage(teamName, sure);
 
-        } catch (PersistanceException e) {
+        } catch (Exception e) {
             displayMessage("Error deleting team: " + e.getMessage());
         }
     }
@@ -305,7 +301,7 @@ public class Controller {
                 displayMessage("Character not found!");
             }
 
-        } catch (PersistanceException e) {
+        } catch (Exception e) {
             displayMessage("Error retrieving characters: " + e.getMessage());
         }
     }
@@ -330,7 +326,7 @@ public class Controller {
             String selectedItemName = items.get(selectedItemOption - 1);
             Item selectedItem = itemManager.getItemByName(selectedItemName);
             ui.displayItemDetails(selectedItem);
-        } catch (PersistanceException e) {
+        } catch (Exception e) {
             displayMessage("Error retrieving items: " + e.getMessage());
         }
     }
@@ -363,7 +359,7 @@ public class Controller {
 
             combatManager.combatStart(team1, team2);
 
-        } catch (PersistanceException e) {
+        } catch (Exception e) {
             displayMessage("Error during combat setup: " + e.getMessage());
         }
     }

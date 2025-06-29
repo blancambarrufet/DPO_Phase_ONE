@@ -44,14 +44,6 @@ public abstract class Item {
         return name;
     }
 
-    /**
-     * Sets the name of the item
-     *
-     * @param name The new name of the item
-     */
-    public void setName(String name) {
-        this.name = name;
-    }
 
     /**
      * Get the id of the item

@@ -44,15 +44,6 @@ public class Statistics {
     }
 
     /**
-     * Sets the name of the team.
-     *
-     * @param name The new name of the team.
-     */
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    /**
      * Get the number of games played.
      *
      * @return The number of games played.
